@@ -1,0 +1,87 @@
+{
+	"name": "vscode-mta-tools",
+	"displayName": "vscode-mta-tools",
+	"description": "VS Code Multi-Target Application tools",
+	"version": "0.0.1",
+	"publisher": "SAPSE",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.wdf.sap.corp/devx-wing/vscode-mta-tools.git"
+	},
+	"engines": {
+		"vscode": "^1.36.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:extension.mtaBuildCommand",
+		"onCommand:extension.mtarDeployCommand"
+	],
+	"main": "./out/src/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.mtaBuildCommand",
+				"title": "Build MTA"
+			},
+			{
+				"command": "extension.mtarDeployCommand",
+				"title": "Deploy MTA Archive"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "resourceFilename == mta.yaml",
+					"command": "extension.mtaBuildCommand",
+					"group": "2_workspace"
+				},
+				{
+					"when": "resourceFilename =~ /.*.mtar/",
+					"command": "extension.mtarDeployCommand",
+					"group": "2_workspace"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"watch": "tsc -watch -p ./",
+		"compile": "tsc -p ./",
+		"lint": "tslint '*/*.{ts,tsx}' -c ./tslint.yml",
+		"build": "vsce package",
+		"test": "nyc mocha -p tsconfig.json --opts ./mocha.opts"
+	},
+	"dependencies": {
+		"lodash": "4.17.15",
+		"comment-json": "2.1.0",
+		"fs-extra": "7.0.1"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.1.7",
+		"@types/comment-json": "1.1.1",
+		"@types/fs-extra": "^5.0.5",
+		"@types/glob": "^7.1.1",
+		"@types/lodash": "4.14.108",
+		"@types/mocha": "^5.2.6",
+		"@types/node": "^10.12.21",
+		"@types/sinon": "^7.0.13",
+		"@types/vscode": "^1.36.0",
+		"@types/winston": "^2.4.4",
+		"chai": "^4.2.0",
+		"chai-spies": "1.0.0",
+		"glob": "^7.1.4",
+		"husky": "^3.1.0",
+		"mocha": "^6.1.4",
+		"nyc": "^14.1.1",
+		"sinon": "^7.3.2",
+		"ts-node": "8.4.1",
+		"tslint": "^5.18.0",
+		"tslint-config-prettier": "^1.18.0",
+		"tslint-no-unused-expression-chai": "^0.1.4",
+		"typescript": "^3.3.1",
+		"vsce": "^1.61.0",
+		"vscode-test": "^1.0.2"
+	}
+}
