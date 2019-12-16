@@ -30,7 +30,7 @@ describe('Deploy mtar command unit tests', () => {
     let buildTask = new testVscode.Task(
         { type: 'shell' },
         testVscode.TaskScope.Workspace,
-        'MTA',
+        messages.DEPLOY_MTAR,
         'MTA',
         execution);
 
@@ -62,7 +62,7 @@ describe('Deploy mtar command unit tests', () => {
     });
 
     it('mtarDeployCommand - Deploy mtar from context menu', async () => {
-        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns("multiapps ");
+        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns({data: "multiapps "});
         utilsMock.expects("getConfigFileField").withExactArgs("OrganizationFields").atLeast(1).resolves({ Name: "org" });
         utilsMock.expects("getConfigFileField").withExactArgs("SpaceFields").atLeast(1).resolves({ Name: "space" });
         tasksMock.expects("executeTask").once().withExactArgs(buildTask);
@@ -70,7 +70,7 @@ describe('Deploy mtar command unit tests', () => {
     });
 
     it('mtarDeployCommand - Deploy mtar from command when no MTA archive in the project', async () => {
-        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns("multiapps ");
+        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns({data: "multiapps "});
         workspaceMock.expects("findFiles").returns(Promise.resolve([]));
         tasksMock.expects("executeTask").never();
         windowMock.expects("showErrorMessage").withExactArgs(messages.NO_MTA_ARCHIVE);
@@ -78,14 +78,14 @@ describe('Deploy mtar command unit tests', () => {
     });
 
     it('mtarDeployCommand - Deploy mtar from command with only one MTA archive in the project', async () => {
-        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns("multiapps ");
+        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns({data: "multiapps "});
         workspaceMock.expects("findFiles").returns(Promise.resolve([selected]));
         tasksMock.expects("executeTask").once().withExactArgs(buildTask);
         await mtarDeployCommand.mtarDeployCommand(undefined);
     });
 
     it('mtarDeployCommand - Deploy mtar from command with several MTA archives in the project', async () => {
-        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns("multiapps ");
+        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns({data: "multiapps "});
         workspaceMock.expects("findFiles").returns(Promise.resolve([selected, {path: 'mta_archives/mta_0.0.1.mtar'}]));
         selectionItemMock.expects("getSelectionItems").once().returns(Promise.resolve());
         utilsMock.expects("displayOptions").once().returns(Promise.resolve({label: expectedPath}));
@@ -94,14 +94,14 @@ describe('Deploy mtar command unit tests', () => {
     });
 
     it('mtarDeployCommand - Deploy mtar with no mta-cf-cli plugin installed', async () => {
-        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns("some other plugin");
+        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns({data: "some other plugin"});
         tasksMock.expects("executeTask").never();
         windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MTA_CF_CLI);
         await mtarDeployCommand.mtarDeployCommand(selected);
     });
 
     it('mtarDeployCommand - Deploy mtar when user needs to login via CF login command', async () => {
-        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns("multiapps ");
+        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns({data: "multiapps "});
         utilsMock.expects("getConfigFileField").withExactArgs("OrganizationFields").atLeast(1).resolves();
         utilsMock.expects("getConfigFileField").withExactArgs("SpaceFields").atLeast(1).resolves();
         commandsMock.expects("getCommands").once().withExactArgs(true).returns([CF_LOGIN_CMD]);
@@ -113,7 +113,7 @@ describe('Deploy mtar command unit tests', () => {
     });
 
     it('mtarDeployCommand - Deploy mtar when user needs to login via CF CLI', async () => {
-        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns("multiapps ");
+        utilsMock.expects("execCommand").once().withExactArgs(CF_CMD, ["plugins",  "--checksum"], {cwd: homeDir}).returns({data: "multiapps "});
         utilsMock.expects("getConfigFileField").withExactArgs("OrganizationFields").atLeast(1).resolves();
         utilsMock.expects("getConfigFileField").withExactArgs("SpaceFields").atLeast(1).resolves();
         commandsMock.expects("getCommands").once().withExactArgs(true).returns([]);

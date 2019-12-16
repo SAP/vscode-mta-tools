@@ -26,11 +26,11 @@ export class Utils {
         }
     }
 
-    public static executeTask(execution: vscode.ShellExecution): void {
+    public static execTask(execution: vscode.ShellExecution, taskName: string): void {
         let buildTask = new vscode.Task(
             { type: 'shell' },
             vscode.TaskScope.Workspace,
-            'MTA',
+            taskName,
             'MTA',
             execution);
  
@@ -39,26 +39,29 @@ export class Utils {
 
     public static async execCommand(command: string, commandArgs: string[], options?: any): Promise<any> {
         return new Promise<string>((resolve, reject) => {
-            let stdout = "";
+            const output: string[] = [];
             const childProcess = spawn(command, commandArgs, options);
             
             childProcess.stdout.on("data", (data) => {
                 if (!childProcess.killed) {
-                    stdout = stdout.concat(data);
-                    resolve(data);
+                    data = String.fromCharCode.apply(null, new Uint16Array(data));
+                    output.push(data);
                 }
             });
             childProcess.stderr.on("data", (data) => {
                 resolve(data);
             });
             childProcess.on("exit", (code: number) => {
+                const stdout = output.join("").trim();
                 this.resultOnExit(stdout, resolve, code);
             });
             childProcess.on("error", (err: any) => {
+                const stdout = output.join("").trim();
                 this.resultOnExit(stdout, resolve, err.code);
             });
         });
     }
+
 
     public static writeToOutputChannel(message: any) {
         if (!this.outputChannel) {
@@ -75,7 +78,7 @@ export class Utils {
     }
 
     private static resultOnExit(stdout: string, resolve: any, code: any) {
-        resolve({exitCode: code});
+        resolve({exitCode: code, data: stdout});
     }
 
     private static getConfigFilePath(): string {

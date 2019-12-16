@@ -16,10 +16,7 @@ export class MtarDeployCommand {
 
     public async mtarDeployCommand(selected: any): Promise<void> {
         let response = await Utils.execCommand(CF_COMMAND, ["plugins",  "--checksum"], {cwd: homeDir});
-        if (!_.isString(response)){
-            response = String.fromCharCode.apply(null, new Uint16Array(response));
-        }
-        if(!_.includes(response, "multiapps")){
+        if(!_.includes(response.data, "multiapps")){
             vscode.window.showErrorMessage(messages.INSTALL_MTA_CF_CLI);
             return;
         }
@@ -55,8 +52,8 @@ export class MtarDeployCommand {
 
     private async execDeployCmd(): Promise<any> {
         let options: vscode.ShellExecutionOptions = {cwd: homeDir};
-        let execution = new vscode.ShellExecution(CF_COMMAND, ["deploy", this.path], options);
-        Utils.executeTask(execution);
+        let execution = new vscode.ShellExecution(CF_COMMAND + " deploy " + this.path, options);
+        Utils.execTask(execution, messages.DEPLOY_MTAR);
     }
 
     private async isLoggedInToCF(): Promise<boolean>{

@@ -42,8 +42,7 @@ export class MtaBuildCommand {
         
         let options: vscode.ShellExecutionOptions = {cwd: homeDir};
         let execution = new vscode.ShellExecution(
-            MBT_COMMAND, ["build", "-s", _.replace(this.path, '/mta.yaml', '')], options);
-          
-        Utils.executeTask(execution);   
+            MBT_COMMAND + " build -s " + _.replace(this.path, '/mta.yaml', '') + "; sleep 2;", options);
+        Utils.execTask(execution, messages.BUILD_MTA); 
     }
 }

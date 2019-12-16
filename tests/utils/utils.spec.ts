@@ -35,8 +35,7 @@ describe('Utils unit tests', () => {
 
     it('execCommand - execute command in child process', async () => {
         let response = await Utils.execCommand("mbt", ["-v"]);
-        response = String.fromCharCode.apply(null, new Uint16Array(response));
-        assert.include(response, "MBT");
+        assert.include(response.data, "MBT");
     });
 
     it('execCommand - execute unsupported command in child process', async () => {
@@ -46,7 +45,6 @@ describe('Utils unit tests', () => {
 
     it('execCommand - execute `cf deploy` command in child process when not logged in to CF', async () => {
         let response = await Utils.execCommand("cf", ["deploy"]);
-        response = String.fromCharCode.apply(null, new Uint16Array(response));
-        assert.include(response, "FAILED");
+        assert.include(response.data, "FAILED");
     }).timeout(5000);
 });
