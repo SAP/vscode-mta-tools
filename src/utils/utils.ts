@@ -27,14 +27,14 @@ export class Utils {
     }
 
     public static execTask(execution: vscode.ShellExecution, taskName: string): void {
-        let buildTask = new vscode.Task(
+        let task = new vscode.Task(
             { type: 'shell' },
             vscode.TaskScope.Workspace,
             taskName,
             'MTA',
             execution);
  
-        vscode.tasks.executeTask(buildTask);
+        vscode.tasks.executeTask(task);
     }
 
     public static async execCommand(command: string, commandArgs: string[], options?: any): Promise<any> {

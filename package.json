@@ -36,12 +36,12 @@
 				{
 					"when": "resourceFilename == mta.yaml",
 					"command": "extension.mtaBuildCommand",
-					"group": "2_workspace"
+					"group": "navigation@1"
 				},
 				{
 					"when": "resourceFilename =~ /.*.mtar/",
 					"command": "extension.mtarDeployCommand",
-					"group": "2_workspace"
+					"group": "navigation@1"
 				}
 			]
 		}
