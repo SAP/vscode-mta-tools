@@ -1,16 +1,15 @@
-
-
 ## Description
 
 The **VS Code Multi-Target Application (MTA) tools** extension is a VS Code extension for development of multi-target applications.
 It can be used to build multitarget applications using the [Cloud MTA Build Tool](https://github.com/SAP/cloud-mta-build-tool) and to deploy the build result to Cloud Foundry.
-The extension is being developed and currently contains limited features. 
+The extension is being developed and currently contains limited features.
 
 ### Requirements
 
 Make sure that you are familiar with the multi-target application concept and terminology. For background and detailed information, see [Multi-Target Application Model](https://www.sap.com/documents/2016/06/e2f618e4-757c-0010-82c7-eda71af511fa.html).
 
 Make sure the following tools are installed in your environment:
+
 - `GNU Make 4.2.1` or later to build MTA project.
 - [Cloud MTA Build Tool](https://github.com/SAP/cloud-mta-build-tool) to build MTA project.
 - [Cloud Foundry CLI](https://github.com/cloudfoundry/cli) to work with Cloud Foundry.

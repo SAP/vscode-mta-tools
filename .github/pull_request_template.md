@@ -7,6 +7,7 @@ Please explain the changes you made.
 Add a link to the design (if applicable).
 
 ### Checklist
+
 - [ ] Code compiles correctly
 - [ ] Relevant tests were added (unit / contract / integration)
 - [ ] Relevant logs were added
