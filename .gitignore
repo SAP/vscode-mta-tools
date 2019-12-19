@@ -71,5 +71,6 @@ yarn.lock
 .vscode-test
 dist
 out
+*.vsix
 
 

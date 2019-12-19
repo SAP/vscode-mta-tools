@@ -2,35 +2,37 @@ import { assert } from "chai";
 import * as sinon from "sinon";
 import { SelectionItem } from "../../src/utils/selectionItem";
 
-describe('SelectionItem unit tests', () => {
-    let sandbox: any;
- 
-    let item1 = {
-        path: "some/path/to/file1"
-    }
-    let item2 = {
-        path: "some/path/to/file2"
-    }
-    
-    before(() => {
-        sandbox = sinon.createSandbox();
-    });
+describe("SelectionItem unit tests", () => {
+  let sandbox: any;
 
-    after(() => {
-        sandbox = sinon.restore();
-    });
+  const item1 = {
+    path: "some/path/to/file1"
+  };
+  const item2 = {
+    path: "some/path/to/file2"
+  };
 
-    beforeEach(() => {
-    });
+  before(() => {
+    sandbox = sinon.createSandbox();
+  });
 
-    afterEach(() => {
+  after(() => {
+    sandbox = sinon.restore();
+  });
 
-    });
-
-    it('getSelectionItems - create selection items from paths', async () => {
-        let filePaths = {item1, item2};
-        let expectedItems = [{description: "", detail: "", label: "some/path/to/file1"}, {description: "", detail: "", label: "some/path/to/file2"}];
-        const selectionItems: SelectionItem[] = await SelectionItem.getSelectionItems(filePaths);
-        assert.deepEqual(selectionItems, expectedItems, "The selected items created are not as expected");
-    });
+  it("getSelectionItems - create selection items from paths", async () => {
+    const filePaths = { item1, item2 };
+    const expectedItems = [
+      { description: "", detail: "", label: "some/path/to/file1" },
+      { description: "", detail: "", label: "some/path/to/file2" }
+    ];
+    const selectionItems: SelectionItem[] = await SelectionItem.getSelectionItems(
+      filePaths
+    );
+    assert.deepEqual(
+      selectionItems,
+      expectedItems,
+      "The selected items created are not as expected"
+    );
+  });
 });
