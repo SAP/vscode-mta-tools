@@ -47,6 +47,9 @@
     }
   },
   "scripts": {
+    "version:suggest": "conventional-recommended-bump -preset=\"angular\"",
+    "version": "npm run version:changelog -s && git add CHANGELOG.md",
+    "version:changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "ci": "npm-run-all format:validate lint compile build test",
     "watch": "tsc -watch -p ./",
     "compile": "tsc -p ./",
