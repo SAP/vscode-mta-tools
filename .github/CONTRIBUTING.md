@@ -33,7 +33,6 @@ request changes to it, or close it with an explanation.
 3. If you’ve fixed a bug or added code make sure the code is tested.
 4. Run `npm run compile` to ensure all code compiles.
 5. Run `npm run test` to ensure all tests pass.
-6. See commit prefix section.
 
 ### Committing Changes
 
