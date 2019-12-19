@@ -52,7 +52,7 @@
     "compile": "tsc -p ./",
     "format:fix": "prettier --write --ignore-path .gitignore \"**/*.@(ts|js|json|md|yml)\"",
     "format:validate": "prettier --check --ignore-path .gitignore \"**/*.@(ts|js|json|md|yml)\"",
-    "lint": "tslint '*/*.{ts,tsx}' -c ./tslint.yml",
+    "lint": "tslint '{src,tests}/**/*.ts' -c ./tslint.yml",
     "build": "vsce package",
     "test": "nyc mocha -p tsconfig.json --opts ./mocha.opts"
   },
