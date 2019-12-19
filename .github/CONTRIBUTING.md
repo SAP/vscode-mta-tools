@@ -35,12 +35,28 @@ request changes to it, or close it with an explanation.
 5. Run `npm run test` to ensure all tests pass.
 6. See commit prefix section.
 
-## Commit Prefix
+### Committing Changes
 
-- [feat] (new feature for the user, not a new feature for build script)
-- [fix] (bug fix for the user, not a fix to a build script)
-- [docs] (changes to the documentation)
-- [style] (formatting, missing semi colons, etc; no production code change)
-- [refactor] (refactoring production code, eg. renaming a variable)
-- [test] (adding missing tests, refactoring tests; no production code change)
-- [chore] (updating grunt tasks etc; no production code change)
+This project uses the [Angular Preset](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit-message-format)
+of the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard.
+
+Use `git cz` to guide you through creating conforming commit messages.
+
+- requires [commitizen](https://github.com/commitizen/cz-cli#installing-the-command-line-tool) to be installed.
+
+### Formatting.
+
+[Prettier](https://prettier.io/) is used to ensure consistent code formatting in this repository.
+This is normally transparent as it automatically activated in a pre-commit hook using [lint-staged](https://github.com/okonet/lint-staged).
+However this does mean that dev flows that do not use a full dev env (e.g editing directly on github)
+may result in voter failures due to formatting errors.
+
+### Release Process
+
+Releases are currently only "implemented" as git/github tags.
+
+- `npm run version:suggest` --> prints next suggested version version (using commit messages history).
+- Run the [`npm version [patch|minor|major]`](https://docs.npmjs.com/cli/version)
+  command using the suggested version from above
+- `git push`
+- `git push --tags`
