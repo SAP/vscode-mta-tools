@@ -110,7 +110,8 @@
       "git add"
     ],
     "*.{ts}": [
-      "tslint --fix -c ./tslint.yml"
+      "tslint --fix -c ./tslint.yml",
+      "git add"
     ]
   },
   "config": {
