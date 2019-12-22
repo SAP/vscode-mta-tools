@@ -57,7 +57,8 @@
     "format:validate": "prettier --check --ignore-path .gitignore \"**/*.@(ts|js|json|md|yml)\"",
     "lint": "tslint '{src,tests}/**/*.ts' -c ./tslint.yml",
     "build": "vsce package",
-    "test": "nyc mocha -p tsconfig.json --opts ./mocha.opts"
+    "test": "nyc mocha -p tsconfig.json --opts ./mocha.opts",
+    "coverage:check": "nyc mocha -p tsconfig.json --opts ./mocha.opts"
   },
   "dependencies": {
     "lodash": "4.17.15",
@@ -97,6 +98,24 @@
     "cz-conventional-changelog": "^3.0.2",
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0"
+  },
+  "nyc": {
+    "lines": 75,
+    "functions": 70,
+    "branches": 65,
+    "statements": 75,
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "all": true,
+    "check-coverage": true
   },
   "prettier": {
     "endOfLine": "lf"
