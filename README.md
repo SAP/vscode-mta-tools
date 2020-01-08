@@ -1,3 +1,8 @@
+[![CircleCI](https://circleci.com/gh/SAP/vscode-mta-tools.svg?style=svg)](https://circleci.com/gh/SAP/vscode-mta-tools)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![dependabot](https://api.dependabot.com/badges/status?host=github&repo=SAP/vscode-mta-tools)](https://dependabot.com/)
+
 ## Description
 
 The **VS Code Multi-Target Application (MTA) tools** extension is a VS Code extension for development of multi-target applications.
