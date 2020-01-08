@@ -36,6 +36,6 @@ Please report [here](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issu
 
 ### License
 
-Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+Copyright (c) 2019-2020 SAP SE or an SAP affiliate company. All rights reserved.
 
 This file is licensed under the Apache 2.0 License [except as noted otherwise in the LICENSE file](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/blob/master/LICENSE).
