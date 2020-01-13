@@ -1,5 +1,5 @@
 {
-  "name": "vscode-mta-tools",
+  "name": "@sap-devx/vscode-mta-tools",
   "displayName": "vscode-mta-tools",
   "description": "VS Code Multi-Target Application tools",
   "version": "0.0.1",
@@ -8,6 +8,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.wdf.sap.corp/devx-wing/vscode-mta-tools.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "vscode": "^1.36.0"
