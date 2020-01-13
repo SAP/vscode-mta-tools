@@ -102,8 +102,7 @@ describe("Deploy mtar command unit tests", () => {
     await mtarDeployCommand.mtarDeployCommand(undefined);
   });
 
-  // TODO: Failing for Raya to correct.
-  it.skip("mtarDeployCommand - Deploy mtar from command with only one MTA archive in the project", async () => {
+  it("mtarDeployCommand - Deploy mtar from command with only one MTA archive in the project", async () => {
     utilsMock
       .expects("execCommand")
       .once()
@@ -117,8 +116,7 @@ describe("Deploy mtar command unit tests", () => {
     await mtarDeployCommand.mtarDeployCommand(undefined);
   });
 
-  // TODO: Failing for Raya to correct.
-  it.skip("mtarDeployCommand - Deploy mtar from command with several MTA archives in the project", async () => {
+  it("mtarDeployCommand - Deploy mtar from command with several MTA archives in the project", async () => {
     utilsMock
       .expects("execCommand")
       .once()

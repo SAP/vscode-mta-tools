@@ -44,8 +44,7 @@ describe("Utils unit tests", () => {
     await Utils.displayOptions(inputRequest, selectionItems);
   });
 
-  // TODO: Failing for Raya to correct.
-  it.skip("execCommand - execute command in child process", async () => {
+  it("execCommand - execute command in child process", async () => {
     const response = await Utils.execCommand("mbt", ["-v"]);
     assert.include(response.data, "MBT");
   });
@@ -55,12 +54,8 @@ describe("Utils unit tests", () => {
     assert.equal(response.exitCode, "ENOENT");
   });
 
-  // TODO: Failing for Raya to correct.
-  it.skip(
-    "execCommand - execute `cf deploy` command in child process when not logged in to CF",
-    async () => {
-      const response = await Utils.execCommand("cf", ["deploy"]);
-      assert.include(response.data, "FAILED");
-    }
-  ).timeout(5000);
+  it("execCommand - execute `cf deploy` command in child process when not logged in to CF", async () => {
+    const response = await Utils.execCommand("cf", ["deploy"]);
+    assert.include(response.data, "FAILED");
+  }).timeout(5000);
 });
