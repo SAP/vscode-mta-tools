@@ -34,7 +34,7 @@ describe("MTA build command unit tests", () => {
   const buildTask = new testVscode.Task(
     { type: "shell" },
     testVscode.TaskScope.Workspace,
-    "MTA",
+    messages.BUILD_MTA,
     "MTA",
     execution
   );
