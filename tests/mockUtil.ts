@@ -32,7 +32,7 @@ export const testVscode: any = {
   ShellExecution: class MockShellExecution {
     public MockShellExecution: (command: string, options?: string) => void;
   },
-  Task: class MockTask {},
+  Task: class Task {},
   TaskScope: { Workspace: true }
 };
 

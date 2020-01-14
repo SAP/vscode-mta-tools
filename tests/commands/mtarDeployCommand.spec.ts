@@ -21,16 +21,15 @@ describe("Deploy mtar command unit tests", () => {
     path: "mta_archives/mtaProject_0.0.1.mtar"
   };
   const CF_CMD = "cf";
-  const DEPLOY = "deploy";
   const CF_LOGIN_CMD = "cf.login";
   const expectedPath = "mta_archives/mtaProject_0.0.1.mtar";
   const homeDir = require("os").homedir();
 
-  const execution = new testVscode.ShellExecution(CF_CMD, [
-    DEPLOY,
-    expectedPath
-  ]);
-  const buildTask = new testVscode.Task(
+  const execution = new testVscode.ShellExecution(
+    CF_CMD + " deploy " + expectedPath,
+    { cwd: homeDir }
+  );
+  const deployTask = new testVscode.Task(
     { type: "shell" },
     testVscode.TaskScope.Workspace,
     messages.DEPLOY_MTAR,
@@ -84,7 +83,7 @@ describe("Deploy mtar command unit tests", () => {
     tasksMock
       .expects("executeTask")
       .once()
-      .withExactArgs(buildTask);
+      .withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(selected);
   });
 
@@ -103,16 +102,26 @@ describe("Deploy mtar command unit tests", () => {
   });
 
   it("mtarDeployCommand - Deploy mtar from command with only one MTA archive in the project", async () => {
+    workspaceMock.expects("findFiles").returns(Promise.resolve([selected]));
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ data: "multiapps " });
-    workspaceMock.expects("findFiles").returns(Promise.resolve([selected]));
+    utilsMock
+      .expects("getConfigFileField")
+      .withExactArgs("OrganizationFields")
+      .atLeast(1)
+      .resolves({ Name: "org" });
+    utilsMock
+      .expects("getConfigFileField")
+      .withExactArgs("SpaceFields")
+      .atLeast(1)
+      .resolves({ Name: "space" });
     tasksMock
       .expects("executeTask")
       .once()
-      .withExactArgs(buildTask);
+      .withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(undefined);
   });
 
@@ -135,10 +144,20 @@ describe("Deploy mtar command unit tests", () => {
       .expects("displayOptions")
       .once()
       .returns(Promise.resolve({ label: expectedPath }));
+    utilsMock
+      .expects("getConfigFileField")
+      .withExactArgs("OrganizationFields")
+      .atLeast(1)
+      .resolves({ Name: "org" });
+    utilsMock
+      .expects("getConfigFileField")
+      .withExactArgs("SpaceFields")
+      .atLeast(1)
+      .resolves({ Name: "space" });
     tasksMock
       .expects("executeTask")
       .once()
-      .withExactArgs(buildTask);
+      .withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(undefined);
   });
 
@@ -194,7 +213,7 @@ describe("Deploy mtar command unit tests", () => {
     tasksMock
       .expects("executeTask")
       .once()
-      .withExactArgs(buildTask);
+      .withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(selected);
   });
 

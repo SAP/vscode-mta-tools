@@ -45,17 +45,12 @@ describe("Utils unit tests", () => {
   });
 
   it("execCommand - execute command in child process", async () => {
-    const response = await Utils.execCommand("mbt", ["-v"]);
-    assert.include(response.data, "MBT");
+    const response = await Utils.execCommand("sh", ["-c", "echo test"]);
+    assert.include(response.data, "test");
   });
 
   it("execCommand - execute unsupported command in child process", async () => {
     const response = await Utils.execCommand("bla", ["bla"]);
     assert.equal(response.exitCode, "ENOENT");
   });
-
-  it("execCommand - execute `cf deploy` command in child process when not logged in to CF", async () => {
-    const response = await Utils.execCommand("cf", ["deploy"]);
-    assert.include(response.data, "FAILED");
-  }).timeout(5000);
 });
