@@ -75,21 +75,6 @@ export class Utils {
     });
   }
 
-  public static writeToOutputChannel(message: any) {
-    if (!this.outputChannel) {
-      this.outputChannel = vscode.window.createOutputChannel(`MTA`);
-      this.outputChannel.show();
-    }
-
-    if (!_.isString(message)) {
-      message = String.fromCharCode.apply(null, new Uint16Array(message));
-    }
-
-    this.outputChannel.append(message);
-    this.outputChannel.show();
-  }
-  private static outputChannel: vscode.OutputChannel;
-
   private static resultOnExit(stdout: string, resolve: any, code: any) {
     resolve({ exitCode: code, data: stdout });
   }
