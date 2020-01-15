@@ -52,10 +52,17 @@ may result in voter failures due to formatting errors.
 
 ### Release Process
 
-Releases are currently only "implemented" as git/github tags.
+Releases are done as ["Github Releases"][gh-releases].
 
+The process (on master branch).
+
+- `git fetch && git rebase`
 - `npm run version:suggest` --> prints next suggested version version (using commit messages history).
 - Run the [`npm version [patch|minor|major]`](https://docs.npmjs.com/cli/version)
   command using the suggested version from above
 - `git push`
 - `git push --tags`
+- Inspect the [CircleCI `deploy` build](https://circleci.com/gh/SAP/vscode-mta-tools) for the latest version tag.
+- Inspect the ["Github Releases"][gh-releases] and ensure the `.vsix` archive is attached to the latest version release.
+
+[gh-releases]: https://github.com/SAP/vscode-mta-tools/releases
