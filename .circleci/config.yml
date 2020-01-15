@@ -26,17 +26,24 @@ jobs:
       - checkout
       - run: npm i
       - run: npm run ci
+      - persist_to_workspace:
+          root: "."
+          paths:
+            # https://golang.org/pkg/path/filepath/#Match
+            - vscode-mta-tools-*
 
   deploy:
     docker:
-      - image: circleci/node:12
-    working_directory: ~/repo
+      - image: circleci/golang:1.13
     steps:
-      - checkout
-      - run: npm i
-      - run: npm run ci
-      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - run: npm publish
+      - attach_workspace:
+          at: ./dist
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            go get github.com/tcnksm/ghr
+            VERSION=${CIRCLE_TAG}
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
 
 workflows:
   version: 2
@@ -44,8 +51,13 @@ workflows:
     jobs:
       - build-node13
       - build-node12
-      - build-node10
+      - build-node10:
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*/
       - deploy:
+          requires:
+            - build-node10
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*/
