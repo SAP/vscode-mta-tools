@@ -4,6 +4,8 @@ import { platform } from "os";
 import { Utils } from "../utils/utils";
 import { SelectionItem } from "../utils/selectionItem";
 import { messages } from "../i18n/messages";
+import { getClassLogger } from "../logger/logger-wrapper";
+import { IChildLogger } from "@vscode-logging/logger";
 
 const CF_COMMAND = "cf";
 const CF_LOGIN_COMMAND = "cf.login";
@@ -12,6 +14,11 @@ const homeDir = require("os").homedir();
 
 export class MtarDeployCommand {
   private path: string;
+
+  // Logger
+  private readonly logger: IChildLogger = getClassLogger(
+    MtarDeployCommand.name
+  );
 
   public async mtarDeployCommand(selected: any): Promise<void> {
     const response = await Utils.execCommand(
@@ -33,6 +40,7 @@ export class MtarDeployCommand {
       );
       const len = mtarFilesPaths.length;
       if (len === 0) {
+        this.logger.error(messages.NO_MTA_ARCHIVE);
         vscode.window.showErrorMessage(messages.NO_MTA_ARCHIVE);
         return;
       } else if (len === 1) {
@@ -46,6 +54,9 @@ export class MtarDeployCommand {
           inputRequest,
           selectionItems
         );
+        this.logger.info(
+          `The user selection file path: ${userSelection.label}`
+        );
         this.path = userSelection.label;
       }
     }
@@ -54,6 +65,7 @@ export class MtarDeployCommand {
     if (await this.isLoggedInToCF()) {
       await this.execDeployCmd();
     } else {
+      this.logger.info(`User is not logged in to Cloud Foundry`);
       await this.loginToCF();
       if (await this.isLoggedInToCF()) {
         await this.execDeployCmd();
@@ -67,6 +79,7 @@ export class MtarDeployCommand {
       CF_COMMAND + " deploy " + this.path,
       options
     );
+    this.logger.info(`Deploy MTA Archive starts`);
     Utils.execTask(execution, messages.DEPLOY_MTAR);
   }
 

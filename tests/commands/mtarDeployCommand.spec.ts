@@ -6,6 +6,8 @@ mockVscode("src/utils/utils");
 import { Utils } from "../../src/utils/utils";
 import { messages } from "../../src/i18n/messages";
 import { SelectionItem } from "../../src/utils/selectionItem";
+import * as loggerWraper from "../../src/logger/logger-wrapper";
+import { IChildLogger } from "@vscode-logging/logger";
 
 describe("Deploy mtar command unit tests", () => {
   let sandbox: any;
@@ -16,6 +18,29 @@ describe("Deploy mtar command unit tests", () => {
   let selectionItemMock: any;
   let commandsMock: any;
   let tasksMock: any;
+  let errorSpy: any;
+  let infoSpy: any;
+  let loggerWraperMock: any;
+  const loggerImpl: IChildLogger = {
+    fatal: () => {
+      "fatal";
+    },
+    error: () => {
+      "error";
+    },
+    warn: () => {
+      "warn";
+    },
+    info: () => {
+      "info";
+    },
+    debug: () => {
+      "debug";
+    },
+    trace: () => {
+      "trace";
+    }
+  };
 
   const selected = {
     path: "mta_archives/mtaProject_0.0.1.mtar"
@@ -39,9 +64,15 @@ describe("Deploy mtar command unit tests", () => {
 
   before(() => {
     sandbox = sinon.createSandbox();
+    loggerWraperMock = sandbox.mock(loggerWraper);
+    loggerWraperMock
+      .expects("getClassLogger")
+      .returns(loggerImpl)
+      .atLeast(1);
   });
 
   after(() => {
+    loggerWraperMock.verify();
     sandbox = sinon.restore();
   });
 
@@ -53,6 +84,8 @@ describe("Deploy mtar command unit tests", () => {
     selectionItemMock = sandbox.mock(SelectionItem);
     commandsMock = sandbox.mock(testVscode.commands);
     tasksMock = sandbox.mock(testVscode.tasks);
+    errorSpy = sandbox.spy(loggerImpl, "error");
+    infoSpy = sandbox.spy(loggerImpl, "info");
   });
 
   afterEach(() => {
@@ -62,6 +95,8 @@ describe("Deploy mtar command unit tests", () => {
     selectionItemMock.verify();
     commandsMock.verify();
     tasksMock.verify();
+    errorSpy.restore();
+    infoSpy.restore();
   });
 
   it("mtarDeployCommand - Deploy mtar from context menu", async () => {

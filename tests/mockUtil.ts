@@ -16,7 +16,15 @@ export const testVscode: any = {
   workspace: {
     findFiles: () => {
       Promise.resolve([]);
-    }
+    },
+    getConfiguration: () => {
+      return {
+        get: () => {
+          Promise.resolve();
+        }
+      };
+    },
+    onDidChangeConfiguration: () => Promise.resolve()
   },
   commands: {
     registerCommand: (id: string, cmd: any) => {
