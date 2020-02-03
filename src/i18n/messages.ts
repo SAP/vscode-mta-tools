@@ -1,6 +1,8 @@
 import * as _ from "lodash";
 
 export const messages = {
+  ERROR_ACTIVATION_FAILED:
+    "Extension activation failed due to Logger configuration failure:",
   BUILD_MTA: "Build MTA",
   DEPLOY_MTAR: "Deploy MTA Archive",
   SELECT_PROJECT_DESCRIPTOR:

@@ -6,6 +6,8 @@ mockVscode("src/utils/utils");
 import { Utils } from "../../src/utils/utils";
 import { messages } from "../../src/i18n/messages";
 import { SelectionItem } from "../../src/utils/selectionItem";
+import * as loggerWraper from "../../src/logger/logger-wrapper";
+import { IChildLogger } from "@vscode-logging/logger";
 
 describe("MTA build command unit tests", () => {
   let sandbox: any;
@@ -15,6 +17,29 @@ describe("MTA build command unit tests", () => {
   let workspaceMock: any;
   let selectionItemMock: any;
   let tasksMock: any;
+  let errorSpy: any;
+  let infoSpy: any;
+  let loggerWraperMock: any;
+  const loggerImpl: IChildLogger = {
+    fatal: () => {
+      "fatal";
+    },
+    error: () => {
+      "error";
+    },
+    warn: () => {
+      "warn";
+    },
+    info: () => {
+      "info";
+    },
+    debug: () => {
+      "debug";
+    },
+    trace: () => {
+      "trace";
+    }
+  };
 
   const selected = {
     path: "mtaProject/mta.yaml"
@@ -41,9 +66,15 @@ describe("MTA build command unit tests", () => {
 
   before(() => {
     sandbox = sinon.createSandbox();
+    loggerWraperMock = sandbox.mock(loggerWraper);
+    loggerWraperMock
+      .expects("getClassLogger")
+      .returns(loggerImpl)
+      .atLeast(1);
   });
 
   after(() => {
+    loggerWraperMock.verify();
     sandbox = sinon.restore();
   });
 
@@ -54,6 +85,8 @@ describe("MTA build command unit tests", () => {
     workspaceMock = sandbox.mock(testVscode.workspace);
     selectionItemMock = sandbox.mock(SelectionItem);
     tasksMock = sandbox.mock(testVscode.tasks);
+    errorSpy = sandbox.spy(loggerImpl, "error");
+    infoSpy = sandbox.spy(loggerImpl, "info");
   });
 
   afterEach(() => {
@@ -62,6 +95,8 @@ describe("MTA build command unit tests", () => {
     workspaceMock.verify();
     selectionItemMock.verify();
     tasksMock.verify();
+    errorSpy.restore();
+    infoSpy.restore();
   });
 
   it("mtaBuildCommand - Build MTA from context menu", async () => {

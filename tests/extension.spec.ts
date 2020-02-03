@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { fail } from "assert";
+import { resolve } from "path";
 import { Utils } from "../src/utils/utils";
 import { messages } from "../src/i18n/messages";
 import { mockVscode, testVscode } from "./mockUtil";
@@ -8,12 +8,20 @@ mockVscode("src/extension");
 mockVscode("src/utils/utils");
 mockVscode("src/commands/mtaBuildCommand");
 import { activate, mtaBuildCommand, mtarDeployCommand } from "../src/extension";
+import * as configSettings from "../src/logger/settings";
+import {
+  getLogger,
+  ERROR_LOGGER_NOT_INITIALIZED
+} from "../src/logger/logger-wrapper";
 
 describe("Extension unit tests", () => {
+  const extensionPath: string = resolve(__dirname, "..");
+  const currentLogFilePath: string = "/tmp";
   let sandbox: any;
   let commandsMock: any;
   let utilsMock: any;
   let windowMock: any;
+  let configSettingsMock: any;
 
   before(() => {
     sandbox = sinon.createSandbox();
@@ -27,16 +35,30 @@ describe("Extension unit tests", () => {
     commandsMock = sandbox.mock(testVscode.commands);
     utilsMock = sandbox.mock(Utils);
     windowMock = sandbox.mock(testVscode.window);
+    configSettingsMock = sandbox.mock(configSettings);
   });
 
   afterEach(() => {
     commandsMock.verify();
     utilsMock.verify();
     windowMock.verify();
+    configSettingsMock.verify();
+  });
+
+  it("Call getLogger before logger initialized throws exception", () => {
+    expect(() => getLogger()).to.throw(Error, ERROR_LOGGER_NOT_INITIALIZED);
   });
 
   it("activate - add subscriptions", () => {
-    const testContext: any = { subscriptions: [] };
+    const testContext: any = {
+      subscriptions: [],
+      extensionPath,
+      logPath: currentLogFilePath
+    };
+    configSettingsMock.expects("getLoggingLevelSetting").returns("off");
+    configSettingsMock
+      .expects("getSourceLocationTrackingSetting")
+      .returns(false);
     commandsMock
       .expects("registerCommand")
       .withExactArgs("extension.mtaBuildCommand", mtaBuildCommand);
@@ -44,7 +66,7 @@ describe("Extension unit tests", () => {
       .expects("registerCommand")
       .withExactArgs("extension.mtarDeployCommand", mtarDeployCommand);
     activate(testContext);
-    expect(testContext.subscriptions).to.have.lengthOf(2);
+    expect(testContext.subscriptions).to.have.lengthOf(4);
   });
 
   it("mtaBuildCommand", async () => {
