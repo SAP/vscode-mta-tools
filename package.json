@@ -131,10 +131,10 @@
     "@commitlint/config-conventional": "^8.2.0"
   },
   "nyc": {
-    "lines": 94,
+    "lines": 90,
     "functions": 85,
     "branches": 90,
-    "statements": 94,
+    "statements": 90,
     "extension": [
       ".ts"
     ],
