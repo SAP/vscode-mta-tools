@@ -54,7 +54,7 @@ may result in voter failures due to formatting errors.
 
 Releases are done as ["Github Releases"][gh-releases].
 
-The process (on master branch).
+The process (on master branch). 
 
 - `git fetch && git rebase`
 - `npm run version:suggest` --> prints next suggested version version (using commit messages history).
