@@ -67,7 +67,7 @@
           "description": "The verbosity of logging according to the following order: trace > debug > info > warn > error > fatal > off.",
           "scope": "resource"
         },
-        "Consume SAP Services.sourceLocationTracking": {
+        "MTA Tools.sourceLocationTracking": {
           "type": "boolean",
           "default": false,
           "description": "If chosen, the location of the source code is added to log entries. Warning – this action may slow your extension. We recommend you use it only for debugging.",
