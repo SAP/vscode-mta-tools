@@ -28,14 +28,14 @@ Run `npm install` to install all the needed dependencies.
 ### Contributing
 
 Contributions are greatly appreciated.
-See [CONTRIBUTING.md](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/blob/master/.github/CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](https://github.com/SAP/vscode-mta-tools/blob/master/.github/CONTRIBUTING.md) for details.
 
 ### Support
 
-Please report [here](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues) on any issue.
+Please report [here](https://github.com/SAP/vscode-mta-tools/issues) on any issue.
 
 ### License
 
 Copyright (c) 2019-2020 SAP SE or an SAP affiliate company. All rights reserved.
 
-This file is licensed under the Apache 2.0 License [except as noted otherwise in the LICENSE file](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/blob/master/LICENSE).
+This file is licensed under the Apache 2.0 License [except as noted otherwise in the LICENSE file](https://github.com/SAP/vscode-mta-tools/blob/master/LICENSE).
