@@ -74,11 +74,26 @@ export class MtarDeployCommand {
   }
 
   private async execDeployCmd(): Promise<any> {
-    const options: vscode.ShellExecutionOptions = { cwd: homeDir };
-    const execution = new vscode.ShellExecution(
-      CF_COMMAND + " deploy " + this.path,
-      options
+    let command = CF_COMMAND + " deploy " + this.path;
+
+    const isChinaEnv = process.env.externalEntrypoint.includes(
+      "applicationstudio.vlab-sapcloudplatformdev.cn"
     );
+    if (isChinaEnv) {
+      const domain = _.replace(
+        process.env.CF_API_ENDPOINT,
+        "https://api.cf",
+        ""
+      );
+      command =
+        "export DEPLOY_SERVICE_URL=deploy-service.cfapps" +
+        domain +
+        "; " +
+        command;
+    }
+
+    const options: vscode.ShellExecutionOptions = { cwd: homeDir };
+    const execution = new vscode.ShellExecution(command, options);
     this.logger.info(`Deploy MTA Archive starts`);
     Utils.execTask(execution, messages.DEPLOY_MTAR);
   }
