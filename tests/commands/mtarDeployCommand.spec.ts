@@ -62,6 +62,10 @@ describe("Deploy mtar command unit tests", () => {
     execution
   );
 
+  process.env.externalEntrypoint = "https://not.china.domain";
+  process.env.CF_API_ENDPOINT =
+    "https://api.cf.canaryac.vlab-sapcloudplatformdev.cn";
+
   before(() => {
     sandbox = sinon.createSandbox();
     loggerWraperMock = sandbox.mock(loggerWraper);
@@ -119,6 +123,46 @@ describe("Deploy mtar command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(deployTask);
+    await mtarDeployCommand.mtarDeployCommand(selected);
+  });
+
+  it("mtarDeployCommand - Deploy mtar from china domain", async () => {
+    process.env.externalEntrypoint =
+      "https://china.test.applicationstudio.vlab-sapcloudplatformdev.cn";
+    const chinaExecution = new testVscode.ShellExecution(
+      "export DEPLOY_SERVICE_URL=deploy-service.cfapps.canaryac.vlab-sapcloudplatformdev.cn ;" +
+        CF_CMD +
+        " deploy " +
+        expectedPath,
+      { cwd: homeDir }
+    );
+    const chinaDeployTask = new testVscode.Task(
+      { type: "shell" },
+      testVscode.TaskScope.Workspace,
+      messages.DEPLOY_MTAR,
+      "MTA",
+      chinaExecution
+    );
+
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
+      .returns({ data: "multiapps " });
+    utilsMock
+      .expects("getConfigFileField")
+      .withExactArgs("OrganizationFields")
+      .atLeast(1)
+      .resolves({ Name: "org" });
+    utilsMock
+      .expects("getConfigFileField")
+      .withExactArgs("SpaceFields")
+      .atLeast(1)
+      .resolves({ Name: "space" });
+    tasksMock
+      .expects("executeTask")
+      .once()
+      .withExactArgs(chinaDeployTask);
     await mtarDeployCommand.mtarDeployCommand(selected);
   });
 
