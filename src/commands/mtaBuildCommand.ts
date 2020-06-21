@@ -64,8 +64,9 @@ export class MtaBuildCommand {
     const execution = new vscode.ShellExecution(
       MBT_COMMAND +
         " build -s " +
+        "'" +
         _.replace(this.path, "/mta.yaml", "") +
-        "; sleep 2;",
+        "'; sleep 2;",
       options
     );
     this.logger.info(`Build MTA starts`);
