@@ -1,3 +1,11 @@
+<a name="1.1.1"></a>
+
+## [1.1.1](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.1.0...v1.1.1) (2020-06-23)
+
+### Bug Fixes
+
+- fix space in project name ([#70](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues/70)) ([3552207](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/3552207))
+
 <a name="1.1.0"></a>
 
 # [1.1.0](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.0.0...v1.1.0) (2020-02-03)
