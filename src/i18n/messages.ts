@@ -19,5 +19,7 @@ export const messages = {
     "The MultiApps CF CLI Plugin is not installed in your environment. Go to https://github.com/cloudfoundry-incubator/multiapps-cli-plugin to install the plugin and try again.",
   yeoman_ui_title: "Add MTA Module",
   NO_MTA_FILE:
-    "Could not find an MTA project. Create an MTA project before creating a module."
+    "Could not find an MTA project. Create an MTA project before creating a module.",
+  INSTALL_MTA:
+    "The Cloud MTA Tool is not installed in your environment. Go to https://github.com/SAP/cloud-mta to install the tool and try again"
 };

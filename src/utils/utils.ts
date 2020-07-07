@@ -6,6 +6,8 @@ import * as fsextra from "fs-extra";
 import { parse } from "comment-json";
 import { spawn } from "child_process";
 
+const isWindows = os.platform().indexOf("win") > -1;
+
 export class Utils {
   public static async displayOptions(
     inputRequest: string,
@@ -73,6 +75,16 @@ export class Utils {
         this.resultOnExit(stdout, resolve, err.code);
       });
     });
+  }
+
+  public static getFilePaths(uriPaths: vscode.Uri[]): string[] {
+    const filePaths: string[] = [];
+    uriPaths.forEach(uriPath => {
+      let filePath = uriPath.path;
+      filePath = isWindows ? _.trimStart(filePath, "/") : filePath;
+      filePaths.push(filePath);
+    });
+    return filePaths;
   }
 
   private static resultOnExit(stdout: string, resolve: any, code: any) {
