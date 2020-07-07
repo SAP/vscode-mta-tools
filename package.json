@@ -2,7 +2,7 @@
   "name": "vscode-mta-tools",
   "displayName": "vscode-mta-tools",
   "description": "VS Code Multi-Target Application tools",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "SAPSE",
   "license": "Apache-2.0",
   "repository": {
@@ -20,7 +20,8 @@
   ],
   "activationEvents": [
     "onCommand:extension.mtaBuildCommand",
-    "onCommand:extension.mtarDeployCommand"
+    "onCommand:extension.mtarDeployCommand",
+    "onCommand:extension.addModuleCommand"
   ],
   "main": "./out/src/extension.js",
   "contributes": {
@@ -32,6 +33,10 @@
       {
         "command": "extension.mtarDeployCommand",
         "title": "Deploy MTA Archive"
+      },
+      {
+        "command": "extension.addModuleCommand",
+        "title": "Add MTA Module"
       }
     ],
     "menus": {
@@ -45,6 +50,11 @@
           "when": "resourceFilename =~ /.*.mtar/",
           "command": "extension.mtarDeployCommand",
           "group": "navigation@1"
+        },
+        {
+          "when": "resourceFilename == mta.yaml",
+          "command": "extension.addModuleCommand",
+          "group": "navigation@2"
         }
       ]
     },
