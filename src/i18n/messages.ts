@@ -1,5 +1,10 @@
 import * as _ from "lodash";
 
+const selectTemplateQuestionHint =
+  "Select the template that best fits the type of module you want to create";
+const selectMtaProjectQuestionHint =
+  "The module will be added to the MTA project you define in this wizard";
+
 export const messages = {
   ERROR_ACTIVATION_FAILED:
     "Extension activation failed due to Logger configuration failure:",
@@ -17,9 +22,15 @@ export const messages = {
     "The Cloud MTA Build Tool is not installed in your environment. Go to https://github.com/SAP/cloud-mta-build-tool to install the tool and try again",
   INSTALL_MTA_CF_CLI:
     "The MultiApps CF CLI Plugin is not installed in your environment. Go to https://github.com/cloudfoundry-incubator/multiapps-cli-plugin to install the plugin and try again.",
-  yeoman_ui_title: "Add MTA Module",
   NO_MTA_FILE:
     "Could not find an MTA project. Create an MTA project before creating a module.",
   INSTALL_MTA:
-    "The Cloud MTA Tool is not installed in your environment. Go to https://github.com/SAP/cloud-mta to install the tool and try again"
+    "The Cloud MTA Tool is not installed in your environment. Go to https://github.com/SAP/cloud-mta to install the tool and try again",
+  yeoman_ui_title: "New MTA Module From Template",
+  panel_title: "MTA Module From Template",
+  select_generator_name: "Select Module Template",
+  select_generator_question_message: "Templates",
+  select_generator_question_hint: selectTemplateQuestionHint,
+  select_generator_description: `${selectTemplateQuestionHint}.\n${selectMtaProjectQuestionHint}.`,
+  select_mtaFile_hint: "Path to the selected project's 'mta.yaml' file:"
 };

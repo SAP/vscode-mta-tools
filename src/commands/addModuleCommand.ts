@@ -36,6 +36,10 @@ export class AddModuleCommand {
         ? _.trimStart(this.mtaFilePath, "/")
         : this.mtaFilePath;
       this.logger.info(`The user selection file path: ${this.mtaFilePath}`);
+      // add mta.yaml path info to template description
+      messages.select_generator_description =
+        messages.select_generator_description +
+        `\n\n${messages.select_mtaFile_hint} ${this.mtaFilePath}`;
     } else {
       const mtaYamlFilesPaths = await vscode.workspace.findFiles(
         "**/mta.yaml",
