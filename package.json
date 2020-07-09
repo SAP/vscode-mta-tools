@@ -23,6 +23,9 @@
     "onCommand:extension.mtarDeployCommand",
     "onCommand:extension.addModuleCommand"
   ],
+  "extensionDependencies": [
+    "sapos.yeoman-ui"
+  ],
   "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
