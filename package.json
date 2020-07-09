@@ -36,7 +36,7 @@
       },
       {
         "command": "extension.addModuleCommand",
-        "title": "MTA: Create Module From Template"
+        "title": "Create Module From Template"
       }
     ],
     "menus": {
@@ -44,7 +44,7 @@
         {
           "when": "resourceFilename == mta.yaml",
           "command": "extension.mtaBuildCommand",
-          "group": "navigation@1"
+          "group": "navigation@2"
         },
         {
           "when": "resourceFilename =~ /.*.mtar/",
@@ -54,7 +54,7 @@
         {
           "when": "resourceFilename == mta.yaml",
           "command": "extension.addModuleCommand",
-          "group": "navigation@2"
+          "group": "navigation@1"
         }
       ]
     },
