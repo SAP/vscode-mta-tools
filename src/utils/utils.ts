@@ -7,8 +7,6 @@ import { parse } from "comment-json";
 import { spawn } from "child_process";
 import { IChildLogger } from "@vscode-logging/logger";
 
-export const IS_WINDOWS: boolean = os.platform().indexOf("win") > -1;
-
 export class Utils {
   public static async displayOptions(
     inputRequest: string,
@@ -80,8 +78,12 @@ export class Utils {
 
   public static getFilePaths(uriPaths: vscode.Uri[]): string[] {
     return _.map(uriPaths, uri => {
-      return IS_WINDOWS ? _.trimStart(uri.path, "/") : uri.path;
+      return Utils.isWindows() ? _.trimStart(uri.path, "/") : uri.path;
     });
+  }
+
+  public static isWindows(): boolean {
+    return os.platform().indexOf("win") > -1;
   }
 
   public static async isCliToolInstalled(

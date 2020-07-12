@@ -104,6 +104,50 @@ describe("Add mta module command unit tests", () => {
     await addModuleCommand.addModuleCommand(selected);
   });
 
+  it("addModuleCommand - add MTA module from context menu in Windows", async () => {
+    testData.data = {
+      mtaFilePath: selected.path,
+      mtaFilesPathsList: undefined
+    };
+    utilsMock
+      .expects("isWindows")
+      .once()
+      .returns(true);
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(MTA_CMD, ["-v"], { cwd: homeDir })
+      .returns("v1.2.3");
+    commandsMock
+      .expects("executeCommand")
+      .once()
+      .withExactArgs("loadYeomanUI", testData)
+      .returns(Promise.resolve());
+    await addModuleCommand.addModuleCommand(selected);
+  });
+
+  it("addModuleCommand - add MTA module from context menu not in Windows", async () => {
+    testData.data = {
+      mtaFilePath: selected.path,
+      mtaFilesPathsList: undefined
+    };
+    utilsMock
+      .expects("isWindows")
+      .once()
+      .returns(false);
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(MTA_CMD, ["-v"], { cwd: homeDir })
+      .returns("v1.2.3");
+    commandsMock
+      .expects("executeCommand")
+      .once()
+      .withExactArgs("loadYeomanUI", testData)
+      .returns(Promise.resolve());
+    await addModuleCommand.addModuleCommand(selected);
+  });
+
   it("addModuleCommand - add MTA module from command when no mta.yaml file in the project", async () => {
     workspaceMock.expects("findFiles").returns(Promise.resolve([]));
     utilsMock

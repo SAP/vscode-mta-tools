@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as vscode from "vscode"; // NOSONAR
-import { Utils, IS_WINDOWS } from "../utils/utils";
+import { Utils } from "../utils/utils";
 import { SelectionItem } from "../utils/selectionItem";
 import { messages } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
@@ -56,7 +56,7 @@ export class MtaBuildCommand {
       }
     }
 
-    this.path = IS_WINDOWS ? _.trimStart(this.path, "/") : this.path;
+    this.path = Utils.isWindows() ? _.trimStart(this.path, "/") : this.path;
 
     const options: vscode.ShellExecutionOptions = { cwd: homeDir };
     const execution = new vscode.ShellExecution(

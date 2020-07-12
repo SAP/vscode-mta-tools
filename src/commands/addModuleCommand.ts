@@ -3,7 +3,7 @@ import * as vscode from "vscode"; // NOSONAR
 import { messages } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
-import { Utils, IS_WINDOWS } from "../utils/utils";
+import { Utils } from "../utils/utils";
 
 interface IMtaData {
   mtaFilePath: string;
@@ -33,7 +33,7 @@ export class AddModuleCommand {
 
     if (selected) {
       this.mtaFilePath = selected.path;
-      this.mtaFilePath = IS_WINDOWS
+      this.mtaFilePath = Utils.isWindows()
         ? _.trimStart(this.mtaFilePath, "/")
         : this.mtaFilePath;
       this.logger.info(`The user selection file path: ${this.mtaFilePath}`);
