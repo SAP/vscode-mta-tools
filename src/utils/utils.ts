@@ -5,8 +5,9 @@ import * as path from "path";
 import * as fsextra from "fs-extra";
 import { parse } from "comment-json";
 import { spawn } from "child_process";
+import { IChildLogger } from "@vscode-logging/logger";
 
-const isWindows = os.platform().indexOf("win") > -1;
+export const IS_WINDOWS: boolean = os.platform().indexOf("win") > -1;
 
 export class Utils {
   public static async displayOptions(
@@ -78,13 +79,26 @@ export class Utils {
   }
 
   public static getFilePaths(uriPaths: vscode.Uri[]): string[] {
-    const filePaths: string[] = [];
-    uriPaths.forEach(uriPath => {
-      let filePath = uriPath.path;
-      filePath = isWindows ? _.trimStart(filePath, "/") : filePath;
-      filePaths.push(filePath);
+    return _.map(uriPaths, uri => {
+      return IS_WINDOWS ? _.trimStart(uri.path, "/") : uri.path;
     });
-    return filePaths;
+  }
+
+  public static async isCliToolInstalled(
+    cliName: string,
+    errMessage: string,
+    logger: IChildLogger
+  ): Promise<boolean> {
+    const homeDir = os.homedir();
+    const response = await Utils.execCommand(cliName, ["-v"], {
+      cwd: homeDir
+    });
+    if (response.exitCode === "ENOENT") {
+      logger.error(`The ${cliName} Tool is not installed in the environment`);
+      vscode.window.showErrorMessage(errMessage);
+      return false;
+    }
+    return true;
   }
 
   private static resultOnExit(stdout: string, resolve: any, code: any) {

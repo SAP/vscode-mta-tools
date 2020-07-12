@@ -5,7 +5,6 @@ import { AddModuleCommand } from "../../src/commands/addModuleCommand";
 mockVscode("src/utils/utils");
 import { Utils } from "../../src/utils/utils";
 import { messages } from "../../src/i18n/messages";
-import { SelectionItem } from "../../src/utils/selectionItem";
 import * as loggerWraper from "../../src/logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
 
@@ -16,7 +15,6 @@ describe("Add mta module command unit tests", () => {
   let windowMock: any;
   let workspaceMock: any;
   let commandsMock: any;
-  // let tasksMock: any;
   let errorSpy: any;
   let infoSpy: any;
   let loggerWraperMock: any;
@@ -46,7 +44,6 @@ describe("Add mta module command unit tests", () => {
   };
 
   const MTA_CMD = "mta";
-  const expectedPath = "mtaProject";
   const homeDir = require("os").homedir();
 
   const testData = {
@@ -75,7 +72,6 @@ describe("Add mta module command unit tests", () => {
     windowMock = sandbox.mock(testVscode.window);
     workspaceMock = sandbox.mock(testVscode.workspace);
     commandsMock = sandbox.mock(testVscode.commands);
-    // tasksMock = sandbox.mock(testVscode.tasks);
     errorSpy = sandbox.spy(loggerImpl, "error");
     infoSpy = sandbox.spy(loggerImpl, "info");
   });

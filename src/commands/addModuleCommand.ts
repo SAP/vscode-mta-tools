@@ -1,14 +1,16 @@
 import * as _ from "lodash";
 import * as vscode from "vscode"; // NOSONAR
-import { platform } from "os";
 import { messages } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
-import { Utils } from "../utils/utils";
+import { Utils, IS_WINDOWS } from "../utils/utils";
 
-const isWindows = platform().indexOf("win") > -1;
+interface IMtaData {
+  mtaFilePath: string;
+  mtaFilesPathsList: string;
+}
+
 const CLOUD_MTA_COMMAND = "mta";
-const homeDir = require("os").homedir();
 
 export class AddModuleCommand {
   private mtaFilePath: string;
@@ -19,20 +21,19 @@ export class AddModuleCommand {
 
   public async addModuleCommand(selected: any): Promise<void> {
     // check that cloud-mta is installed in the environment
-    const response = await Utils.execCommand(CLOUD_MTA_COMMAND, ["-v"], {
-      cwd: homeDir
-    });
-    if (response.exitCode === "ENOENT") {
-      this.logger.error(
-        `The Cloud MTA Tool is not installed in the environment`
-      );
-      vscode.window.showErrorMessage(messages.INSTALL_MTA);
+    if (
+      !(await Utils.isCliToolInstalled(
+        CLOUD_MTA_COMMAND,
+        messages.INSTALL_MTA,
+        this.logger
+      ))
+    ) {
       return;
     }
 
     if (selected) {
       this.mtaFilePath = selected.path;
-      this.mtaFilePath = isWindows
+      this.mtaFilePath = IS_WINDOWS
         ? _.trimStart(this.mtaFilePath, "/")
         : this.mtaFilePath;
       this.logger.info(`The user selection file path: ${this.mtaFilePath}`);
@@ -62,7 +63,7 @@ export class AddModuleCommand {
       }
     }
 
-    const mtaData: any = {
+    const mtaData: IMtaData = {
       mtaFilePath: this.mtaFilePath,
       mtaFilesPathsList: this.mtaFilesPathsList
     };

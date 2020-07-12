@@ -1,14 +1,12 @@
 import * as _ from "lodash";
 import * as vscode from "vscode"; // NOSONAR
-import { platform } from "os";
-import { Utils } from "../utils/utils";
+import { Utils, IS_WINDOWS } from "../utils/utils";
 import { SelectionItem } from "../utils/selectionItem";
 import { messages } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
 
 const MBT_COMMAND = "mbt";
-const isWindows = platform().indexOf("win") > -1;
 const homeDir = require("os").homedir();
 
 export class MtaBuildCommand {
@@ -18,14 +16,14 @@ export class MtaBuildCommand {
   private readonly logger: IChildLogger = getClassLogger(MtaBuildCommand.name);
 
   public async mtaBuildCommand(selected: any): Promise<void> {
-    const response = await Utils.execCommand(MBT_COMMAND, ["-v"], {
-      cwd: homeDir
-    });
-    if (response.exitCode === "ENOENT") {
-      this.logger.error(
-        `The Cloud MTA Build Tool is not installed in the environment`
-      );
-      vscode.window.showErrorMessage(messages.INSTALL_MBT);
+    // check that mbt is installed in the environment
+    if (
+      !(await Utils.isCliToolInstalled(
+        MBT_COMMAND,
+        messages.INSTALL_MBT,
+        this.logger
+      ))
+    ) {
       return;
     }
 
@@ -58,7 +56,7 @@ export class MtaBuildCommand {
       }
     }
 
-    this.path = isWindows ? _.trimStart(this.path, "/") : this.path;
+    this.path = IS_WINDOWS ? _.trimStart(this.path, "/") : this.path;
 
     const options: vscode.ShellExecutionOptions = { cwd: homeDir };
     const execution = new vscode.ShellExecution(
