@@ -19,7 +19,7 @@ export class AddModuleCommand {
   // Logger
   private readonly logger: IChildLogger = getClassLogger(AddModuleCommand.name);
 
-  public async addModuleCommand(selected: any): Promise<void> {
+  public async addModuleCommand(selected: vscode.Uri): Promise<void> {
     // check that cloud-mta is installed in the environment
     if (
       !(await Utils.isCliToolInstalled(

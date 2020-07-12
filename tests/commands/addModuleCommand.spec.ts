@@ -39,7 +39,7 @@ describe("Add mta module command unit tests", () => {
     }
   };
 
-  const selected = {
+  const selected: any = {
     path: "mtaProject/mta.yaml"
   };
 
@@ -145,5 +145,27 @@ describe("Add mta module command unit tests", () => {
     commandsMock.expects("executeCommand").never();
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MTA);
     await addModuleCommand.addModuleCommand(selected);
+  });
+
+  it("addModuleCommand - add MTA module with no loadYeomanUi command", async () => {
+    testData.data = {
+      mtaFilePath: undefined,
+      mtaFilesPathsList: `${selected.path},mtaProject2/mta.yaml`
+    };
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(MTA_CMD, ["-v"], { cwd: homeDir })
+      .returns("v1.2.3");
+    workspaceMock
+      .expects("findFiles")
+      .returns(Promise.resolve([selected, { path: "mtaProject2/mta.yaml" }]));
+    commandsMock
+      .expects("executeCommand")
+      .once()
+      .withExactArgs("loadYeomanUI", testData)
+      .returns(Promise.reject("error"));
+    windowMock.expects("showErrorMessage").once();
+    await addModuleCommand.addModuleCommand(undefined);
   });
 });
