@@ -15,7 +15,7 @@ export class MtaBuildCommand {
   // Logger
   private readonly logger: IChildLogger = getClassLogger(MtaBuildCommand.name);
 
-  public async mtaBuildCommand(selected: any): Promise<void> {
+  public async mtaBuildCommand(selected: vscode.Uri): Promise<void> {
     // check that mbt is installed in the environment
     if (
       !(await Utils.isCliToolInstalled(

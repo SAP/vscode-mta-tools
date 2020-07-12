@@ -18,7 +18,7 @@ export class MtarDeployCommand {
     MtarDeployCommand.name
   );
 
-  public async mtarDeployCommand(selected: any): Promise<void> {
+  public async mtarDeployCommand(selected: vscode.Uri): Promise<void> {
     const response = await Utils.execCommand(
       CF_COMMAND,
       ["plugins", "--checksum"],
