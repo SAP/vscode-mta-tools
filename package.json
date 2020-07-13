@@ -20,7 +20,11 @@
   ],
   "activationEvents": [
     "onCommand:extension.mtaBuildCommand",
-    "onCommand:extension.mtarDeployCommand"
+    "onCommand:extension.mtarDeployCommand",
+    "onCommand:extension.addModuleCommand"
+  ],
+  "extensionDependencies": [
+    "sapos.yeoman-ui"
   ],
   "main": "./out/src/extension.js",
   "contributes": {
@@ -32,6 +36,10 @@
       {
         "command": "extension.mtarDeployCommand",
         "title": "Deploy MTA Archive"
+      },
+      {
+        "command": "extension.addModuleCommand",
+        "title": "Create Module From Template"
       }
     ],
     "menus": {
@@ -39,11 +47,16 @@
         {
           "when": "resourceFilename == mta.yaml",
           "command": "extension.mtaBuildCommand",
-          "group": "navigation@1"
+          "group": "navigation@2"
         },
         {
           "when": "resourceFilename =~ /.*.mtar/",
           "command": "extension.mtarDeployCommand",
+          "group": "navigation@1"
+        },
+        {
+          "when": "resourceFilename == mta.yaml",
+          "command": "extension.addModuleCommand",
           "group": "navigation@1"
         }
       ]

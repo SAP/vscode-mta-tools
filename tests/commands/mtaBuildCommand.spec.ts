@@ -41,7 +41,7 @@ describe("MTA build command unit tests", () => {
     }
   };
 
-  const selected = {
+  const selected: any = {
     path: "mtaProject/mta.yaml"
   };
 
