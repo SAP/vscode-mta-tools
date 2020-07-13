@@ -6,14 +6,6 @@
 
 - Add command for opening 'add module' wizard ([824baf4](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/824baf4))
 
-<a name="1.2.0"></a>
-
-# [1.2.0](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.1.1...v1.2.0) (2020-07-13)
-
-### Features
-
-- Add command for opening 'add module' wizard ([824baf4](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/824baf4))
-
 <a name="1.1.1"></a>
 
 ## [1.1.1](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.1.0...v1.1.1) (2020-06-23)
