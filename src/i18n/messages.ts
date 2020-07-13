@@ -25,7 +25,10 @@ export const messages = {
   NO_MTA_FILE:
     "Could not find an MTA project. Create an MTA project before creating a module.",
   INSTALL_MTA:
-    "The Cloud MTA Tool is not installed in your environment. Go to https://github.com/SAP/cloud-mta to install the tool and try again",
+    "The Cloud MTA Tool is not installed in your environment. Go to https://github.com/SAP/cloud-mta to install the tool and try again"
+};
+
+export const messagesYeoman = {
   yeoman_ui_title: "New MTA Module From Template",
   panel_title: "MTA Module From Template",
   select_generator_name: "Select Module Template",

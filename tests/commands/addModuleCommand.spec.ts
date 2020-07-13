@@ -4,7 +4,7 @@ mockVscode("src/commands/addModuleCommand");
 import { AddModuleCommand } from "../../src/commands/addModuleCommand";
 mockVscode("src/utils/utils");
 import { Utils } from "../../src/utils/utils";
-import { messages } from "../../src/i18n/messages";
+import { messages, messagesYeoman } from "../../src/i18n/messages";
 import * as loggerWraper from "../../src/logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
 
@@ -48,7 +48,7 @@ describe("Add mta module command unit tests", () => {
 
   const testData = {
     filter: { types: ["mta.module"] },
-    messages,
+    messages: messagesYeoman,
     data: {}
   };
 

@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as vscode from "vscode"; // NOSONAR
-import { messages } from "../i18n/messages";
+import { messages, messagesYeoman } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
 import { Utils } from "../utils/utils";
@@ -11,6 +11,7 @@ interface IMtaData {
 }
 
 const CLOUD_MTA_COMMAND = "mta";
+const ORIGINAL_DESCRIPTION = messagesYeoman.select_generator_description;
 
 export class AddModuleCommand {
   private mtaFilePath: string;
@@ -38,10 +39,11 @@ export class AddModuleCommand {
         : this.mtaFilePath;
       this.logger.info(`The user selection file path: ${this.mtaFilePath}`);
       // add mta.yaml path info to template description
-      messages.select_generator_description =
-        messages.select_generator_description +
-        `\n\n${messages.select_mtaFile_hint} ${this.mtaFilePath}`;
+      messagesYeoman.select_generator_description =
+        ORIGINAL_DESCRIPTION +
+        `\n\n${messagesYeoman.select_mtaFile_hint} ${this.mtaFilePath}`;
     } else {
+      messagesYeoman.select_generator_description = ORIGINAL_DESCRIPTION;
       const mtaYamlFilesPaths = await vscode.workspace.findFiles(
         "**/mta.yaml",
         "**/node_modules/**"
@@ -71,7 +73,7 @@ export class AddModuleCommand {
     try {
       await vscode.commands.executeCommand("loadYeomanUI", {
         filter: { types: ["mta.module"] },
-        messages,
+        messages: messagesYeoman,
         data: mtaData
       });
     } catch (err) {
