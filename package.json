@@ -39,7 +39,7 @@
       },
       {
         "command": "extension.addModuleCommand",
-        "title": "Create Module From Template"
+        "title": "Create MTA Module From Template"
       }
     ],
     "menus": {
