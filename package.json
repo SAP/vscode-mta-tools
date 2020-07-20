@@ -104,7 +104,7 @@
     "coverage:check": "nyc mocha -p tsconfig.json --opts ./mocha.opts"
   },
   "dependencies": {
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "comment-json": "2.1.0",
     "fs-extra": "7.0.1",
     "@vscode-logging/logger": "~0.1.1"
