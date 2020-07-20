@@ -1,6 +1,5 @@
 import * as _ from "lodash";
 import * as vscode from "vscode"; // NOSONAR
-import { platform } from "os";
 import { Utils } from "../utils/utils";
 import { SelectionItem } from "../utils/selectionItem";
 import { messages } from "../i18n/messages";
@@ -9,7 +8,6 @@ import { IChildLogger } from "@vscode-logging/logger";
 
 const CF_COMMAND = "cf";
 const CF_LOGIN_COMMAND = "cf.login";
-const isWindows = platform().indexOf("win") > -1;
 const homeDir = require("os").homedir();
 
 export class MtarDeployCommand {
@@ -20,7 +18,7 @@ export class MtarDeployCommand {
     MtarDeployCommand.name
   );
 
-  public async mtarDeployCommand(selected: any): Promise<void> {
+  public async mtarDeployCommand(selected: vscode.Uri): Promise<void> {
     const response = await Utils.execCommand(
       CF_COMMAND,
       ["plugins", "--checksum"],
@@ -60,7 +58,7 @@ export class MtarDeployCommand {
         this.path = userSelection.label;
       }
     }
-    this.path = isWindows ? _.trimStart(this.path, "/") : this.path;
+    this.path = Utils.isWindows() ? _.trimStart(this.path, "/") : this.path;
 
     if (await this.isLoggedInToCF()) {
       await this.execDeployCmd();

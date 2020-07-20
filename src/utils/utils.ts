@@ -5,6 +5,7 @@ import * as path from "path";
 import * as fsextra from "fs-extra";
 import { parse } from "comment-json";
 import { spawn } from "child_process";
+import { IChildLogger } from "@vscode-logging/logger";
 
 export class Utils {
   public static async displayOptions(
@@ -73,6 +74,33 @@ export class Utils {
         this.resultOnExit(stdout, resolve, err.code);
       });
     });
+  }
+
+  public static getFilePaths(uriPaths: vscode.Uri[]): string[] {
+    return _.map(uriPaths, uri => {
+      return Utils.isWindows() ? _.trimStart(uri.path, "/") : uri.path;
+    });
+  }
+
+  public static isWindows(): boolean {
+    return os.platform().indexOf("win") > -1;
+  }
+
+  public static async isCliToolInstalled(
+    cliName: string,
+    errMessage: string,
+    logger: IChildLogger
+  ): Promise<boolean> {
+    const homeDir = os.homedir();
+    const response = await Utils.execCommand(cliName, ["-v"], {
+      cwd: homeDir
+    });
+    if (response.exitCode === "ENOENT") {
+      logger.error(`The ${cliName} Tool is not installed in the environment`);
+      vscode.window.showErrorMessage(errMessage);
+      return false;
+    }
+    return true;
   }
 
   private static resultOnExit(stdout: string, resolve: any, code: any) {
