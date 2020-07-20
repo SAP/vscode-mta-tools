@@ -1,6 +1,7 @@
 import * as vscode from "vscode"; // NOSONAR
 import { MtaBuildCommand } from "./commands/mtaBuildCommand";
 import { MtarDeployCommand } from "./commands/mtarDeployCommand";
+import { AddModuleCommand } from "./commands/addModuleCommand";
 import { messages } from "./i18n/messages";
 import { createExtensionLoggerAndSubscribeToLogSettingsChanges } from "./logger/logger-wrapper";
 
@@ -12,6 +13,11 @@ export function mtaBuildCommand(selected: vscode.Uri) {
 export function mtarDeployCommand(selected: vscode.Uri) {
   const command: MtarDeployCommand = new MtarDeployCommand();
   return command.mtarDeployCommand(selected);
+}
+
+export function addModuleCommand(selected: vscode.Uri) {
+  const command: AddModuleCommand = new AddModuleCommand();
+  return command.addModuleCommand(selected);
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -32,6 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(
       "extension.mtarDeployCommand",
       mtarDeployCommand
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "extension.addModuleCommand",
+      addModuleCommand
     )
   );
 }
