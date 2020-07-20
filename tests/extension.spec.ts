@@ -7,7 +7,12 @@ import { mockVscode, testVscode } from "./mockUtil";
 mockVscode("src/extension");
 mockVscode("src/utils/utils");
 mockVscode("src/commands/mtaBuildCommand");
-import { activate, mtaBuildCommand, mtarDeployCommand } from "../src/extension";
+import {
+  activate,
+  mtaBuildCommand,
+  mtarDeployCommand,
+  addModuleCommand
+} from "../src/extension";
 import * as configSettings from "../src/logger/settings";
 import {
   getLogger,
@@ -65,8 +70,11 @@ describe("Extension unit tests", () => {
     commandsMock
       .expects("registerCommand")
       .withExactArgs("extension.mtarDeployCommand", mtarDeployCommand);
+    commandsMock
+      .expects("registerCommand")
+      .withExactArgs("extension.addModuleCommand", addModuleCommand);
     activate(testContext);
-    expect(testContext.subscriptions).to.have.lengthOf(4);
+    expect(testContext.subscriptions).to.have.lengthOf(5);
   });
 
   it("mtaBuildCommand", async () => {
@@ -87,5 +95,14 @@ describe("Extension unit tests", () => {
       .expects("showErrorMessage")
       .withExactArgs(messages.INSTALL_MTA_CF_CLI);
     await mtarDeployCommand(undefined);
+  });
+
+  it("addModuleCommand", async () => {
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .returns({ exitCode: "ENOENT" });
+    windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MTA);
+    await addModuleCommand(undefined);
   });
 });

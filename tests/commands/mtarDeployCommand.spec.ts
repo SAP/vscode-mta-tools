@@ -42,7 +42,7 @@ describe("Deploy mtar command unit tests", () => {
     }
   };
 
-  const selected = {
+  const selected: any = {
     path: "mta_archives/mtaProject_0.0.1.mtar"
   };
   const CF_CMD = "cf";
