@@ -1,3 +1,11 @@
+<a name="1.3.2"></a>
+
+## [1.3.2](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.1...v1.3.2) (2020-08-03)
+
+### Bug Fixes
+
+- update module generation message ([#76](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues/76)) ([8d63f62](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/8d63f62))
+
 <a name="1.3.1"></a>
 
 ## [1.3.1](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.1.1...v1.3.1) (2020-07-15)
