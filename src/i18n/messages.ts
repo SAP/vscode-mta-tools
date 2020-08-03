@@ -35,5 +35,6 @@ export const messagesYeoman = {
   select_generator_question_message: "Templates",
   select_generator_question_hint: selectTemplateQuestionHint,
   select_generator_description: `${selectTemplateQuestionHint}.\n${selectMtaProjectQuestionHint}.`,
-  select_mtaFile_hint: "Path to the selected project's 'mta.yaml' file:"
+  select_mtaFile_hint: "Path to the selected project's 'mta.yaml' file:",
+  artifact_generated: "The module has been created."
 };
