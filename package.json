@@ -30,7 +30,7 @@
   "contributes": {
     "jsonValidation": [
       {
-        "fileMatch": ["mta.yaml", "mta.yml"],
+        "fileMatch": ["mta.yaml", "mta.yml"], 
         "url": "https://json.schemastore.org/mta"
       },
       {
