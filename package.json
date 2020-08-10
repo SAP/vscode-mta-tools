@@ -2,7 +2,7 @@
   "name": "vscode-mta-tools",
   "displayName": "vscode-mta-tools",
   "description": "VS Code Multi-Target Application tools",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "publisher": "SAPSE",
   "license": "Apache-2.0",
   "repository": {
@@ -30,15 +30,23 @@
   "contributes": {
     "jsonValidation": [
       {
-        "fileMatch": ["mta.yaml", "mta.yml"], 
+        "fileMatch": [
+          "mta.yaml",
+          "mta.yml"
+        ],
         "url": "https://json.schemastore.org/mta"
       },
       {
-        "fileMatch": ["mtad.yaml", "mtad.yml"],
+        "fileMatch": [
+          "mtad.yaml",
+          "mtad.yml"
+        ],
         "url": "https://json.schemastore.org/mtad"
       },
       {
-        "fileMatch": ["*.mtaext"],
+        "fileMatch": [
+          "*.mtaext"
+        ],
         "url": "https://json.schemastore.org/mtaext"
       }
     ],

@@ -1,3 +1,7 @@
+<a name="1.3.3"></a>
+
+## [1.3.3](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.2...v1.3.3) (2020-08-10)
+
 <a name="1.3.2"></a>
 
 ## [1.3.2](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.1...v1.3.2) (2020-08-03)
