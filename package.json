@@ -28,6 +28,20 @@
   ],
   "main": "./out/src/extension.js",
   "contributes": {
+    "jsonValidation": [
+      {
+        "fileMatch": ["mta.yaml", "mta.yml"],
+        "url": "https://json.schemastore.org/mta"
+      },
+      {
+        "fileMatch": ["mtad.yaml", "mtad.yml"],
+        "url": "https://json.schemastore.org/mtad"
+      },
+      {
+        "fileMatch": ["*.mtaext"],
+        "url": "https://json.schemastore.org/mtaext"
+      }
+    ],
     "commands": [
       {
         "command": "extension.mtaBuildCommand",
