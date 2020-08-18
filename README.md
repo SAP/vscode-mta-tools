@@ -35,4 +35,3 @@ See [CONTRIBUTING.md](https://github.com/SAP/vscode-mta-tools/blob/master/.githu
 ### Support
 
 Please report [here](https://github.com/SAP/vscode-mta-tools/issues) on any issue.
-
