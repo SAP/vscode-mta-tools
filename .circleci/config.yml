@@ -43,7 +43,7 @@ jobs:
           command: |
             pip3 install --user reuse
             ~/.local/bin/reuse lint
-      
+
   deploy:
     docker:
       - image: circleci/golang:1.13
