@@ -160,7 +160,8 @@
     "conventional-changelog-cli": "^2.0.27",
     "cz-conventional-changelog": "^3.0.2",
     "@commitlint/cli": "^8.2.0",
-    "@commitlint/config-conventional": "^8.2.0"
+    "@commitlint/config-conventional": "^8.2.0",
+    "@sap/swa-for-sapbas-vsx": "1.0.4"
   },
   "nyc": {
     "lines": 90,

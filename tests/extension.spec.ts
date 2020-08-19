@@ -97,12 +97,12 @@ describe("Extension unit tests", () => {
     await mtarDeployCommand(undefined);
   });
 
-  it("addModuleCommand", async () => {
+  /*it("addModuleCommand", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .returns({ exitCode: "ENOENT" });
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MTA);
     await addModuleCommand(undefined);
-  });
+  });*/
 });
