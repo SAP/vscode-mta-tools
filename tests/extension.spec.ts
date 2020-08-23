@@ -83,7 +83,7 @@ describe("Extension unit tests", () => {
       .once()
       .returns({ exitCode: "ENOENT" });
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MBT);
-    await mtaBuildCommand(undefined);
+    await mtaBuildCommand(undefined, undefined);
   });
 
   it("mtarDeployCommand", async () => {
@@ -94,15 +94,15 @@ describe("Extension unit tests", () => {
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.INSTALL_MTA_CF_CLI);
-    await mtarDeployCommand(undefined);
+    await mtarDeployCommand(undefined, undefined);
   });
 
-  /*it("addModuleCommand", async () => {
+  it("addModuleCommand", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .returns({ exitCode: "ENOENT" });
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MTA);
-    await addModuleCommand(undefined);
-  });*/
+    await addModuleCommand(undefined, undefined);
+  });
 });

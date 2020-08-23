@@ -25,7 +25,12 @@ export const messages = {
   NO_MTA_FILE:
     "Could not find an MTA project. Create an MTA project before creating a module.",
   INSTALL_MTA:
-    "The Cloud MTA Tool is not installed in your environment. Go to https://github.com/SAP/cloud-mta to install the tool and try again"
+    "The Cloud MTA Tool is not installed in your environment. Go to https://github.com/SAP/cloud-mta to install the tool and try again",
+  EVENT_TYPE_ADD_MODULE: "Add MTA Module",
+  EVENT_TYPE_BUILD_MTA: "Build MTA",
+  EVENT_TYPE_DEPLOY_MTAR: "Deploy mtar",
+  CUSTOM_EVENT_CONTEXT_MENU: "Context Menu",
+  CUSTOM_EVENT_COMMAND_PALETTE: "Command Palette"
 };
 
 export const messagesYeoman = {

@@ -38,7 +38,9 @@ export class AddModuleCommand {
 
     if (selected) {
       // Command called from context menu, add usage analytics
-      swa.track("Open Wizard", ["From Context Menu"]);
+      swa.track(messages.EVENT_TYPE_ADD_MODULE, [
+        messages.CUSTOM_EVENT_CONTEXT_MENU
+      ]);
       this.mtaFilePath = selected.path;
       this.mtaFilePath = Utils.isWindows()
         ? _.trimStart(this.mtaFilePath, "/")
@@ -50,7 +52,9 @@ export class AddModuleCommand {
         `\n\n${messagesYeoman.select_mtaFile_hint} ${this.mtaFilePath}`;
     } else {
       // Command is called from command pallet, add usage analytics
-      swa.track("Open Wizard", ["From Command Pallet"]);
+      swa.track(messages.EVENT_TYPE_ADD_MODULE, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ]);
       messagesYeoman.select_generator_description = ORIGINAL_DESCRIPTION;
       const mtaYamlFilesPaths = await vscode.workspace.findFiles(
         "**/mta.yaml",

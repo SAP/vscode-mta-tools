@@ -8,6 +8,7 @@ import { messages } from "../../src/i18n/messages";
 import { SelectionItem } from "../../src/utils/selectionItem";
 import * as loggerWraper from "../../src/logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
+import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
 describe("MTA build command unit tests", () => {
   let sandbox: any;
@@ -20,6 +21,8 @@ describe("MTA build command unit tests", () => {
   let errorSpy: any;
   let infoSpy: any;
   let loggerWraperMock: any;
+  let swa: SWATracker;
+  let swaMock: any;
   const loggerImpl: IChildLogger = {
     fatal: () => {
       "fatal";
@@ -75,6 +78,7 @@ describe("MTA build command unit tests", () => {
 
   after(() => {
     loggerWraperMock.verify();
+    swaMock.verify();
     sandbox = sinon.restore();
   });
 
@@ -87,6 +91,8 @@ describe("MTA build command unit tests", () => {
     tasksMock = sandbox.mock(testVscode.tasks);
     errorSpy = sandbox.spy(loggerImpl, "error");
     infoSpy = sandbox.spy(loggerImpl, "info");
+    swa = new SWATracker("", "");
+    swaMock = sandbox.mock(swa);
   });
 
   afterEach(() => {
@@ -97,6 +103,7 @@ describe("MTA build command unit tests", () => {
     tasksMock.verify();
     errorSpy.restore();
     infoSpy.restore();
+    swaMock.verify();
   });
 
   it("mtaBuildCommand - Build MTA from context menu", async () => {
@@ -109,7 +116,14 @@ describe("MTA build command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(buildTask);
-    await mtaBuildCommand.mtaBuildCommand(selected);
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
+        messages.CUSTOM_EVENT_CONTEXT_MENU
+      ])
+      .returns();
+    await mtaBuildCommand.mtaBuildCommand(selected, swa);
   });
 
   it("mtaBuildCommand - Build MTA from command when no mta.yaml file in the project", async () => {
@@ -122,7 +136,14 @@ describe("MTA build command unit tests", () => {
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.NO_PROJECT_DESCRIPTOR);
-    await mtaBuildCommand.mtaBuildCommand(undefined);
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
+    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
   });
 
   it("mtaBuildCommand - Build MTA from command with only one mta.yaml file in the project", async () => {
@@ -136,7 +157,14 @@ describe("MTA build command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(buildTask);
-    await mtaBuildCommand.mtaBuildCommand(undefined);
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
+    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
   });
 
   it("mtaBuildCommand - Build MTA from command with several mta.yaml files in the project", async () => {
@@ -160,7 +188,14 @@ describe("MTA build command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(buildTask);
-    await mtaBuildCommand.mtaBuildCommand(undefined);
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
+    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
   });
 
   it("mtaBuildCommand - Build MTA with no mbt installed", async () => {
@@ -169,8 +204,9 @@ describe("MTA build command unit tests", () => {
       .once()
       .withExactArgs(MBT_CMD, ["-v"], { cwd: homeDir })
       .returns({ exitCode: "ENOENT" });
+    swaMock.expects("track").never();
     tasksMock.expects("executeTask").never();
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MBT);
-    await mtaBuildCommand.mtaBuildCommand(selected);
+    await mtaBuildCommand.mtaBuildCommand(selected, swa);
   });
 });

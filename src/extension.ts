@@ -6,14 +6,14 @@ import { messages } from "./i18n/messages";
 import { createExtensionLoggerAndSubscribeToLogSettingsChanges } from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
-export function mtaBuildCommand(selected: vscode.Uri) {
+export function mtaBuildCommand(selected: vscode.Uri, swa: SWATracker) {
   const command: MtaBuildCommand = new MtaBuildCommand();
-  return command.mtaBuildCommand(selected);
+  return command.mtaBuildCommand(selected, swa);
 }
 
-export function mtarDeployCommand(selected: vscode.Uri) {
+export function mtarDeployCommand(selected: vscode.Uri, swa: SWATracker) {
   const command: MtarDeployCommand = new MtarDeployCommand();
-  return command.mtarDeployCommand(selected);
+  return command.mtarDeployCommand(selected, swa);
 }
 
 export function addModuleCommand(selected: vscode.Uri, swa: SWATracker) {
@@ -38,15 +38,13 @@ export function activate(context: vscode.ExtensionContext) {
   ); // Todo, where to add console.log?
 
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "extension.mtaBuildCommand",
-      mtaBuildCommand
+    vscode.commands.registerCommand("extension.mtaBuildCommand", selected =>
+      mtaBuildCommand(selected, swa)
     )
   );
   context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "extension.mtarDeployCommand",
-      mtarDeployCommand
+    vscode.commands.registerCommand("extension.mtarDeployCommand", selected =>
+      mtarDeployCommand(selected, swa)
     )
   );
   context.subscriptions.push(
