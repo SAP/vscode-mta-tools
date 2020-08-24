@@ -29,12 +29,31 @@ describe("Extension unit tests", () => {
   let utilsMock: any;
   let windowMock: any;
   let configSettingsMock: any;
+  let testContext: any;
 
   before(() => {
     sandbox = sinon.createSandbox();
+
+    configSettingsMock = sandbox.mock(configSettings);
+
+    testContext = {
+      subscriptions: [],
+      extensionPath,
+      logPath: currentLogFilePath
+    };
+    configSettingsMock
+      .expects("getLoggingLevelSetting")
+      .returns("off")
+      .atLeast(1);
+    configSettingsMock
+      .expects("getSourceLocationTrackingSetting")
+      .atLeast(1)
+      .returns(false);
   });
 
   after(() => {
+    configSettingsMock.verify();
+
     sandbox.restore();
   });
 
@@ -42,14 +61,12 @@ describe("Extension unit tests", () => {
     commandsMock = sandbox.mock(testVscode.commands);
     utilsMock = sandbox.mock(Utils);
     windowMock = sandbox.mock(testVscode.window);
-    configSettingsMock = sandbox.mock(configSettings);
   });
 
   afterEach(() => {
     commandsMock.verify();
     utilsMock.verify();
     windowMock.verify();
-    configSettingsMock.verify();
   });
 
   it("Call getLogger before logger initialized throws exception", () => {
@@ -57,15 +74,6 @@ describe("Extension unit tests", () => {
   });
 
   it("activate - add subscriptions", () => {
-    const testContext: any = {
-      subscriptions: [],
-      extensionPath,
-      logPath: currentLogFilePath
-    };
-    configSettingsMock.expects("getLoggingLevelSetting").returns("off");
-    configSettingsMock
-      .expects("getSourceLocationTrackingSetting")
-      .returns(false);
     commandsMock.expects("registerCommand").atLeast(3);
     activate(testContext);
     expect(testContext.subscriptions).to.have.lengthOf(5);
@@ -77,6 +85,7 @@ describe("Extension unit tests", () => {
       .once()
       .returns({ exitCode: "ENOENT" });
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MBT);
+    activate(testContext);
     await mtaBuildCommand(undefined, undefined);
   });
 
@@ -88,6 +97,7 @@ describe("Extension unit tests", () => {
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.INSTALL_MTA_CF_CLI);
+    activate(testContext);
     await mtarDeployCommand(undefined, undefined);
   });
 
@@ -97,6 +107,7 @@ describe("Extension unit tests", () => {
       .once()
       .returns({ exitCode: "ENOENT" });
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MTA);
+    activate(testContext);
     await addModuleCommand(undefined, undefined);
   });
 });

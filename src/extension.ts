@@ -8,7 +8,6 @@ import {
   getLogger
 } from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
-import { LogLevel } from "@vscode-logging/logger";
 
 export function mtaBuildCommand(selected: vscode.Uri, swa: SWATracker) {
   const command: MtaBuildCommand = new MtaBuildCommand();
