@@ -42,18 +42,21 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.mtaBuildCommand", selected =>
-      mtaBuildCommand(selected, swa)
+    vscode.commands.registerCommand(
+      "extension.mtaBuildCommand",
+      /* istanbul ignore next */ selected => mtaBuildCommand(selected, swa)
     )
   );
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.mtarDeployCommand", selected =>
-      mtarDeployCommand(selected, swa)
+    vscode.commands.registerCommand(
+      "extension.mtarDeployCommand",
+      /* istanbul ignore next */ selected => mtarDeployCommand(selected, swa)
     )
   );
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.addModuleCommand", selected =>
-      addModuleCommand(selected, swa)
+    vscode.commands.registerCommand(
+      "extension.addModuleCommand",
+      /* istanbul ignore next */ selected => addModuleCommand(selected, swa)
     )
   );
 }

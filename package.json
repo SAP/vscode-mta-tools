@@ -161,11 +161,12 @@
     "conventional-changelog-cli": "^2.0.27",
     "cz-conventional-changelog": "^3.0.2",
     "@commitlint/cli": "^8.2.0",
-    "@commitlint/config-conventional": "^8.2.0"
+    "@commitlint/config-conventional": "^8.2.0",
+    "@istanbuljs/nyc-config-typescript": "1.0.1"
   },
   "nyc": {
     "lines": 90,
-    "functions": 80,
+    "functions": 85,
     "branches": 85,
     "statements": 90,
     "extension": [
