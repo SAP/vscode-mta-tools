@@ -33,11 +33,12 @@ export function activate(context: vscode.ExtensionContext) {
     return;
   }
 
+  const logger = getLogger();
   const swa = new SWATracker(
     "SAPSE",
     "vscode-mta-tools",
     (err: string | number) => {
-      getLogger().error(err);
+      logger ? logger.error(err) : console.error(err);
     }
   );
 
