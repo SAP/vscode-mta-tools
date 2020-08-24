@@ -2,6 +2,7 @@
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![dependabot](https://api.dependabot.com/badges/status?host=github&repo=SAP/vscode-mta-tools)](https://dependabot.com/)
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/vscode-mta-tools)](https://api.reuse.software/info/github.com/SAP/vscode-mta-tools)
 
 ## Description
 
