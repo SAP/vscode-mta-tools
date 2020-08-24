@@ -7,6 +7,8 @@ import { mockVscode, testVscode } from "./mockUtil";
 mockVscode("src/extension");
 mockVscode("src/utils/utils");
 mockVscode("src/commands/mtaBuildCommand");
+mockVscode("src/commands/mtarDeployCommand");
+mockVscode("src/commands/addModuleCommand");
 import {
   activate,
   mtaBuildCommand,
@@ -64,15 +66,7 @@ describe("Extension unit tests", () => {
     configSettingsMock
       .expects("getSourceLocationTrackingSetting")
       .returns(false);
-    commandsMock
-      .expects("registerCommand")
-      .withExactArgs("extension.mtaBuildCommand", mtaBuildCommand);
-    commandsMock
-      .expects("registerCommand")
-      .withExactArgs("extension.mtarDeployCommand", mtarDeployCommand);
-    commandsMock
-      .expects("registerCommand")
-      .withExactArgs("extension.addModuleCommand", addModuleCommand);
+    commandsMock.expects("registerCommand").atLeast(3);
     activate(testContext);
     expect(testContext.subscriptions).to.have.lengthOf(5);
   });
