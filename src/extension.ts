@@ -10,17 +10,17 @@ import {
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 import * as _ from "lodash";
 
-export function mtaBuildCommand(selected: vscode.Uri, swa: SWATracker) {
+export function mtaBuildCommand(swa: SWATracker, selected: vscode.Uri) {
   const command: MtaBuildCommand = new MtaBuildCommand();
   return command.mtaBuildCommand(selected, swa);
 }
 
-export function mtarDeployCommand(selected: vscode.Uri, swa: SWATracker) {
+export function mtarDeployCommand(swa: SWATracker, selected: vscode.Uri) {
   const command: MtarDeployCommand = new MtarDeployCommand();
   return command.mtarDeployCommand(selected, swa);
 }
 
-export function addModuleCommand(selected: vscode.Uri, swa: SWATracker) {
+export function addModuleCommand(swa: SWATracker, selected: vscode.Uri) {
   const command: AddModuleCommand = new AddModuleCommand();
   return command.addModuleCommand(selected, swa);
 }
@@ -45,19 +45,19 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.mtaBuildCommand",
-      _.partialRight(mtaBuildCommand, swa)
+      _.partial(mtaBuildCommand, swa)
     )
   );
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.mtarDeployCommand",
-      _.partialRight(mtarDeployCommand, swa)
+      _.partial(mtarDeployCommand, swa)
     )
   );
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.addModuleCommand",
-      _.partialRight(addModuleCommand, swa)
+      _.partial(addModuleCommand, swa)
     )
   );
 }
