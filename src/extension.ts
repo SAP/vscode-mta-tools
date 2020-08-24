@@ -3,8 +3,12 @@ import { MtaBuildCommand } from "./commands/mtaBuildCommand";
 import { MtarDeployCommand } from "./commands/mtarDeployCommand";
 import { AddModuleCommand } from "./commands/addModuleCommand";
 import { messages } from "./i18n/messages";
-import { createExtensionLoggerAndSubscribeToLogSettingsChanges } from "./logger/logger-wrapper";
+import {
+  createExtensionLoggerAndSubscribeToLogSettingsChanges,
+  getLogger
+} from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { LogLevel } from "@vscode-logging/logger";
 
 export function mtaBuildCommand(selected: vscode.Uri, swa: SWATracker) {
   const command: MtaBuildCommand = new MtaBuildCommand();
@@ -33,9 +37,9 @@ export function activate(context: vscode.ExtensionContext) {
     "SAPSE",
     "vscode-mta-tools",
     (err: string | number) => {
-      console.log(err);
+      getLogger().error(err);
     }
-  ); // Todo, where to add console.log?
+  );
 
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.mtaBuildCommand", selected =>
