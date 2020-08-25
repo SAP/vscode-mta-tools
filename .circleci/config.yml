@@ -63,11 +63,8 @@ workflows:
     jobs:
       - build-node13
       - build-node12
+      - compliance
       - build-node10:
-          filters:
-            tags:
-              only: /^v[0-9]+(\.[0-9]+)*/
-      - compliance:
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*/
