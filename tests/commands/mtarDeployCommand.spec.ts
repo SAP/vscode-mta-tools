@@ -8,6 +8,7 @@ import { messages } from "../../src/i18n/messages";
 import { SelectionItem } from "../../src/utils/selectionItem";
 import * as loggerWraper from "../../src/logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
+import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
 describe("Deploy mtar command unit tests", () => {
   let sandbox: any;
@@ -21,6 +22,8 @@ describe("Deploy mtar command unit tests", () => {
   let errorSpy: any;
   let infoSpy: any;
   let loggerWraperMock: any;
+  let swa: SWATracker;
+  let swaMock: any;
   const loggerImpl: IChildLogger = {
     fatal: () => {
       "fatal";
@@ -86,6 +89,8 @@ describe("Deploy mtar command unit tests", () => {
     tasksMock = sandbox.mock(testVscode.tasks);
     errorSpy = sandbox.spy(loggerImpl, "error");
     infoSpy = sandbox.spy(loggerImpl, "info");
+    swa = new SWATracker("", "");
+    swaMock = sandbox.mock(swa);
   });
 
   afterEach(() => {
@@ -97,6 +102,7 @@ describe("Deploy mtar command unit tests", () => {
     tasksMock.verify();
     errorSpy.restore();
     infoSpy.restore();
+    swaMock.verify();
   });
 
   it("mtarDeployCommand - Deploy mtar from context menu", async () => {
@@ -119,7 +125,14 @@ describe("Deploy mtar command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(deployTask);
-    await mtarDeployCommand.mtarDeployCommand(selected);
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
+        messages.CUSTOM_EVENT_CONTEXT_MENU
+      ])
+      .returns();
+    await mtarDeployCommand.mtarDeployCommand(selected, swa);
   });
 
   it("mtarDeployCommand - Deploy mtar from command when no MTA archive in the project", async () => {
@@ -129,11 +142,18 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ data: "multiapps " });
     workspaceMock.expects("findFiles").returns(Promise.resolve([]));
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
     tasksMock.expects("executeTask").never();
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.NO_MTA_ARCHIVE);
-    await mtarDeployCommand.mtarDeployCommand(undefined);
+    await mtarDeployCommand.mtarDeployCommand(undefined, swa);
   });
 
   it("mtarDeployCommand - Deploy mtar from command with only one MTA archive in the project", async () => {
@@ -157,7 +177,14 @@ describe("Deploy mtar command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(deployTask);
-    await mtarDeployCommand.mtarDeployCommand(undefined);
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
+    await mtarDeployCommand.mtarDeployCommand(undefined, swa);
   });
 
   it("mtarDeployCommand - Deploy mtar from command with several MTA archives in the project", async () => {
@@ -193,7 +220,14 @@ describe("Deploy mtar command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(deployTask);
-    await mtarDeployCommand.mtarDeployCommand(undefined);
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
+    await mtarDeployCommand.mtarDeployCommand(undefined, swa);
   });
 
   it("mtarDeployCommand - Deploy mtar with no mta-cf-cli plugin installed", async () => {
@@ -203,10 +237,11 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ data: "some other plugin" });
     tasksMock.expects("executeTask").never();
+    swaMock.expects("track").never();
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.INSTALL_MTA_CF_CLI);
-    await mtarDeployCommand.mtarDeployCommand(selected);
+    await mtarDeployCommand.mtarDeployCommand(selected, swa);
   });
 
   it("mtarDeployCommand - Deploy mtar when user needs to login via CF login command", async () => {
@@ -249,7 +284,11 @@ describe("Deploy mtar command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(deployTask);
-    await mtarDeployCommand.mtarDeployCommand(selected);
+    swaMock
+      .expects("track")
+      .once()
+      .returns();
+    await mtarDeployCommand.mtarDeployCommand(selected, swa);
   });
 
   it("mtarDeployCommand - Deploy mtar when user needs to login via CF CLI", async () => {
@@ -274,9 +313,13 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs(true)
       .returns([]);
     tasksMock.expects("executeTask").never();
+    swaMock
+      .expects("track")
+      .once()
+      .returns();
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.LOGIN_VIA_CLI);
-    await mtarDeployCommand.mtarDeployCommand(selected);
+    await mtarDeployCommand.mtarDeployCommand(selected, swa);
   });
 });

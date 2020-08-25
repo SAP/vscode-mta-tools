@@ -3,21 +3,26 @@ import { MtaBuildCommand } from "./commands/mtaBuildCommand";
 import { MtarDeployCommand } from "./commands/mtarDeployCommand";
 import { AddModuleCommand } from "./commands/addModuleCommand";
 import { messages } from "./i18n/messages";
-import { createExtensionLoggerAndSubscribeToLogSettingsChanges } from "./logger/logger-wrapper";
+import {
+  createExtensionLoggerAndSubscribeToLogSettingsChanges,
+  getLogger
+} from "./logger/logger-wrapper";
+import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { partial } from "lodash";
 
-export function mtaBuildCommand(selected: vscode.Uri) {
+export function mtaBuildCommand(swa: SWATracker, selected: vscode.Uri) {
   const command: MtaBuildCommand = new MtaBuildCommand();
-  return command.mtaBuildCommand(selected);
+  return command.mtaBuildCommand(selected, swa);
 }
 
-export function mtarDeployCommand(selected: vscode.Uri) {
+export function mtarDeployCommand(swa: SWATracker, selected: vscode.Uri) {
   const command: MtarDeployCommand = new MtarDeployCommand();
-  return command.mtarDeployCommand(selected);
+  return command.mtarDeployCommand(selected, swa);
 }
 
-export function addModuleCommand(selected: vscode.Uri) {
+export function addModuleCommand(swa: SWATracker, selected: vscode.Uri) {
   const command: AddModuleCommand = new AddModuleCommand();
-  return command.addModuleCommand(selected);
+  return command.addModuleCommand(selected, swa);
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -28,22 +33,31 @@ export function activate(context: vscode.ExtensionContext) {
     return;
   }
 
+  const logger = getLogger();
+  const swa = new SWATracker(
+    "SAPSE",
+    "vscode-mta-tools",
+    (err: string | number) => {
+      logger ? logger.error(err) : console.error(err);
+    }
+  );
+
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.mtaBuildCommand",
-      mtaBuildCommand
+      partial(mtaBuildCommand, swa)
     )
   );
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.mtarDeployCommand",
-      mtarDeployCommand
+      partial(mtarDeployCommand, swa)
     )
   );
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.addModuleCommand",
-      addModuleCommand
+      partial(addModuleCommand, swa)
     )
   );
 }

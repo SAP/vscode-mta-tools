@@ -7,6 +7,8 @@ import { mockVscode, testVscode } from "./mockUtil";
 mockVscode("src/extension");
 mockVscode("src/utils/utils");
 mockVscode("src/commands/mtaBuildCommand");
+mockVscode("src/commands/mtarDeployCommand");
+mockVscode("src/commands/addModuleCommand");
 import {
   activate,
   mtaBuildCommand,
@@ -27,6 +29,7 @@ describe("Extension unit tests", () => {
   let utilsMock: any;
   let windowMock: any;
   let configSettingsMock: any;
+  let testContext: any;
 
   before(() => {
     sandbox = sinon.createSandbox();
@@ -36,73 +39,81 @@ describe("Extension unit tests", () => {
     sandbox.restore();
   });
 
-  beforeEach(() => {
-    commandsMock = sandbox.mock(testVscode.commands);
-    utilsMock = sandbox.mock(Utils);
-    windowMock = sandbox.mock(testVscode.window);
-    configSettingsMock = sandbox.mock(configSettings);
+  describe("negative tests", () => {
+    it("Call getLogger before logger initialized throws exception", () => {
+      expect(() => getLogger()).to.throw(Error, ERROR_LOGGER_NOT_INITIALIZED);
+    });
   });
 
-  afterEach(() => {
-    commandsMock.verify();
-    utilsMock.verify();
-    windowMock.verify();
-    configSettingsMock.verify();
-  });
+  describe("positive tests", () => {
+    beforeEach(() => {
+      commandsMock = sandbox.mock(testVscode.commands);
+      utilsMock = sandbox.mock(Utils);
+      windowMock = sandbox.mock(testVscode.window);
+      configSettingsMock = sandbox.mock(configSettings);
 
-  it("Call getLogger before logger initialized throws exception", () => {
-    expect(() => getLogger()).to.throw(Error, ERROR_LOGGER_NOT_INITIALIZED);
-  });
+      testContext = {
+        subscriptions: [],
+        extensionPath,
+        logPath: currentLogFilePath
+      };
+      configSettingsMock
+        .expects("getLoggingLevelSetting")
+        .returns("off")
+        .atLeast(1);
+      configSettingsMock
+        .expects("getSourceLocationTrackingSetting")
+        .atLeast(1)
+        .returns(false);
+    });
 
-  it("activate - add subscriptions", () => {
-    const testContext: any = {
-      subscriptions: [],
-      extensionPath,
-      logPath: currentLogFilePath
-    };
-    configSettingsMock.expects("getLoggingLevelSetting").returns("off");
-    configSettingsMock
-      .expects("getSourceLocationTrackingSetting")
-      .returns(false);
-    commandsMock
-      .expects("registerCommand")
-      .withExactArgs("extension.mtaBuildCommand", mtaBuildCommand);
-    commandsMock
-      .expects("registerCommand")
-      .withExactArgs("extension.mtarDeployCommand", mtarDeployCommand);
-    commandsMock
-      .expects("registerCommand")
-      .withExactArgs("extension.addModuleCommand", addModuleCommand);
-    activate(testContext);
-    expect(testContext.subscriptions).to.have.lengthOf(5);
-  });
+    afterEach(() => {
+      commandsMock.verify();
+      utilsMock.verify();
+      windowMock.verify();
+      configSettingsMock.verify();
+    });
 
-  it("mtaBuildCommand", async () => {
-    utilsMock
-      .expects("execCommand")
-      .once()
-      .returns({ exitCode: "ENOENT" });
-    windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MBT);
-    await mtaBuildCommand(undefined);
-  });
+    it("activate - add subscriptions", () => {
+      commandsMock.expects("registerCommand").atLeast(3);
+      activate(testContext);
+      expect(testContext.subscriptions).to.have.lengthOf(5);
+    });
 
-  it("mtarDeployCommand", async () => {
-    utilsMock
-      .expects("execCommand")
-      .once()
-      .returns("some other plugin");
-    windowMock
-      .expects("showErrorMessage")
-      .withExactArgs(messages.INSTALL_MTA_CF_CLI);
-    await mtarDeployCommand(undefined);
-  });
+    it("mtaBuildCommand", async () => {
+      utilsMock
+        .expects("execCommand")
+        .once()
+        .returns({ exitCode: "ENOENT" });
+      windowMock
+        .expects("showErrorMessage")
+        .withExactArgs(messages.INSTALL_MBT);
+      activate(testContext);
+      await mtaBuildCommand(undefined, undefined);
+    });
 
-  it("addModuleCommand", async () => {
-    utilsMock
-      .expects("execCommand")
-      .once()
-      .returns({ exitCode: "ENOENT" });
-    windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MTA);
-    await addModuleCommand(undefined);
+    it("mtarDeployCommand", async () => {
+      utilsMock
+        .expects("execCommand")
+        .once()
+        .returns("some other plugin");
+      windowMock
+        .expects("showErrorMessage")
+        .withExactArgs(messages.INSTALL_MTA_CF_CLI);
+      activate(testContext);
+      await mtarDeployCommand(undefined, undefined);
+    });
+
+    it("addModuleCommand", async () => {
+      utilsMock
+        .expects("execCommand")
+        .once()
+        .returns({ exitCode: "ENOENT" });
+      windowMock
+        .expects("showErrorMessage")
+        .withExactArgs(messages.INSTALL_MTA);
+      activate(testContext);
+      await addModuleCommand(undefined, undefined);
+    });
   });
 });
