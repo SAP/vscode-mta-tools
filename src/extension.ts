@@ -8,7 +8,7 @@ import {
   getLogger
 } from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
-import * as _ from "lodash";
+import { partial } from "lodash";
 
 export function mtaBuildCommand(swa: SWATracker, selected: vscode.Uri) {
   const command: MtaBuildCommand = new MtaBuildCommand();
@@ -45,19 +45,19 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.mtaBuildCommand",
-      _.partial(mtaBuildCommand, swa)
+      partial(mtaBuildCommand, swa)
     )
   );
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.mtarDeployCommand",
-      _.partial(mtarDeployCommand, swa)
+      partial(mtarDeployCommand, swa)
     )
   );
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.addModuleCommand",
-      _.partial(addModuleCommand, swa)
+      partial(addModuleCommand, swa)
     )
   );
 }
