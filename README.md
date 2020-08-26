@@ -2,6 +2,7 @@
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![dependabot](https://api.dependabot.com/badges/status?host=github&repo=SAP/vscode-mta-tools)](https://dependabot.com/)
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/vscode-mta-tools)](https://api.reuse.software/info/github.com/SAP/vscode-mta-tools)
 
 ## Description
 
@@ -35,9 +36,3 @@ See [CONTRIBUTING.md](https://github.com/SAP/vscode-mta-tools/blob/master/.githu
 ### Support
 
 Please report [here](https://github.com/SAP/vscode-mta-tools/issues) on any issue.
-
-### License
-
-Copyright (c) 2019-2020 SAP SE or an SAP affiliate company. All rights reserved.
-
-This file is licensed under the Apache 2.0 License [except as noted otherwise in the LICENSE file](https://github.com/SAP/vscode-mta-tools/blob/master/LICENSE).

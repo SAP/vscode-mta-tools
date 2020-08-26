@@ -32,6 +32,18 @@ jobs:
             # https://golang.org/pkg/path/filepath/#Match
             - vscode-mta-tools-*
 
+  compliance:
+    docker:
+      - image: circleci/python:3.6.4
+    working_directory: ~/workdir
+    steps:
+      - checkout
+      - run:
+          name: compliance check
+          command: |
+            pip3 install --user reuse
+            ~/.local/bin/reuse lint
+
   deploy:
     docker:
       - image: circleci/golang:1.13
@@ -51,6 +63,7 @@ workflows:
     jobs:
       - build-node13
       - build-node12
+      - compliance
       - build-node10:
           filters:
             tags:
