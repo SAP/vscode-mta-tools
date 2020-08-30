@@ -1,5 +1,12 @@
-import * as _ from "lodash";
-import * as vscode from "vscode"; // NOSONAR
+import { includes, trimStart, get, isEmpty } from "lodash";
+import {
+  Uri,
+  window,
+  workspace,
+  commands,
+  ShellExecution,
+  ShellExecutionOptions
+} from "vscode";
 import { Utils } from "../utils/utils";
 import { SelectionItem } from "../utils/selectionItem";
 import { messages } from "../i18n/messages";
@@ -18,7 +25,7 @@ export class MtarDeployCommand {
   );
 
   public async mtarDeployCommand(
-    selected: vscode.Uri | undefined,
+    selected: Uri | undefined,
     swa: SWATracker
   ): Promise<void> {
     const response = await Utils.execCommand(
@@ -26,8 +33,8 @@ export class MtarDeployCommand {
       ["plugins", "--checksum"],
       { cwd: homeDir }
     );
-    if (!_.includes(response.data, "multiapps")) {
-      vscode.window.showErrorMessage(messages.INSTALL_MTA_CF_CLI);
+    if (!includes(response.data, "multiapps")) {
+      window.showErrorMessage(messages.INSTALL_MTA_CF_CLI);
       return;
     }
 
@@ -44,14 +51,14 @@ export class MtarDeployCommand {
       swa.track(messages.EVENT_TYPE_DEPLOY_MTAR, [
         messages.CUSTOM_EVENT_COMMAND_PALETTE
       ]);
-      const mtarFilesPaths = await vscode.workspace.findFiles(
+      const mtarFilesPaths = await workspace.findFiles(
         "**/*.mtar",
         "**/node_modules/**"
       );
       const len = mtarFilesPaths.length;
       if (len === 0) {
         this.logger.error(messages.NO_MTA_ARCHIVE);
-        vscode.window.showErrorMessage(messages.NO_MTA_ARCHIVE);
+        window.showErrorMessage(messages.NO_MTA_ARCHIVE);
         return;
       } else if (len === 1) {
         path = mtarFilesPaths[0].path;
@@ -65,6 +72,7 @@ export class MtarDeployCommand {
           selectionItems
         );
         if (userSelection === undefined) {
+          // selection cancled
           return;
         }
         this.logger.info(
@@ -73,7 +81,7 @@ export class MtarDeployCommand {
         path = userSelection.label;
       }
     }
-    path = Utils.isWindows() ? _.trimStart(path, "/") : path;
+    path = Utils.isWindows() ? trimStart(path, "/") : path;
 
     if (await this.isLoggedInToCF()) {
       await this.execDeployCmd(path);
@@ -87,8 +95,8 @@ export class MtarDeployCommand {
   }
 
   private async execDeployCmd(path: string): Promise<any> {
-    const options: vscode.ShellExecutionOptions = { cwd: homeDir };
-    const execution = new vscode.ShellExecution(
+    const options: ShellExecutionOptions = { cwd: homeDir };
+    const execution = new ShellExecution(
       CF_COMMAND + " deploy " + path,
       options
     );
@@ -101,17 +109,17 @@ export class MtarDeployCommand {
       Utils.getConfigFileField("OrganizationFields"),
       Utils.getConfigFileField("SpaceFields")
     ]);
-    const orgField = _.get(results, "[0].Name");
-    const spaceField = _.get(results, "[1].Name");
-    return !(_.isEmpty(orgField) && _.isEmpty(spaceField));
+    const orgField = get(results, "[0].Name");
+    const spaceField = get(results, "[1].Name");
+    return !(isEmpty(orgField) && isEmpty(spaceField));
   }
 
   private async loginToCF(): Promise<void> {
-    const commands = await vscode.commands.getCommands(true);
-    if (_.includes(commands, CF_LOGIN_COMMAND)) {
-      await vscode.commands.executeCommand(CF_LOGIN_COMMAND);
+    const allCommands = await commands.getCommands(true);
+    if (includes(allCommands, CF_LOGIN_COMMAND)) {
+      await commands.executeCommand(CF_LOGIN_COMMAND);
     } else {
-      vscode.window.showErrorMessage(messages.LOGIN_VIA_CLI);
+      window.showErrorMessage(messages.LOGIN_VIA_CLI);
     }
   }
 }

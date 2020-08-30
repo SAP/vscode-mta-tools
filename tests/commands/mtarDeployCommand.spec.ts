@@ -230,6 +230,38 @@ describe("Deploy mtar command unit tests", () => {
     await mtarDeployCommand.mtarDeployCommand(undefined, swa);
   });
 
+  it("mtarDeployCommand - Deploy mtar from command with several MTA archives in the project - cancel selection", async () => {
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
+      .returns({ data: "multiapps " });
+    workspaceMock
+      .expects("findFiles")
+      .returns(
+        Promise.resolve([selected, { path: "mta_archives/mta_0.0.1.mtar" }])
+      );
+    selectionItemMock
+      .expects("getSelectionItems")
+      .once()
+      .returns(Promise.resolve());
+    utilsMock
+      .expects("displayOptions")
+      .once()
+      .returns(Promise.resolve(undefined));
+    utilsMock.expects("getConfigFileField").never();
+    utilsMock.expects("getConfigFileField").never();
+    tasksMock.expects("executeTask").never();
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
+    await mtarDeployCommand.mtarDeployCommand(undefined, swa);
+  });
+
   it("mtarDeployCommand - Deploy mtar with no mta-cf-cli plugin installed", async () => {
     utilsMock
       .expects("execCommand")

@@ -1,4 +1,5 @@
-import * as vscode from "vscode"; // NOSONAR
+import { Uri, ExtensionContext, commands } from "vscode";
+import { partial } from "lodash";
 import { MtaBuildCommand } from "./commands/mtaBuildCommand";
 import { MtarDeployCommand } from "./commands/mtarDeployCommand";
 import { AddModuleCommand } from "./commands/addModuleCommand";
@@ -8,33 +9,23 @@ import {
   getLogger
 } from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
-import { partial } from "lodash";
 
-export function mtaBuildCommand(
-  swa: SWATracker,
-  selected: vscode.Uri | undefined
-) {
+export function mtaBuildCommand(swa: SWATracker, selected: Uri | undefined) {
   const command: MtaBuildCommand = new MtaBuildCommand();
   return command.mtaBuildCommand(selected, swa);
 }
 
-export function mtarDeployCommand(
-  swa: SWATracker,
-  selected: vscode.Uri | undefined
-) {
+export function mtarDeployCommand(swa: SWATracker, selected: Uri | undefined) {
   const command: MtarDeployCommand = new MtarDeployCommand();
   return command.mtarDeployCommand(selected, swa);
 }
 
-export function addModuleCommand(
-  swa: SWATracker,
-  selected: vscode.Uri | undefined
-) {
+export function addModuleCommand(swa: SWATracker, selected: Uri | undefined) {
   const command: AddModuleCommand = new AddModuleCommand();
   return command.addModuleCommand(selected, swa);
 }
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
   try {
     createExtensionLoggerAndSubscribeToLogSettingsChanges(context);
   } catch (error) {
@@ -52,19 +43,19 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand(
+    commands.registerCommand(
       "extension.mtaBuildCommand",
       partial(mtaBuildCommand, swa)
     )
   );
   context.subscriptions.push(
-    vscode.commands.registerCommand(
+    commands.registerCommand(
       "extension.mtarDeployCommand",
       partial(mtarDeployCommand, swa)
     )
   );
   context.subscriptions.push(
-    vscode.commands.registerCommand(
+    commands.registerCommand(
       "extension.addModuleCommand",
       partial(addModuleCommand, swa)
     )

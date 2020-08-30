@@ -61,7 +61,7 @@
       },
       {
         "command": "extension.addModuleCommand",
-        "title": "Create MTA Module From Template"
+        "title": "Create MTA Module from Template"
       }
     ],
     "menus": {
@@ -162,24 +162,6 @@
     "cz-conventional-changelog": "^3.0.2",
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0"
-  },
-  "nyc": {
-    "lines": 90,
-    "functions": 85,
-    "branches": 85,
-    "statements": 90,
-    "include": [
-      "out/src/**"
-    ],
-    "exclude": [
-      "out/src/logger/**"
-    ],
-    "reporter": [
-      "text",
-      "lcov"
-    ],
-    "all": true,
-    "check-coverage": true
   },
   "prettier": {
     "endOfLine": "lf"

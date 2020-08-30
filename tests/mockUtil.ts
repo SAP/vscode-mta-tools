@@ -1,4 +1,4 @@
-import * as path from "path";
+import { resolve } from "path";
 
 const Module = require("module");
 const originalRequire = Module.prototype.require;
@@ -56,7 +56,7 @@ export function mockVscode(testModulePath?: string) {
 
 export function clearModuleCache(testModulePath?: string) {
   if (testModulePath) {
-    const key = path.resolve(testModulePath);
+    const key = resolve(testModulePath);
     if (require.cache[key]) {
       delete require.cache[key];
     }

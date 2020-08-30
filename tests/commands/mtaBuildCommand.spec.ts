@@ -199,6 +199,34 @@ describe("MTA build command unit tests", () => {
     await mtaBuildCommand.mtaBuildCommand((undefined as unknown) as Uri, swa);
   });
 
+  it("mtaBuildCommand - Build MTA from command with several mta.yaml files in the project - cancel selection", async () => {
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(MBT_CMD, ["-v"], { cwd: homeDir })
+      .returns("v1.2.3");
+    workspaceMock
+      .expects("findFiles")
+      .returns(Promise.resolve([selected, { path: "mtaProject2/mta.yaml" }]));
+    selectionItemMock
+      .expects("getSelectionItems")
+      .once()
+      .returns(Promise.resolve());
+    utilsMock
+      .expects("displayOptions")
+      .once()
+      .returns(Promise.resolve(undefined));
+    tasksMock.expects("executeTask").never();
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
+    await mtaBuildCommand.mtaBuildCommand((undefined as unknown) as Uri, swa);
+  });
+
   it("mtaBuildCommand - Build MTA with no mbt installed", async () => {
     utilsMock
       .expects("execCommand")

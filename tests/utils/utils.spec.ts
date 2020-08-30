@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import { expect } from "chai";
 import * as sinon from "sinon";
 import { Utils } from "../../src/utils/utils";
 import { SelectionItem } from "../../src/utils/selectionItem";
@@ -46,11 +46,11 @@ describe("Utils unit tests", () => {
 
   it("execCommand - execute command in child process", async () => {
     const response = await Utils.execCommand("sh", ["-c", "echo test"]);
-    assert.include(response.data, "test");
+    expect(response.data).to.include("test");
   });
 
   it("execCommand - execute unsupported command in child process", async () => {
     const response = await Utils.execCommand("bla", ["bla"]);
-    assert.equal(response.exitCode, "ENOENT");
+    expect(response.exitCode).to.equal("ENOENT");
   });
 });

@@ -7,6 +7,7 @@ mockVscode("src/commands/addModuleCommand");
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { resolve } from "path";
+import { Uri } from "vscode";
 import { Utils } from "../src/utils/utils";
 import { messages } from "../src/i18n/messages";
 import {
@@ -21,7 +22,6 @@ import {
   ERROR_LOGGER_NOT_INITIALIZED
 } from "../src/logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
-import { Uri } from "vscode";
 
 describe("Extension unit tests", () => {
   const extensionPath: string = resolve(__dirname, "..", "..");
