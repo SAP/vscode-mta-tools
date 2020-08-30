@@ -165,7 +165,7 @@ describe("MTA build command unit tests", () => {
         messages.CUSTOM_EVENT_COMMAND_PALETTE
       ])
       .returns();
-    await mtaBuildCommand.mtaBuildCommand((undefined as unknown) as Uri, swa);
+    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
   });
 
   it("mtaBuildCommand - Build MTA from command with several mta.yaml files in the project", async () => {
@@ -196,7 +196,7 @@ describe("MTA build command unit tests", () => {
         messages.CUSTOM_EVENT_COMMAND_PALETTE
       ])
       .returns();
-    await mtaBuildCommand.mtaBuildCommand((undefined as unknown) as Uri, swa);
+    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
   });
 
   it("mtaBuildCommand - Build MTA from command with several mta.yaml files in the project - cancel selection", async () => {
@@ -224,7 +224,7 @@ describe("MTA build command unit tests", () => {
         messages.CUSTOM_EVENT_COMMAND_PALETTE
       ])
       .returns();
-    await mtaBuildCommand.mtaBuildCommand((undefined as unknown) as Uri, swa);
+    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
   });
 
   it("mtaBuildCommand - Build MTA with no mbt installed", async () => {

@@ -2,7 +2,8 @@ import { ExtensionContext, workspace } from "vscode";
 import { getLogger } from "./logger-wrapper";
 import {
   LOGGING_LEVEL_CONFIG_PROP,
-  SOURCE_TRACKING_CONFIG_PROP
+  SOURCE_TRACKING_CONFIG_PROP,
+  getLoggingLevelSetting
 } from "./settings";
 
 export function logLoggerDetails(
@@ -24,9 +25,7 @@ export function listenToLogSettingsChanges(context: ExtensionContext) {
   context.subscriptions.push(
     workspace.onDidChangeConfiguration(e => {
       if (e.affectsConfiguration(LOGGING_LEVEL_CONFIG_PROP)) {
-        const logLevel: string =
-          workspace.getConfiguration().get(LOGGING_LEVEL_CONFIG_PROP) ??
-          "error";
+        const logLevel: string = getLoggingLevelSetting();
 
         getLogger().changeLevel(logLevel);
         logLoggerDetails(context, logLevel);

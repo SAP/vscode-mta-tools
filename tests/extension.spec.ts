@@ -115,10 +115,7 @@ describe("Extension unit tests", () => {
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MTA);
       activate(testContext);
-      await addModuleCommand(
-        (undefined as unknown) as SWATracker,
-        (undefined as unknown) as Uri
-      );
+      await addModuleCommand((undefined as unknown) as SWATracker, undefined);
     });
   });
 });
