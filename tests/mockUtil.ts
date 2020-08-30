@@ -37,9 +37,7 @@ export const testVscode: any = {
   tasks: {
     executeTask: () => Promise.resolve()
   },
-  ShellExecution: class MockShellExecution {
-    public MockShellExecution: (command: string, options?: string) => void;
-  },
+  ShellExecution: class MockShellExecution {},
   Task: class Task {},
   TaskScope: { Workspace: true }
 };

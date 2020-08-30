@@ -7,22 +7,22 @@ import { Utils } from "../utils/utils";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
 interface IMtaData {
-  mtaFilePath: string;
-  mtaFilesPathsList: string;
+  mtaFilePath: string | undefined;
+  mtaFilesPathsList: string | undefined;
 }
 
 const CLOUD_MTA_COMMAND = "mta";
 const ORIGINAL_DESCRIPTION = messagesYeoman.select_generator_description;
 
 export class AddModuleCommand {
-  private mtaFilePath: string;
-  private mtaFilesPathsList: string;
+  private mtaFilePath: string | undefined;
+  private mtaFilesPathsList: string | undefined;
 
   // Logger
   private readonly logger: IChildLogger = getClassLogger(AddModuleCommand.name);
 
   public async addModuleCommand(
-    selected: vscode.Uri,
+    selected: vscode.Uri | undefined,
     swa: SWATracker
   ): Promise<void> {
     // check that cloud-mta is installed in the environment

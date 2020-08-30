@@ -9,6 +9,7 @@ import { SelectionItem } from "../../src/utils/selectionItem";
 import * as loggerWraper from "../../src/logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { Uri } from "vscode";
 
 describe("MTA build command unit tests", () => {
   let sandbox: any;
@@ -164,7 +165,7 @@ describe("MTA build command unit tests", () => {
         messages.CUSTOM_EVENT_COMMAND_PALETTE
       ])
       .returns();
-    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
+    await mtaBuildCommand.mtaBuildCommand((undefined as unknown) as Uri, swa);
   });
 
   it("mtaBuildCommand - Build MTA from command with several mta.yaml files in the project", async () => {
@@ -195,7 +196,7 @@ describe("MTA build command unit tests", () => {
         messages.CUSTOM_EVENT_COMMAND_PALETTE
       ])
       .returns();
-    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
+    await mtaBuildCommand.mtaBuildCommand((undefined as unknown) as Uri, swa);
   });
 
   it("mtaBuildCommand - Build MTA with no mbt installed", async () => {

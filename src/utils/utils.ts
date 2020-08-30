@@ -11,7 +11,7 @@ export class Utils {
   public static async displayOptions(
     inputRequest: string,
     optionsList: vscode.QuickPickItem[]
-  ): Promise<vscode.QuickPickItem> {
+  ): Promise<vscode.QuickPickItem | undefined> {
     const options = {
       placeHolder: inputRequest,
       canPickMany: false,
@@ -58,8 +58,7 @@ export class Utils {
 
       childProcess.stdout.on("data", data => {
         if (!childProcess.killed) {
-          data = String.fromCharCode.apply(null, new Uint16Array(data));
-          output.push(data);
+          output.push(data.toString());
         }
       });
       childProcess.stderr.on("data", data => {

@@ -24,9 +24,9 @@ export function listenToLogSettingsChanges(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(e => {
       if (e.affectsConfiguration(LOGGING_LEVEL_CONFIG_PROP)) {
-        const logLevel: string = vscode.workspace
-          .getConfiguration()
-          .get(LOGGING_LEVEL_CONFIG_PROP);
+        const logLevel: string =
+          vscode.workspace.getConfiguration().get(LOGGING_LEVEL_CONFIG_PROP) ??
+          "error";
 
         getLogger().changeLevel(logLevel);
         logLoggerDetails(context, logLevel);

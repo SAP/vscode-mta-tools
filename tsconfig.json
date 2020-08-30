@@ -1,24 +1,15 @@
 {
   "compilerOptions": {
-    "allowJs": false,
-    "lib": ["es6"],
-    "listEmittedFiles": false,
-    "listFiles": false,
     "module": "commonjs",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "outDir": "./out",
-    "removeComments": true,
-    "experimentalDecorators": true,
+    "target": "es2017",
     "rootDir": ".",
-    "rootDirs": ["./src", "./tests"],
-    "skipLibCheck": true,
+    "outDir": "./out",
+    "lib": ["es7"],
     "sourceMap": true,
-    "target": "es6",
-    "traceResolution": false,
-    "declaration": true,
-    "alwaysStrict": true
+    "strict": true,
+    "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
   "include": ["./src/**/*", "./tests/**/*"]
 }

@@ -11,13 +11,11 @@ const MBT_COMMAND = "mbt";
 const homeDir = require("os").homedir();
 
 export class MtaBuildCommand {
-  private path: string;
-
   // Logger
   private readonly logger: IChildLogger = getClassLogger(MtaBuildCommand.name);
 
   public async mtaBuildCommand(
-    selected: vscode.Uri,
+    selected: vscode.Uri | undefined,
     swa: SWATracker
   ): Promise<void> {
     // check that mbt is installed in the environment
@@ -30,13 +28,13 @@ export class MtaBuildCommand {
     ) {
       return;
     }
-
+    let path;
     if (selected) {
       // Command called from context menu, add usage analytics
       swa.track(messages.EVENT_TYPE_BUILD_MTA, [
         messages.CUSTOM_EVENT_CONTEXT_MENU
       ]);
-      this.path = selected.path;
+      path = selected.path;
     } else {
       // Command is called from command pallet, add usage analytics
       swa.track(messages.EVENT_TYPE_BUILD_MTA, [
@@ -51,31 +49,35 @@ export class MtaBuildCommand {
         vscode.window.showErrorMessage(messages.NO_PROJECT_DESCRIPTOR);
         return;
       } else if (len === 1) {
-        this.path = mtaYamlFilesPaths[0].path;
+        path = mtaYamlFilesPaths[0].path;
       } else {
         const inputRequest = messages.SELECT_PROJECT_DESCRIPTOR;
         const selectionItems: SelectionItem[] = await SelectionItem.getSelectionItems(
           mtaYamlFilesPaths
         );
-        const userSelection: vscode.QuickPickItem = await Utils.displayOptions(
+        const userSelection = await Utils.displayOptions(
           inputRequest,
           selectionItems
         );
+        if (userSelection === undefined) {
+          return;
+        }
+
         this.logger.info(
           `The user selection file path: ${userSelection.label}`
         );
-        this.path = userSelection.label;
+        path = userSelection.label;
       }
     }
 
-    this.path = Utils.isWindows() ? _.trimStart(this.path, "/") : this.path;
+    path = Utils.isWindows() ? _.trimStart(path, "/") : path;
 
     const options: vscode.ShellExecutionOptions = { cwd: homeDir };
     const execution = new vscode.ShellExecution(
       MBT_COMMAND +
         " build -s " +
         "'" +
-        _.replace(this.path, "/mta.yaml", "") +
+        _.replace(path, "/mta.yaml", "") +
         "'; sleep 2;",
       options
     );

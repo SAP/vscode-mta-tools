@@ -10,17 +10,26 @@ import {
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 import { partial } from "lodash";
 
-export function mtaBuildCommand(swa: SWATracker, selected: vscode.Uri) {
+export function mtaBuildCommand(
+  swa: SWATracker,
+  selected: vscode.Uri | undefined
+) {
   const command: MtaBuildCommand = new MtaBuildCommand();
   return command.mtaBuildCommand(selected, swa);
 }
 
-export function mtarDeployCommand(swa: SWATracker, selected: vscode.Uri) {
+export function mtarDeployCommand(
+  swa: SWATracker,
+  selected: vscode.Uri | undefined
+) {
   const command: MtarDeployCommand = new MtarDeployCommand();
   return command.mtarDeployCommand(selected, swa);
 }
 
-export function addModuleCommand(swa: SWATracker, selected: vscode.Uri) {
+export function addModuleCommand(
+  swa: SWATracker,
+  selected: vscode.Uri | undefined
+) {
   const command: AddModuleCommand = new AddModuleCommand();
   return command.addModuleCommand(selected, swa);
 }
