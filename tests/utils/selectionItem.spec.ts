@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import { expect } from "chai";
 import * as sinon from "sinon";
 import { SelectionItem } from "../../src/utils/selectionItem";
 
@@ -29,10 +29,6 @@ describe("SelectionItem unit tests", () => {
     const selectionItems: SelectionItem[] = await SelectionItem.getSelectionItems(
       filePaths
     );
-    assert.deepEqual(
-      selectionItems,
-      expectedItems,
-      "The selected items created are not as expected"
-    );
+    expect(selectionItems).to.deep.equal(expectedItems);
   });
 });

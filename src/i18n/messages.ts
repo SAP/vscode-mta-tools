@@ -1,5 +1,3 @@
-import * as _ from "lodash";
-
 const selectTemplateQuestionHint =
   "Select the template that best fits the type of module you want to create";
 const selectMtaProjectQuestionHint =

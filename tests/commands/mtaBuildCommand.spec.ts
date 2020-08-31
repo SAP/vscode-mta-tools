@@ -9,6 +9,7 @@ import { SelectionItem } from "../../src/utils/selectionItem";
 import * as loggerWraper from "../../src/logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { Uri } from "vscode";
 
 describe("MTA build command unit tests", () => {
   let sandbox: any;
@@ -188,6 +189,34 @@ describe("MTA build command unit tests", () => {
       .expects("executeTask")
       .once()
       .withExactArgs(buildTask);
+    swaMock
+      .expects("track")
+      .once()
+      .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
+        messages.CUSTOM_EVENT_COMMAND_PALETTE
+      ])
+      .returns();
+    await mtaBuildCommand.mtaBuildCommand(undefined, swa);
+  });
+
+  it("mtaBuildCommand - Build MTA from command with several mta.yaml files in the project - cancel selection", async () => {
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(MBT_CMD, ["-v"], { cwd: homeDir })
+      .returns("v1.2.3");
+    workspaceMock
+      .expects("findFiles")
+      .returns(Promise.resolve([selected, { path: "mtaProject2/mta.yaml" }]));
+    selectionItemMock
+      .expects("getSelectionItems")
+      .once()
+      .returns(Promise.resolve());
+    utilsMock
+      .expects("displayOptions")
+      .once()
+      .returns(Promise.resolve(undefined));
+    tasksMock.expects("executeTask").never();
     swaMock
       .expects("track")
       .once()

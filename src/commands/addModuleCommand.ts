@@ -1,5 +1,5 @@
-import * as _ from "lodash";
-import * as vscode from "vscode"; // NOSONAR
+import { trimStart } from "lodash";
+import { Uri, window, workspace, commands } from "vscode";
 import { messages, messagesYeoman } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
@@ -7,22 +7,22 @@ import { Utils } from "../utils/utils";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
 interface IMtaData {
-  mtaFilePath: string;
-  mtaFilesPathsList: string;
+  mtaFilePath: string | undefined;
+  mtaFilesPathsList: string | undefined;
 }
 
 const CLOUD_MTA_COMMAND = "mta";
 const ORIGINAL_DESCRIPTION = messagesYeoman.select_generator_description;
 
 export class AddModuleCommand {
-  private mtaFilePath: string;
-  private mtaFilesPathsList: string;
+  private mtaFilePath: string | undefined;
+  private mtaFilesPathsList: string | undefined;
 
   // Logger
   private readonly logger: IChildLogger = getClassLogger(AddModuleCommand.name);
 
   public async addModuleCommand(
-    selected: vscode.Uri,
+    selected: Uri | undefined,
     swa: SWATracker
   ): Promise<void> {
     // check that cloud-mta is installed in the environment
@@ -43,7 +43,7 @@ export class AddModuleCommand {
       ]);
       this.mtaFilePath = selected.path;
       this.mtaFilePath = Utils.isWindows()
-        ? _.trimStart(this.mtaFilePath, "/")
+        ? trimStart(this.mtaFilePath, "/")
         : this.mtaFilePath;
       this.logger.info(`The user selection file path: ${this.mtaFilePath}`);
       // add mta.yaml path info to template description
@@ -56,7 +56,7 @@ export class AddModuleCommand {
         messages.CUSTOM_EVENT_COMMAND_PALETTE
       ]);
       messagesYeoman.select_generator_description = ORIGINAL_DESCRIPTION;
-      const mtaYamlFilesPaths = await vscode.workspace.findFiles(
+      const mtaYamlFilesPaths = await workspace.findFiles(
         "**/mta.yaml",
         "**/node_modules/**"
       );
@@ -64,7 +64,7 @@ export class AddModuleCommand {
       if (len === 0) {
         this.mtaFilesPathsList = undefined;
         this.logger.error(messages.NO_MTA_FILE);
-        vscode.window.showErrorMessage(messages.NO_MTA_FILE);
+        window.showErrorMessage(messages.NO_MTA_FILE);
         return;
       } else {
         const mtaYamlFilesPathsNormalized = Utils.getFilePaths(
@@ -83,14 +83,14 @@ export class AddModuleCommand {
     };
 
     try {
-      await vscode.commands.executeCommand("loadYeomanUI", {
+      await commands.executeCommand("loadYeomanUI", {
         filter: { types: ["mta.module"] },
         messages: messagesYeoman,
         data: mtaData
       });
     } catch (err) {
       this.logger.error(err.message);
-      vscode.window.showErrorMessage(err.message);
+      window.showErrorMessage(err.message);
     }
   }
 }

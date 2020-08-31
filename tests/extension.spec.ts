@@ -1,14 +1,15 @@
-import { expect } from "chai";
-import * as sinon from "sinon";
-import { resolve } from "path";
-import { Utils } from "../src/utils/utils";
-import { messages } from "../src/i18n/messages";
 import { mockVscode, testVscode } from "./mockUtil";
 mockVscode("src/extension");
 mockVscode("src/utils/utils");
 mockVscode("src/commands/mtaBuildCommand");
 mockVscode("src/commands/mtarDeployCommand");
 mockVscode("src/commands/addModuleCommand");
+import { expect } from "chai";
+import * as sinon from "sinon";
+import { resolve } from "path";
+import { Uri } from "vscode";
+import { Utils } from "../src/utils/utils";
+import { messages } from "../src/i18n/messages";
 import {
   activate,
   mtaBuildCommand,
@@ -20,9 +21,10 @@ import {
   getLogger,
   ERROR_LOGGER_NOT_INITIALIZED
 } from "../src/logger/logger-wrapper";
+import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
 describe("Extension unit tests", () => {
-  const extensionPath: string = resolve(__dirname, "..");
+  const extensionPath: string = resolve(__dirname, "..", "..");
   const currentLogFilePath: string = "/tmp";
   let sandbox: any;
   let commandsMock: any;
@@ -89,7 +91,7 @@ describe("Extension unit tests", () => {
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MBT);
       activate(testContext);
-      await mtaBuildCommand(undefined, undefined);
+      await mtaBuildCommand((undefined as unknown) as SWATracker, undefined);
     });
 
     it("mtarDeployCommand", async () => {
@@ -101,7 +103,7 @@ describe("Extension unit tests", () => {
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MTA_CF_CLI);
       activate(testContext);
-      await mtarDeployCommand(undefined, undefined);
+      await mtarDeployCommand((undefined as unknown) as SWATracker, undefined);
     });
 
     it("addModuleCommand", async () => {
@@ -113,7 +115,7 @@ describe("Extension unit tests", () => {
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MTA);
       activate(testContext);
-      await addModuleCommand(undefined, undefined);
+      await addModuleCommand((undefined as unknown) as SWATracker, undefined);
     });
   });
 });

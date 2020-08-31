@@ -1,9 +1,9 @@
-import * as _ from "lodash";
-import * as vscode from "vscode"; // NOSONAR
+import { map } from "lodash";
+import { QuickPickItem } from "vscode"; // NOSONAR
 
-export class SelectionItem implements vscode.QuickPickItem {
+export class SelectionItem implements QuickPickItem {
   public static async getSelectionItems(filesPaths: any): Promise<any> {
-    return _.map(filesPaths, uri => {
+    return map(filesPaths, uri => {
       return new SelectionItem(uri.path, "", "");
     });
   }

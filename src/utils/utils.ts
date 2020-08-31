@@ -1,8 +1,16 @@
-import * as _ from "lodash";
-import * as vscode from "vscode"; // NOSONAR
 import * as os from "os";
-import * as path from "path";
-import * as fsextra from "fs-extra";
+import { get, map, trimStart } from "lodash";
+import {
+  QuickPickItem,
+  Uri,
+  window,
+  ShellExecution,
+  Task,
+  TaskScope,
+  tasks
+} from "vscode";
+import { join } from "path";
+import { readFile } from "fs-extra";
 import { parse } from "comment-json";
 import { spawn } from "child_process";
 import { IChildLogger } from "@vscode-logging/logger";
@@ -10,21 +18,21 @@ import { IChildLogger } from "@vscode-logging/logger";
 export class Utils {
   public static async displayOptions(
     inputRequest: string,
-    optionsList: vscode.QuickPickItem[]
-  ): Promise<vscode.QuickPickItem> {
+    optionsList: QuickPickItem[]
+  ): Promise<QuickPickItem | undefined> {
     const options = {
       placeHolder: inputRequest,
       canPickMany: false,
       matchOnDetail: true,
       ignoreFocusOut: true
     };
-    return vscode.window.showQuickPick(optionsList, options);
+    return window.showQuickPick(optionsList, options);
   }
 
   public static async getConfigFileField(field: string): Promise<any> {
     const configFilePath = this.getConfigFilePath();
     try {
-      const jsonStr = await fsextra.readFile(configFilePath, "utf8");
+      const jsonStr = await readFile(configFilePath, "utf8");
       const configJson = parse(jsonStr);
       return configJson[field];
     } catch (error) {
@@ -32,19 +40,16 @@ export class Utils {
     }
   }
 
-  public static execTask(
-    execution: vscode.ShellExecution,
-    taskName: string
-  ): void {
-    const task = new vscode.Task(
+  public static execTask(execution: ShellExecution, taskName: string): void {
+    const task = new Task(
       { type: "shell" },
-      vscode.TaskScope.Workspace,
+      TaskScope.Workspace,
       taskName,
       "MTA",
       execution
     );
 
-    vscode.tasks.executeTask(task);
+    tasks.executeTask(task);
   }
 
   public static async execCommand(
@@ -58,8 +63,7 @@ export class Utils {
 
       childProcess.stdout.on("data", data => {
         if (!childProcess.killed) {
-          data = String.fromCharCode.apply(null, new Uint16Array(data));
-          output.push(data);
+          output.push(data.toString());
         }
       });
       childProcess.stderr.on("data", data => {
@@ -76,9 +80,9 @@ export class Utils {
     });
   }
 
-  public static getFilePaths(uriPaths: vscode.Uri[]): string[] {
-    return _.map(uriPaths, uri => {
-      return Utils.isWindows() ? _.trimStart(uri.path, "/") : uri.path;
+  public static getFilePaths(uriPaths: Uri[]): string[] {
+    return map(uriPaths, uri => {
+      return Utils.isWindows() ? trimStart(uri.path, "/") : uri.path;
     });
   }
 
@@ -97,7 +101,7 @@ export class Utils {
     });
     if (response.exitCode === "ENOENT") {
       logger.error(`The ${cliName} Tool is not installed in the environment`);
-      vscode.window.showErrorMessage(errMessage);
+      window.showErrorMessage(errMessage);
       return false;
     }
     return true;
@@ -108,11 +112,7 @@ export class Utils {
   }
 
   private static getConfigFilePath(): string {
-    const cfHome = _.get(
-      process,
-      "env.CF_HOME",
-      path.join(os.homedir(), ".cf")
-    );
-    return path.join(cfHome, "config.json");
+    const cfHome = get(process, "env.CF_HOME", join(os.homedir(), ".cf"));
+    return join(cfHome, "config.json");
   }
 }
