@@ -72,7 +72,7 @@ export class MtarDeployCommand {
           selectionItems
         );
         if (userSelection === undefined) {
-          // selection cancled
+          // selection canceled
           return;
         }
         this.logger.info(

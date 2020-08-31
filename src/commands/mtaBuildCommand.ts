@@ -66,7 +66,7 @@ export class MtaBuildCommand {
           selectionItems
         );
         if (userSelection === undefined) {
-          // selection cancled
+          // selection canceled
           return;
         }
 

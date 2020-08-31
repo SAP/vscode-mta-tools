@@ -250,7 +250,6 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .returns(Promise.resolve(undefined));
     utilsMock.expects("getConfigFileField").never();
-    utilsMock.expects("getConfigFileField").never();
     tasksMock.expects("executeTask").never();
     swaMock
       .expects("track")
