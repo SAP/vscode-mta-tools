@@ -6,7 +6,7 @@ import { AddModuleCommand } from "./commands/addModuleCommand";
 import { messages } from "./i18n/messages";
 import {
   createExtensionLoggerAndSubscribeToLogSettingsChanges,
-  getLogger
+  getLogger,
 } from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
@@ -38,7 +38,7 @@ export function activate(context: ExtensionContext) {
     "SAPSE",
     "vscode-mta-tools",
     (err: string | number) => {
-      logger ? logger.error(err) : console.error(err);
+      logger ? logger.error(err.toString()) : console.error(err);
     }
   );
 

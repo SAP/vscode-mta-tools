@@ -9,7 +9,6 @@ import { SelectionItem } from "../../src/utils/selectionItem";
 import * as loggerWraper from "../../src/logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
-import { Uri } from "vscode";
 
 describe("MTA build command unit tests", () => {
   let sandbox: any;
@@ -42,11 +41,14 @@ describe("MTA build command unit tests", () => {
     },
     trace: () => {
       "trace";
-    }
+    },
+    getChildLogger: () => {
+      return loggerImpl;
+    },
   };
 
   const selected: any = {
-    path: "mtaProject/mta.yaml"
+    path: "mtaProject/mta.yaml",
   };
 
   const MBT_CMD = "mbt";
@@ -58,7 +60,7 @@ describe("MTA build command unit tests", () => {
   const execution = new testVscode.ShellExecution(MBT_CMD, [
     BUILD,
     SOURCE_FLAG,
-    expectedPath
+    expectedPath,
   ]);
   const buildTask = new testVscode.Task(
     { type: "shell" },
@@ -71,10 +73,7 @@ describe("MTA build command unit tests", () => {
   before(() => {
     sandbox = sinon.createSandbox();
     loggerWraperMock = sandbox.mock(loggerWraper);
-    loggerWraperMock
-      .expects("getClassLogger")
-      .returns(loggerImpl)
-      .atLeast(1);
+    loggerWraperMock.expects("getClassLogger").returns(loggerImpl).atLeast(1);
   });
 
   after(() => {
@@ -113,15 +112,12 @@ describe("MTA build command unit tests", () => {
       .once()
       .withExactArgs(MBT_CMD, ["-v"], { cwd: homeDir })
       .returns("v1.2.3");
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(buildTask);
+    tasksMock.expects("executeTask").once().withExactArgs(buildTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ])
       .returns();
     await mtaBuildCommand.mtaBuildCommand(selected, swa);
@@ -141,7 +137,7 @@ describe("MTA build command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     await mtaBuildCommand.mtaBuildCommand(undefined, swa);
@@ -154,15 +150,12 @@ describe("MTA build command unit tests", () => {
       .once()
       .withExactArgs(MBT_CMD, ["-v"], { cwd: homeDir })
       .returns("v1.2.3");
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(buildTask);
+    tasksMock.expects("executeTask").once().withExactArgs(buildTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     await mtaBuildCommand.mtaBuildCommand(undefined, swa);
@@ -185,15 +178,12 @@ describe("MTA build command unit tests", () => {
       .expects("displayOptions")
       .once()
       .returns(Promise.resolve({ label: "mtaProject/mta.yaml" }));
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(buildTask);
+    tasksMock.expects("executeTask").once().withExactArgs(buildTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     await mtaBuildCommand.mtaBuildCommand(undefined, swa);
@@ -221,7 +211,7 @@ describe("MTA build command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_BUILD_MTA, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     await mtaBuildCommand.mtaBuildCommand(undefined, swa);

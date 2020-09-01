@@ -1,9 +1,9 @@
+import { mockVscode, testVscode } from "../mockUtil";
+mockVscode("src/utils/utils");
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { Utils } from "../../src/utils/utils";
 import { SelectionItem } from "../../src/utils/selectionItem";
-import { mockVscode, testVscode } from "../mockUtil";
-mockVscode("src/utils/utils");
 
 describe("Utils unit tests", () => {
   let sandbox: any;
@@ -29,13 +29,13 @@ describe("Utils unit tests", () => {
     const inputRequest = "request";
     const selectionItems: SelectionItem[] = [
       { description: "", detail: "", label: "some/path/to/file1" },
-      { description: "", detail: "", label: "some/path/to/file2" }
+      { description: "", detail: "", label: "some/path/to/file2" },
     ];
     const options = {
       placeHolder: inputRequest,
       canPickMany: false,
       matchOnDetail: true,
-      ignoreFocusOut: true
+      ignoreFocusOut: true,
     };
     windowMock
       .expects("showQuickPick")

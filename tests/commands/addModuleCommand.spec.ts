@@ -39,11 +39,14 @@ describe("Add mta module command unit tests", () => {
     },
     trace: () => {
       "trace";
-    }
+    },
+    getChildLogger: () => {
+      return loggerImpl;
+    },
   };
 
   const selected: any = {
-    path: "mtaProject/mta.yaml"
+    path: "mtaProject/mta.yaml",
   };
 
   const MTA_CMD = "mta";
@@ -52,16 +55,13 @@ describe("Add mta module command unit tests", () => {
   const testData = {
     filter: { types: ["mta.module"] },
     messages: messagesYeoman,
-    data: {}
+    data: {},
   };
 
   before(() => {
     sandbox = sinon.createSandbox();
     loggerWraperMock = sandbox.mock(loggerWraper);
-    loggerWraperMock
-      .expects("getClassLogger")
-      .returns(loggerImpl)
-      .atLeast(1);
+    loggerWraperMock.expects("getClassLogger").returns(loggerImpl).atLeast(1);
   });
 
   after(() => {
@@ -95,7 +95,7 @@ describe("Add mta module command unit tests", () => {
   it("addModuleCommand - add MTA module from context menu", async () => {
     testData.data = {
       mtaFilePath: selected.path,
-      mtaFilesPathsList: undefined
+      mtaFilesPathsList: undefined,
     };
     utilsMock
       .expects("execCommand")
@@ -111,7 +111,7 @@ describe("Add mta module command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ])
       .returns();
     await addModuleCommand.addModuleCommand(selected, swa);
@@ -120,12 +120,9 @@ describe("Add mta module command unit tests", () => {
   it("addModuleCommand - add MTA module from context menu in Windows", async () => {
     testData.data = {
       mtaFilePath: selected.path,
-      mtaFilesPathsList: undefined
+      mtaFilesPathsList: undefined,
     };
-    utilsMock
-      .expects("isWindows")
-      .once()
-      .returns(true);
+    utilsMock.expects("isWindows").once().returns(true);
     utilsMock
       .expects("execCommand")
       .once()
@@ -140,7 +137,7 @@ describe("Add mta module command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ])
       .returns();
     await addModuleCommand.addModuleCommand(selected, swa);
@@ -149,12 +146,9 @@ describe("Add mta module command unit tests", () => {
   it("addModuleCommand - add MTA module from context menu not in Windows", async () => {
     testData.data = {
       mtaFilePath: selected.path,
-      mtaFilesPathsList: undefined
+      mtaFilesPathsList: undefined,
     };
-    utilsMock
-      .expects("isWindows")
-      .once()
-      .returns(false);
+    utilsMock.expects("isWindows").once().returns(false);
     utilsMock
       .expects("execCommand")
       .once()
@@ -169,7 +163,7 @@ describe("Add mta module command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ])
       .returns();
     await addModuleCommand.addModuleCommand(selected, swa);
@@ -186,7 +180,7 @@ describe("Add mta module command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     windowMock.expects("showErrorMessage").withExactArgs(messages.NO_MTA_FILE);
@@ -196,7 +190,7 @@ describe("Add mta module command unit tests", () => {
   it("addModuleCommand - add MTA module command with several mta.yaml files in the project", async () => {
     testData.data = {
       mtaFilePath: undefined,
-      mtaFilesPathsList: `${selected.path},mtaProject2/mta.yaml`
+      mtaFilesPathsList: `${selected.path},mtaProject2/mta.yaml`,
     };
     utilsMock
       .expects("execCommand")
@@ -215,7 +209,7 @@ describe("Add mta module command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     await addModuleCommand.addModuleCommand(undefined, swa);
@@ -236,7 +230,7 @@ describe("Add mta module command unit tests", () => {
   it("addModuleCommand - add MTA module with no loadYeomanUi command", async () => {
     testData.data = {
       mtaFilePath: undefined,
-      mtaFilesPathsList: `${selected.path},mtaProject2/mta.yaml`
+      mtaFilesPathsList: `${selected.path},mtaProject2/mta.yaml`,
     };
     utilsMock
       .expects("execCommand")
@@ -251,10 +245,7 @@ describe("Add mta module command unit tests", () => {
       .once()
       .withExactArgs("loadYeomanUI", testData)
       .returns(Promise.reject("error"));
-    swaMock
-      .expects("track")
-      .once()
-      .returns();
+    swaMock.expects("track").once().returns();
     windowMock.expects("showErrorMessage").once();
     await addModuleCommand.addModuleCommand(undefined, swa);
   });

@@ -4,15 +4,16 @@ import {
   getExtensionLogger,
   getExtensionLoggerOpts,
   IChildLogger,
-  IVSCodeExtLogger
+  IVSCodeExtLogger,
+  LogLevel,
 } from "@vscode-logging/logger";
 import {
   listenToLogSettingsChanges,
-  logLoggerDetails
+  logLoggerDetails,
 } from "./settings-changes-handler";
 import {
   getLoggingLevelSetting,
-  getSourceLocationTrackingSetting
+  getSourceLocationTrackingSetting,
 } from "./settings";
 
 const PACKAGE_JSON = "package.json";
@@ -51,10 +52,6 @@ export function getClassLogger(className: string): IChildLogger {
   return getLogger().getChildLogger({ label: className });
 }
 
-function getLibraryLogger(libraryName: string): IChildLogger {
-  return getLogger().getChildLogger({ label: libraryName });
-}
-
 export function createExtensionLoggerAndSubscribeToLogSettingsChanges(
   context: ExtensionContext
 ) {
@@ -73,7 +70,7 @@ function initLoggerWrapper(newLogger: any) {
 
 function createExtensionLogger(context: ExtensionContext) {
   const contextLogPath = context.logPath;
-  const logLevelSetting: string = getLoggingLevelSetting();
+  const logLevelSetting: LogLevel = getLoggingLevelSetting();
   const sourceLocationTrackingSettings: boolean = getSourceLocationTrackingSetting();
 
   const meta = require(resolve(context.extensionPath, PACKAGE_JSON));
@@ -81,7 +78,7 @@ function createExtensionLogger(context: ExtensionContext) {
     extName: meta.name,
     level: logLevelSetting,
     logPath: contextLogPath,
-    sourceLocationTracking: sourceLocationTrackingSettings
+    sourceLocationTracking: sourceLocationTrackingSettings,
   };
 
   // The Logger must first be initialized before any logging commands may be invoked.
@@ -95,5 +92,5 @@ module.exports = {
   getLogger,
   createExtensionLoggerAndSubscribeToLogSettingsChanges,
   getClassLogger,
-  ERROR_LOGGER_NOT_INITIALIZED
+  ERROR_LOGGER_NOT_INITIALIZED,
 };

@@ -42,11 +42,14 @@ describe("Deploy mtar command unit tests", () => {
     },
     trace: () => {
       "trace";
-    }
+    },
+    getChildLogger: () => {
+      return loggerImpl;
+    },
   };
 
   const selected: any = {
-    path: "mta_archives/mtaProject_0.0.1.mtar"
+    path: "mta_archives/mtaProject_0.0.1.mtar",
   };
   const CF_CMD = "cf";
   const CF_LOGIN_CMD = "cf.login";
@@ -68,10 +71,7 @@ describe("Deploy mtar command unit tests", () => {
   before(() => {
     sandbox = sinon.createSandbox();
     loggerWraperMock = sandbox.mock(loggerWraper);
-    loggerWraperMock
-      .expects("getClassLogger")
-      .returns(loggerImpl)
-      .atLeast(1);
+    loggerWraperMock.expects("getClassLogger").returns(loggerImpl).atLeast(1);
   });
 
   after(() => {
@@ -121,15 +121,12 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs("SpaceFields")
       .atLeast(1)
       .resolves({ Name: "space" });
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(deployTask);
+    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ])
       .returns();
     await mtarDeployCommand.mtarDeployCommand(selected, swa);
@@ -146,7 +143,7 @@ describe("Deploy mtar command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     tasksMock.expects("executeTask").never();
@@ -173,15 +170,12 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs("SpaceFields")
       .atLeast(1)
       .resolves({ Name: "space" });
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(deployTask);
+    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     await mtarDeployCommand.mtarDeployCommand(undefined, swa);
@@ -216,15 +210,12 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs("SpaceFields")
       .atLeast(1)
       .resolves({ Name: "space" });
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(deployTask);
+    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     await mtarDeployCommand.mtarDeployCommand(undefined, swa);
@@ -255,7 +246,7 @@ describe("Deploy mtar command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
       .returns();
     await mtarDeployCommand.mtarDeployCommand(undefined, swa);
@@ -311,14 +302,8 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs("SpaceFields")
       .atLeast(1)
       .resolves({ Name: "space" });
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(deployTask);
-    swaMock
-      .expects("track")
-      .once()
-      .returns();
+    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
+    swaMock.expects("track").once().returns();
     await mtarDeployCommand.mtarDeployCommand(selected, swa);
   });
 
@@ -338,16 +323,9 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs("SpaceFields")
       .atLeast(1)
       .resolves();
-    commandsMock
-      .expects("getCommands")
-      .once()
-      .withExactArgs(true)
-      .returns([]);
+    commandsMock.expects("getCommands").once().withExactArgs(true).returns([]);
     tasksMock.expects("executeTask").never();
-    swaMock
-      .expects("track")
-      .once()
-      .returns();
+    swaMock.expects("track").once().returns();
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.LOGIN_VIA_CLI);
