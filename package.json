@@ -173,12 +173,10 @@
   },
   "lint-staged": {
     "*.{ts,js,json,md,yml}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.{ts}": [
-      "tslint --fix -c ./tslint.yml",
-      "git add"
+      "tslint --fix -c ./tslint.yml"
     ]
   },
   "config": {
