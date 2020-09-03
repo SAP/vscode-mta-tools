@@ -2,7 +2,7 @@ module.exports = {
   reporter: ["text", "lcov"],
   include: ["out/src/**"],
   exclude: ["out/src/logger/**"],
-  branches: 85,
+  branches: 84,
   lines: 95,
   functions: 90,
   statements: 95,
