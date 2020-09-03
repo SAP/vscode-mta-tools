@@ -1,32 +1,18 @@
 import { expect } from "chai";
-import * as sinon from "sinon";
+import { Uri } from "vscode";
 import { SelectionItem } from "../../src/utils/selectionItem";
 
 describe("SelectionItem unit tests", () => {
-  let sandbox: any;
-
-  const item1 = {
-    path: "some/path/to/file1"
-  };
-  const item2 = {
-    path: "some/path/to/file2"
-  };
-
-  before(() => {
-    sandbox = sinon.createSandbox();
-  });
-
-  after(() => {
-    sandbox = sinon.restore();
-  });
-
-  it("getSelectionItems - create selection items from paths", async () => {
-    const filePaths = { item1, item2 };
+  it("getSelectionItems - create selection items from paths", () => {
+    const filePaths = [
+      { path: "some/path/to/file1" } as Uri,
+      { path: "some/path/to/file2" } as Uri,
+    ];
     const expectedItems = [
       { description: "", detail: "", label: "some/path/to/file1" },
-      { description: "", detail: "", label: "some/path/to/file2" }
+      { description: "", detail: "", label: "some/path/to/file2" },
     ];
-    const selectionItems: SelectionItem[] = await SelectionItem.getSelectionItems(
+    const selectionItems: SelectionItem[] = SelectionItem.getSelectionItems(
       filePaths
     );
     expect(selectionItems).to.deep.equal(expectedItems);

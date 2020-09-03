@@ -10,22 +10,31 @@ import {
 } from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
-export function mtaBuildCommand(swa: SWATracker, selected: Uri | undefined) {
+export async function mtaBuildCommand(
+  swa: SWATracker,
+  selected: Uri | undefined
+): Promise<void> {
   const command: MtaBuildCommand = new MtaBuildCommand();
-  return command.mtaBuildCommand(selected, swa);
+  return await command.mtaBuildCommand(selected, swa);
 }
 
-export function mtarDeployCommand(swa: SWATracker, selected: Uri | undefined) {
+export async function mtarDeployCommand(
+  swa: SWATracker,
+  selected: Uri | undefined
+): Promise<void> {
   const command: MtarDeployCommand = new MtarDeployCommand();
-  return command.mtarDeployCommand(selected, swa);
+  return await command.mtarDeployCommand(selected, swa);
 }
 
-export function addModuleCommand(swa: SWATracker, selected: Uri | undefined) {
+export async function addModuleCommand(
+  swa: SWATracker,
+  selected: Uri | undefined
+): Promise<void> {
   const command: AddModuleCommand = new AddModuleCommand();
-  return command.addModuleCommand(selected, swa);
+  return await command.addModuleCommand(selected, swa);
 }
 
-export function activate(context: ExtensionContext) {
+export function activate(context: ExtensionContext): void {
   try {
     createExtensionLoggerAndSubscribeToLogSettingsChanges(context);
   } catch (error) {
@@ -38,7 +47,8 @@ export function activate(context: ExtensionContext) {
     "SAPSE",
     "vscode-mta-tools",
     (err: string | number) => {
-      logger ? logger.error(err.toString()) : console.error(err);
+      /* istanbul ignore next */
+      return logger ? logger.error(err.toString()) : console.error(err);
     }
   );
 

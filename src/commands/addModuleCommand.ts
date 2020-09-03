@@ -19,7 +19,9 @@ export class AddModuleCommand {
   private mtaFilesPathsList: string | undefined;
 
   // Logger
-  private readonly logger: IChildLogger = getClassLogger(AddModuleCommand.name);
+  private readonly logger: IChildLogger | undefined = getClassLogger(
+    AddModuleCommand.name
+  );
 
   public async addModuleCommand(
     selected: Uri | undefined,
@@ -30,7 +32,7 @@ export class AddModuleCommand {
       !(await Utils.isCliToolInstalled(
         CLOUD_MTA_COMMAND,
         messages.INSTALL_MTA,
-        this.logger
+        this.logger ?? undefined
       ))
     ) {
       return;
@@ -39,13 +41,13 @@ export class AddModuleCommand {
     if (selected) {
       // Command called from context menu, add usage analytics
       swa.track(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ]);
       this.mtaFilePath = selected.path;
       this.mtaFilePath = Utils.isWindows()
         ? trimStart(this.mtaFilePath, "/")
         : this.mtaFilePath;
-      this.logger.info(`The user selection file path: ${this.mtaFilePath}`);
+      this.logger?.info(`The user selection file path: ${this.mtaFilePath}`);
       // add mta.yaml path info to template description
       messagesYeoman.select_generator_description =
         ORIGINAL_DESCRIPTION +
@@ -53,7 +55,7 @@ export class AddModuleCommand {
     } else {
       // Command is called from command pallet, add usage analytics
       swa.track(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ]);
       messagesYeoman.select_generator_description = ORIGINAL_DESCRIPTION;
       const mtaYamlFilesPaths = await workspace.findFiles(
@@ -63,15 +65,15 @@ export class AddModuleCommand {
       const len = mtaYamlFilesPaths.length;
       if (len === 0) {
         this.mtaFilesPathsList = undefined;
-        this.logger.error(messages.NO_MTA_FILE);
-        window.showErrorMessage(messages.NO_MTA_FILE);
+        this.logger?.error(messages.NO_MTA_FILE);
+        void window.showErrorMessage(messages.NO_MTA_FILE);
         return;
       } else {
         const mtaYamlFilesPathsNormalized = Utils.getFilePaths(
           mtaYamlFilesPaths
         );
         this.mtaFilesPathsList = mtaYamlFilesPathsNormalized.join(",");
-        this.logger.info(
+        this.logger?.info(
           `The file paths available for selection are: ${this.mtaFilesPathsList}`
         );
       }
@@ -79,18 +81,18 @@ export class AddModuleCommand {
 
     const mtaData: IMtaData = {
       mtaFilePath: this.mtaFilePath,
-      mtaFilesPathsList: this.mtaFilesPathsList
+      mtaFilesPathsList: this.mtaFilesPathsList,
     };
 
     try {
       await commands.executeCommand("loadYeomanUI", {
         filter: { types: ["mta.module"] },
         messages: messagesYeoman,
-        data: mtaData
+        data: mtaData,
       });
     } catch (err) {
-      this.logger.error(err.message);
-      window.showErrorMessage(err.message);
+      this.logger?.error(err.message);
+      void window.showErrorMessage(err.message);
     }
   }
 }

@@ -20,10 +20,3 @@ export function getLoggingLevelSetting(): LogLevel {
 export function getSourceLocationTrackingSetting(): boolean {
   return workspace.getConfiguration().get(SOURCE_TRACKING_CONFIG_PROP) ?? false;
 }
-
-module.exports = {
-  LOGGING_LEVEL_CONFIG_PROP,
-  SOURCE_TRACKING_CONFIG_PROP,
-  getLoggingLevelSetting,
-  getSourceLocationTrackingSetting,
-};

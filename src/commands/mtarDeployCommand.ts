@@ -1,3 +1,4 @@
+import * as os from "os";
 import { includes, trimStart, get, isEmpty } from "lodash";
 import {
   Uri,
@@ -5,7 +6,7 @@ import {
   workspace,
   commands,
   ShellExecution,
-  ShellExecutionOptions
+  ShellExecutionOptions,
 } from "vscode";
 import { Utils } from "../utils/utils";
 import { SelectionItem } from "../utils/selectionItem";
@@ -16,11 +17,11 @@ import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
 const CF_COMMAND = "cf";
 const CF_LOGIN_COMMAND = "cf.login";
-const homeDir = require("os").homedir();
+const homeDir = os.homedir();
 
 export class MtarDeployCommand {
   // Logger
-  private readonly logger: IChildLogger = getClassLogger(
+  private readonly logger: IChildLogger | undefined = getClassLogger(
     MtarDeployCommand.name
   );
 
@@ -33,8 +34,8 @@ export class MtarDeployCommand {
       ["plugins", "--checksum"],
       { cwd: homeDir }
     );
-    if (!includes(response.data, "multiapps")) {
-      window.showErrorMessage(messages.INSTALL_MTA_CF_CLI);
+    if (!includes(response.stdout, "multiapps")) {
+      void window.showErrorMessage(messages.INSTALL_MTA_CF_CLI);
       return;
     }
 
@@ -43,22 +44,19 @@ export class MtarDeployCommand {
     if (selected) {
       // Command called from context menu, add usage analytics
       swa.track(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ]);
       path = selected.path;
     } else {
       // Command is called from command pallet, add usage analytics
       swa.track(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ]);
-      const mtarFilesPaths = await workspace.findFiles(
-        "**/*.mtar",
-        "**/node_modules/**"
-      );
+      const mtarFilesPaths = await workspace.findFiles("**/*.mtar", null);
       const len = mtarFilesPaths.length;
       if (len === 0) {
-        this.logger.error(messages.NO_MTA_ARCHIVE);
-        window.showErrorMessage(messages.NO_MTA_ARCHIVE);
+        this.logger?.error(messages.NO_MTA_ARCHIVE);
+        void window.showErrorMessage(messages.NO_MTA_ARCHIVE);
         return;
       } else if (len === 1) {
         path = mtarFilesPaths[0].path;
@@ -75,7 +73,7 @@ export class MtarDeployCommand {
           // selection canceled
           return;
         }
-        this.logger.info(
+        this.logger?.info(
           `The user selection file path: ${userSelection.label}`
         );
         path = userSelection.label;
@@ -86,7 +84,7 @@ export class MtarDeployCommand {
     if (await this.isLoggedInToCF()) {
       await this.execDeployCmd(path);
     } else {
-      this.logger.info(`User is not logged in to Cloud Foundry`);
+      this.logger?.info(`User is not logged in to Cloud Foundry`);
       await this.loginToCF();
       if (await this.isLoggedInToCF()) {
         await this.execDeployCmd(path);
@@ -94,20 +92,20 @@ export class MtarDeployCommand {
     }
   }
 
-  private async execDeployCmd(path: string): Promise<any> {
+  private async execDeployCmd(path: string): Promise<void> {
     const options: ShellExecutionOptions = { cwd: homeDir };
     const execution = new ShellExecution(
       CF_COMMAND + " deploy " + path,
       options
     );
-    this.logger.info(`Deploy MTA Archive starts`);
+    this.logger?.info(`Deploy MTA Archive starts`);
     Utils.execTask(execution, messages.DEPLOY_MTAR);
   }
 
   private async isLoggedInToCF(): Promise<boolean> {
     const results = await Promise.all([
-      Utils.getConfigFileField("OrganizationFields"),
-      Utils.getConfigFileField("SpaceFields")
+      Utils.getConfigFileField("OrganizationFields", this.logger),
+      Utils.getConfigFileField("SpaceFields", this.logger),
     ]);
     const orgField = get(results, "[0].Name");
     const spaceField = get(results, "[1].Name");
@@ -119,7 +117,7 @@ export class MtarDeployCommand {
     if (includes(allCommands, CF_LOGIN_COMMAND)) {
       await commands.executeCommand(CF_LOGIN_COMMAND);
     } else {
-      window.showErrorMessage(messages.LOGIN_VIA_CLI);
+      void window.showErrorMessage(messages.LOGIN_VIA_CLI);
     }
   }
 }
