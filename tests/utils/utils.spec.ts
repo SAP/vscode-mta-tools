@@ -1,8 +1,8 @@
 import { mockVscode, testVscode } from "../mockUtil";
 mockVscode("src/utils/utils");
 import { expect } from "chai";
-import { resolve } from "path";
 import { Uri } from "vscode";
+import { resolve } from "path";
 import * as sinon from "sinon";
 import { Utils } from "../../src/utils/utils";
 import { SelectionItem } from "../../src/utils/selectionItem";
@@ -62,7 +62,7 @@ describe("Utils unit tests", () => {
   });
 
   it("getConfigFileField - get the values of field from config file", async () => {
-    const path = resolve("../vscode-mta-tools/tests/resources/configFile.json");
+    const path = resolve(__dirname, "../../../tests/resources/configFile.json");
     utilsMock.expects("getConfigFilePath").once().returns(path);
     const response = await Utils.getConfigFileField("field1", undefined);
     expect(response).to.deep.equal(["a", "b"]);
