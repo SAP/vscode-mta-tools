@@ -1,7 +1,6 @@
 import { mockVscode, testVscode } from "../mockUtil";
 mockVscode("src/utils/utils");
 import { expect } from "chai";
-import { resolve } from "path";
 import { Uri } from "vscode";
 import * as sinon from "sinon";
 import { Utils } from "../../src/utils/utils";
@@ -59,13 +58,6 @@ describe("Utils unit tests", () => {
   it("execCommand - execute unsupported command in child process", async () => {
     const response = await Utils.execCommand("bla", ["bla"], {});
     expect(response.exitCode).to.equal("ENOENT");
-  });
-
-  it("getConfigFileField - get the values of field from config file", async () => {
-    const path = resolve("../vscode-mta-tools/tests/resources/configFile.json");
-    utilsMock.expects("getConfigFilePath").once().returns(path);
-    const response = await Utils.getConfigFileField("field1", undefined);
-    expect(response).to.deep.equal(["a", "b"]);
   });
 
   it("getConfigFileField - unable to fetch field from non existing config file", async () => {
