@@ -3,13 +3,11 @@ node_modules
 
 # The VSCode Extension's dev artifacts
 .idea/**
-.pipeline/**
 .vscode/**
 .vscode-test/**
 .nyc_output/**
 .circleci/**
 .github/**
-.reuse/**
 coverage/**
 tests/**
 
