@@ -48,7 +48,11 @@ export function activate(context: ExtensionContext): void {
     "vscode-mta-tools",
     (err: string | number) => {
       /* istanbul ignore next */
-      return logger ? logger.error(err.toString()) : console.error(err);
+      if (logger != undefined) {
+        logger.error(err.toString());
+      } else {
+        console.error(err);
+      }
     }
   );
 

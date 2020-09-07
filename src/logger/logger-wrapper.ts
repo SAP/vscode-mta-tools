@@ -39,11 +39,13 @@ function isInitialized(): boolean {
  *
  * @returns { IVSCodeExtLogger }
  */
-export function getLogger(): IVSCodeExtLogger | undefined {
+export function getLogger(): IVSCodeExtLogger {
   if (isInitialized() === false) {
     throw Error(ERROR_LOGGER_NOT_INITIALIZED);
   }
-  return logger;
+  // logger can't be undefined because isInitialized() already checks it
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return logger!;
 }
 
 export function getClassLogger(className: string): IChildLogger | undefined {
