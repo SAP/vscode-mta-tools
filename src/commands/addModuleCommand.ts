@@ -39,7 +39,7 @@ export class AddModuleCommand {
     if (selected) {
       // Command called from context menu, add usage analytics
       swa.track(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ]);
       this.mtaFilePath = selected.path;
       this.mtaFilePath = Utils.isWindows()
@@ -53,7 +53,7 @@ export class AddModuleCommand {
     } else {
       // Command is called from command pallet, add usage analytics
       swa.track(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ]);
       messagesYeoman.select_generator_description = ORIGINAL_DESCRIPTION;
       const mtaYamlFilesPaths = await workspace.findFiles(
@@ -64,7 +64,7 @@ export class AddModuleCommand {
       if (len === 0) {
         this.mtaFilesPathsList = undefined;
         this.logger.error(messages.NO_MTA_FILE);
-        window.showErrorMessage(messages.NO_MTA_FILE);
+        void window.showErrorMessage(messages.NO_MTA_FILE);
         return;
       } else {
         const mtaYamlFilesPathsNormalized = Utils.getFilePaths(
@@ -79,18 +79,18 @@ export class AddModuleCommand {
 
     const mtaData: IMtaData = {
       mtaFilePath: this.mtaFilePath,
-      mtaFilesPathsList: this.mtaFilesPathsList
+      mtaFilesPathsList: this.mtaFilesPathsList,
     };
 
     try {
       await commands.executeCommand("loadYeomanUI", {
         filter: { types: ["mta.module"] },
         messages: messagesYeoman,
-        data: mtaData
+        data: mtaData,
       });
     } catch (err) {
       this.logger.error(err.message);
-      window.showErrorMessage(err.message);
+      void window.showErrorMessage(err.message);
     }
   }
 }

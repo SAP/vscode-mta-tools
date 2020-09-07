@@ -1,10 +1,11 @@
+import * as os from "os";
 import { replace, trimStart } from "lodash";
 import {
   Uri,
   window,
   workspace,
   ShellExecution,
-  ShellExecutionOptions
+  ShellExecutionOptions,
 } from "vscode";
 import { Utils } from "../utils/utils";
 import { SelectionItem } from "../utils/selectionItem";
@@ -14,7 +15,7 @@ import { IChildLogger } from "@vscode-logging/logger";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
 const MBT_COMMAND = "mbt";
-const homeDir = require("os").homedir();
+const homeDir = os.homedir();
 
 export class MtaBuildCommand {
   // Logger
@@ -38,13 +39,13 @@ export class MtaBuildCommand {
     if (selected) {
       // Command called from context menu, add usage analytics
       swa.track(messages.EVENT_TYPE_BUILD_MTA, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ]);
       path = selected.path;
     } else {
       // Command is called from command pallet, add usage analytics
       swa.track(messages.EVENT_TYPE_BUILD_MTA, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ]);
       const mtaYamlFilesPaths = await workspace.findFiles(
         "**/mta.yaml",
@@ -52,13 +53,13 @@ export class MtaBuildCommand {
       );
       const len = mtaYamlFilesPaths.length;
       if (len === 0) {
-        window.showErrorMessage(messages.NO_PROJECT_DESCRIPTOR);
+        void window.showErrorMessage(messages.NO_PROJECT_DESCRIPTOR);
         return;
       } else if (len === 1) {
         path = mtaYamlFilesPaths[0].path;
       } else {
         const inputRequest = messages.SELECT_PROJECT_DESCRIPTOR;
-        const selectionItems: SelectionItem[] = await SelectionItem.getSelectionItems(
+        const selectionItems: SelectionItem[] = SelectionItem.getSelectionItems(
           mtaYamlFilesPaths
         );
         const userSelection = await Utils.displayOptions(

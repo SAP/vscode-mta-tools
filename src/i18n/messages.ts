@@ -8,6 +8,7 @@ export const messages = {
     "Extension activation failed due to Logger configuration failure:",
   BUILD_MTA: "Build MTA",
   DEPLOY_MTAR: "Deploy MTA Archive",
+  CHANNEL_NAME: "MTA",
   SELECT_PROJECT_DESCRIPTOR:
     "Select the folder containing the MTA project descriptor file (mta.yaml)",
   NO_PROJECT_DESCRIPTOR:
@@ -28,7 +29,7 @@ export const messages = {
   EVENT_TYPE_BUILD_MTA: "Build MTA",
   EVENT_TYPE_DEPLOY_MTAR: "Deploy mtar",
   CUSTOM_EVENT_CONTEXT_MENU: "Context Menu",
-  CUSTOM_EVENT_COMMAND_PALETTE: "Command Palette"
+  CUSTOM_EVENT_COMMAND_PALETTE: "Command Palette",
 };
 
 export const messagesYeoman = {
@@ -39,5 +40,5 @@ export const messagesYeoman = {
   select_generator_question_hint: selectTemplateQuestionHint,
   select_generator_description: `${selectTemplateQuestionHint}.\n${selectMtaProjectQuestionHint}.`,
   select_mtaFile_hint: "Path to the selected project's 'mta.yaml' file:",
-  artifact_generated: "The module has been created."
+  artifact_generated: "The module has been created.",
 };

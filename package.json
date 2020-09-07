@@ -13,7 +13,7 @@
     "access": "public"
   },
   "engines": {
-    "vscode": "^1.36.0"
+    "vscode": "^1.44.0"
   },
   "categories": [
     "Other"
@@ -120,7 +120,7 @@
     "compile": "tsc -p ./",
     "format:fix": "prettier --write --ignore-path .gitignore \"**/*.@(ts|js|json|md|yml)\"",
     "format:validate": "prettier --check --ignore-path .gitignore \"**/*.@(ts|js|json|md|yml)\"",
-    "lint": "tslint '{src,tests}/**/*.ts' -c ./tslint.yml",
+    "lint": "eslint . --ext .ts --fix --max-warnings=0",
     "build": "vsce package",
     "test": "nyc mocha -p tsconfig.json",
     "coverage:check": "nyc mocha -p tsconfig.json",
@@ -129,43 +129,45 @@
     "webpack:watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "lodash": "4.17.19",
-    "comment-json": "3.0.2",
+    "lodash": "4.17.20",
+    "comment-json": "4.0.2",
     "fs-extra": "9.0.1",
-    "@vscode-logging/logger": "~0.1.1",
-    "@sap/swa-for-sapbas-vsx": "1.0.4"
+    "@vscode-logging/logger": "^1.1.0",
+    "@sap/swa-for-sapbas-vsx": "1.1.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/fs-extra": "^9.0.1",
+    "@commitlint/cli": "^10.0.0",
+    "@commitlint/config-conventional": "^9.1.2",
+    "@types/chai": "^4.2.12",
     "@types/comment-json": "^1.1.1",
-    "@types/lodash": "4.14.108",
-    "@types/mocha": "^5.2.6",
-    "@types/node": "^10.12.21",
-    "@types/sinon": "^7.0.13",
-    "@types/vscode": "^1.36.0",
-    "@types/winston": "^2.4.4",
+    "@types/fs-extra": "^9.0.1",
+    "@types/lodash": "^4.14.161",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^14.0.13",
+    "@types/sinon": "^9.0.4",
+    "@types/vscode": "1.44.0",
+    "@typescript-eslint/eslint-plugin": "^3.7.0",
+    "@typescript-eslint/parser": "^2.33.0",
     "chai": "^4.2.0",
-    "mocha": "^6.1.4",
-    "nyc": "^14.1.1",
-    "sinon": "^8.1.1",
-    "tslint": "^5.18.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-no-unused-expression-chai": "^0.1.4",
+    "conventional-changelog-cli": "^2.1.0",
+    "conventional-recommended-bump": "^6.0.10",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-eslint-comments": "^3.1.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.13",
+    "mocha": "^8.1.3",
+    "mock-spawn": "^0.2.6",
+    "npm-run-all": "^4.1.5",
+    "nyc": "^15.1.0",
+    "prettier": "^2.1.1",
+    "sinon": "^9.0.3",
+    "source-map-support": "^0.5.19",
     "ts-loader": "^8.0.3",
     "typescript": "3.9.5",
-    "prettier": "^1.19.1",
-    "vsce": "^1.76.1",
-    "vscode-test": "^1.3.0",
-    "npm-run-all": "^4.1.5",
-    "lint-staged": "^9.5.0",
-    "husky": "^4.2.5",
-    "source-map-support": "^0.5.12",
-    "conventional-recommended-bump": "^6.0.9",
-    "conventional-changelog-cli": "^2.0.27",
-    "cz-conventional-changelog": "^3.0.2",
-    "@commitlint/cli": "^8.2.0",
-    "@commitlint/config-conventional": "^8.2.0",
+    "vsce": "^1.79.5",
+    "vscode-test": "^1.4.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },
@@ -179,13 +181,11 @@
     }
   },
   "lint-staged": {
-    "*.{ts,js,json,md,yml}": [
-      "prettier --write",
-      "git add"
+    "*.{js,ts,md,json}": [
+      "prettier --write"
     ],
     "*.{ts}": [
-      "tslint --fix -c ./tslint.yml",
-      "git add"
+      "eslint --fix --max-warnings=0"
     ]
   },
   "config": {

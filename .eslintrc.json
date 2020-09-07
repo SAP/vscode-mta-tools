@@ -1,0 +1,29 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:eslint-comments/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      { "functions": false }
+    ],
+    "@typescript-eslint/no-unused-expressions": ["error"],
+    "@typescript-eslint/no-floating-promises": [
+      "error",
+      { "ignoreVoid": true }
+    ],
+    "@typescript-eslint/strict-boolean-expressions": [
+      "error",
+      { "allowString": true, "allowNullableString": true }
+    ]
+  },
+  "ignorePatterns": ["**/*.js"]
+}

@@ -3,15 +3,17 @@ import { getLogger } from "./logger-wrapper";
 import {
   LOGGING_LEVEL_CONFIG_PROP,
   SOURCE_TRACKING_CONFIG_PROP,
-  getLoggingLevelSetting
+  getLoggingLevelSetting,
+  getSourceLocationTrackingSetting,
 } from "./settings";
+import { LogLevel } from "@vscode-logging/logger";
 
 export function logLoggerDetails(
   context: ExtensionContext,
   configLogLevel: string
 ): void {
-  getLogger().info(`Start Logging in Log Level: <${configLogLevel}>`);
-  getLogger().info(
+  getLogger()?.info(`Start Logging in Log Level: <${configLogLevel}>`);
+  getLogger()?.info(
     `Full Logs can be found in the <${context.logPath}> folder.`
   );
 }
@@ -19,15 +21,15 @@ export function logLoggerDetails(
 /**
  * @param {ExtensionContext} context
  */
-export function listenToLogSettingsChanges(context: ExtensionContext) {
+export function listenToLogSettingsChanges(context: ExtensionContext): void {
   // To enable dynamic logging level we must listen to VSCode configuration changes
   // on our `loggingLevelConfigProp` configuration setting.
   context.subscriptions.push(
-    workspace.onDidChangeConfiguration(e => {
+    workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration(LOGGING_LEVEL_CONFIG_PROP)) {
-        const logLevel: string = getLoggingLevelSetting();
+        const logLevel: LogLevel = getLoggingLevelSetting();
 
-        getLogger().changeLevel(logLevel);
+        getLogger()?.changeLevel(logLevel);
         logLoggerDetails(context, logLevel);
       }
     })
@@ -35,19 +37,11 @@ export function listenToLogSettingsChanges(context: ExtensionContext) {
 
   // Enable responding to changes in the sourceLocationTracking setting
   context.subscriptions.push(
-    workspace.onDidChangeConfiguration(e => {
+    workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration(SOURCE_TRACKING_CONFIG_PROP)) {
-        const newSourceLocationTracking = workspace
-          .getConfiguration()
-          .get(SOURCE_TRACKING_CONFIG_PROP);
-
-        getLogger().changeSourceLocationTracking(newSourceLocationTracking);
+        const newSourceLocationTracking = getSourceLocationTrackingSetting();
+        getLogger()?.changeSourceLocationTracking(newSourceLocationTracking);
       }
     })
   );
 }
-
-module.exports = {
-  listenToLogSettingsChanges,
-  logLoggerDetails
-};

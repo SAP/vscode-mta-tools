@@ -7,12 +7,12 @@ import {
   ShellExecution,
   Task,
   TaskScope,
-  tasks
+  tasks,
 } from "vscode";
 import { join } from "path";
 import { readFile } from "fs-extra";
 import { parse } from "comment-json";
-import { spawn } from "child_process";
+import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { IChildLogger } from "@vscode-logging/logger";
 
 export class Utils {
@@ -24,12 +24,15 @@ export class Utils {
       placeHolder: inputRequest,
       canPickMany: false,
       matchOnDetail: true,
-      ignoreFocusOut: true
+      ignoreFocusOut: true,
     };
     return window.showQuickPick(optionsList, options);
   }
 
-  public static async getConfigFileField(field: string): Promise<any> {
+  public static async getConfigFileField(
+    field: string,
+    logger: IChildLogger
+  ): Promise<unknown> {
     const configFilePath = this.getConfigFilePath();
     try {
       const jsonStr = await readFile(configFilePath, "utf8");
@@ -37,6 +40,8 @@ export class Utils {
       return configJson[field];
     } catch (error) {
       // empty or non existing file
+      logger.error(`Could not fetch field from config file`);
+      return;
     }
   }
 
@@ -49,39 +54,66 @@ export class Utils {
       execution
     );
 
-    tasks.executeTask(task);
+    void tasks.executeTask(task);
   }
 
   public static async execCommand(
     command: string,
     commandArgs: string[],
-    options?: any
-  ): Promise<any> {
-    return new Promise<string>((resolve, reject) => {
-      const output: string[] = [];
+    options: SpawnOptionsWithoutStdio
+  ): Promise<ChildProcessResult> {
+    return new Promise<ChildProcessResult>((resolve) => {
+      let output = "";
+      let errOutput = "";
       const childProcess = spawn(command, commandArgs, options);
+      let exited = false;
 
-      childProcess.stdout.on("data", data => {
+      childProcess.stdout.on("data", (data: string | Buffer) => {
         if (!childProcess.killed) {
-          output.push(data.toString());
+          output += data.toString();
         }
       });
-      childProcess.stderr.on("data", data => {
-        resolve(data);
+
+      childProcess.stderr.on("data", (data: string | Buffer) => {
+        /* istanbul ignore next */
+        if (!childProcess.killed) {
+          errOutput += data.toString();
+        }
       });
-      childProcess.on("exit", (code: number) => {
-        const stdout = output.join("").trim();
-        this.resultOnExit(stdout, resolve, code);
+
+      childProcess.on("exit", (code: number | null, signal: string | null) => {
+        /* istanbul ignore if */
+        if (exited) {
+          return;
+        }
+        exited = true;
+
+        resolve({
+          // Either code or signal will be non-null
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          exitCode: (code ?? signal)!,
+          stdout: output.trim(),
+          stderr: errOutput.trim(),
+        });
       });
-      childProcess.on("error", (err: any) => {
-        const stdout = output.join("").trim();
-        this.resultOnExit(stdout, resolve, err.code);
+
+      childProcess.on("error", (err: { code: string }) => {
+        /* istanbul ignore if */
+        if (exited) {
+          return;
+        }
+        exited = true;
+        resolve({
+          exitCode: err.code,
+          stdout: output.trim(),
+          stderr: errOutput.trim(),
+        });
       });
     });
   }
 
   public static getFilePaths(uriPaths: Uri[]): string[] {
-    return map(uriPaths, uri => {
+    return map(uriPaths, (uri) => {
       return Utils.isWindows() ? trimStart(uri.path, "/") : uri.path;
     });
   }
@@ -97,18 +129,14 @@ export class Utils {
   ): Promise<boolean> {
     const homeDir = os.homedir();
     const response = await Utils.execCommand(cliName, ["-v"], {
-      cwd: homeDir
+      cwd: homeDir,
     });
     if (response.exitCode === "ENOENT") {
       logger.error(`The ${cliName} Tool is not installed in the environment`);
-      window.showErrorMessage(errMessage);
+      void window.showErrorMessage(errMessage);
       return false;
     }
     return true;
-  }
-
-  private static resultOnExit(stdout: string, resolve: any, code: any) {
-    resolve({ exitCode: code, data: stdout });
   }
 
   private static getConfigFilePath(): string {
@@ -116,3 +144,9 @@ export class Utils {
     return join(cfHome, "config.json");
   }
 }
+
+type ChildProcessResult = {
+  exitCode: number | string;
+  stdout: string;
+  stderr: string;
+};

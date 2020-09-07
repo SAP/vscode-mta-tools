@@ -1,4 +1,6 @@
 import * as sinon from "sinon";
+import * as os from "os";
+import { Uri } from "vscode";
 import { mockVscode, testVscode } from "../mockUtil";
 mockVscode("src/commands/mtarDeployCommand");
 import { MtarDeployCommand } from "../../src/commands/mtarDeployCommand";
@@ -11,19 +13,17 @@ import { IChildLogger } from "@vscode-logging/logger";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
 describe("Deploy mtar command unit tests", () => {
-  let sandbox: any;
+  let sandbox: sinon.SinonSandbox;
   let mtarDeployCommand: MtarDeployCommand;
-  let utilsMock: any;
-  let windowMock: any;
-  let workspaceMock: any;
-  let selectionItemMock: any;
-  let commandsMock: any;
-  let tasksMock: any;
-  let errorSpy: any;
-  let infoSpy: any;
-  let loggerWraperMock: any;
+  let utilsMock: sinon.SinonMock;
+  let windowMock: sinon.SinonMock;
+  let workspaceMock: sinon.SinonMock;
+  let selectionItemMock: sinon.SinonMock;
+  let commandsMock: sinon.SinonMock;
+  let tasksMock: sinon.SinonMock;
+  let loggerWraperMock: sinon.SinonMock;
   let swa: SWATracker;
-  let swaMock: any;
+  let swaMock: sinon.SinonMock;
   const loggerImpl: IChildLogger = {
     fatal: () => {
       "fatal";
@@ -42,16 +42,19 @@ describe("Deploy mtar command unit tests", () => {
     },
     trace: () => {
       "trace";
-    }
+    },
+    getChildLogger: () => {
+      return loggerImpl;
+    },
   };
 
-  const selected: any = {
-    path: "mta_archives/mtaProject_0.0.1.mtar"
+  const selected: Partial<Uri> = {
+    path: "mta_archives/mtaProject_0.0.1.mtar",
   };
   const CF_CMD = "cf";
   const CF_LOGIN_CMD = "cf.login";
   const expectedPath = "mta_archives/mtaProject_0.0.1.mtar";
-  const homeDir = require("os").homedir();
+  const homeDir = os.homedir();
 
   const execution = new testVscode.ShellExecution(
     CF_CMD + " deploy " + expectedPath,
@@ -68,15 +71,12 @@ describe("Deploy mtar command unit tests", () => {
   before(() => {
     sandbox = sinon.createSandbox();
     loggerWraperMock = sandbox.mock(loggerWraper);
-    loggerWraperMock
-      .expects("getClassLogger")
-      .returns(loggerImpl)
-      .atLeast(1);
+    loggerWraperMock.expects("getClassLogger").atLeast(1).returns(loggerImpl);
   });
 
   after(() => {
     loggerWraperMock.verify();
-    sandbox = sinon.restore();
+    sinon.restore();
   });
 
   beforeEach(() => {
@@ -87,8 +87,6 @@ describe("Deploy mtar command unit tests", () => {
     selectionItemMock = sandbox.mock(SelectionItem);
     commandsMock = sandbox.mock(testVscode.commands);
     tasksMock = sandbox.mock(testVscode.tasks);
-    errorSpy = sandbox.spy(loggerImpl, "error");
-    infoSpy = sandbox.spy(loggerImpl, "info");
     swa = new SWATracker("", "");
     swaMock = sandbox.mock(swa);
   });
@@ -100,55 +98,50 @@ describe("Deploy mtar command unit tests", () => {
     selectionItemMock.verify();
     commandsMock.verify();
     tasksMock.verify();
-    errorSpy.restore();
-    infoSpy.restore();
     swaMock.verify();
   });
 
-  it("mtarDeployCommand - Deploy mtar from context menu", async () => {
+  it("mtarDeployCommand - deploy mtar from context menu", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ data: "multiapps " });
+      .returns({ stdout: "multiapps " });
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields")
+      .withExactArgs("OrganizationFields", loggerImpl)
       .atLeast(1)
       .resolves({ Name: "org" });
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("SpaceFields")
+      .withExactArgs("SpaceFields", loggerImpl)
       .atLeast(1)
       .resolves({ Name: "space" });
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(deployTask);
+    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU
+        messages.CUSTOM_EVENT_CONTEXT_MENU,
       ])
-      .returns();
-    await mtarDeployCommand.mtarDeployCommand(selected, swa);
+      .returns({});
+    await mtarDeployCommand.mtarDeployCommand(selected as Uri, swa);
   });
 
-  it("mtarDeployCommand - Deploy mtar from command when no MTA archive in the project", async () => {
+  it("mtarDeployCommand - deploy mtar from command when no MTA archive in the project", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ data: "multiapps " });
+      .returns({ stdout: "multiapps " });
     workspaceMock.expects("findFiles").returns(Promise.resolve([]));
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
-      .returns();
+      .returns({});
     tasksMock.expects("executeTask").never();
     windowMock
       .expects("showErrorMessage")
@@ -156,43 +149,40 @@ describe("Deploy mtar command unit tests", () => {
     await mtarDeployCommand.mtarDeployCommand(undefined, swa);
   });
 
-  it("mtarDeployCommand - Deploy mtar from command with only one MTA archive in the project", async () => {
+  it("mtarDeployCommand - deploy mtar from command with only one MTA archive in the project", async () => {
     workspaceMock.expects("findFiles").returns(Promise.resolve([selected]));
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ data: "multiapps " });
+      .returns({ stdout: "multiapps " });
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields")
+      .withExactArgs("OrganizationFields", loggerImpl)
       .atLeast(1)
       .resolves({ Name: "org" });
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("SpaceFields")
+      .withExactArgs("SpaceFields", loggerImpl)
       .atLeast(1)
       .resolves({ Name: "space" });
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(deployTask);
+    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
-      .returns();
+      .returns({});
     await mtarDeployCommand.mtarDeployCommand(undefined, swa);
   });
 
-  it("mtarDeployCommand - Deploy mtar from command with several MTA archives in the project", async () => {
+  it("mtarDeployCommand - deploy mtar from command with several MTA archives in the project", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ data: "multiapps " });
+      .returns({ stdout: "multiapps " });
     workspaceMock
       .expects("findFiles")
       .returns(
@@ -208,34 +198,31 @@ describe("Deploy mtar command unit tests", () => {
       .returns(Promise.resolve({ label: expectedPath }));
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields")
+      .withExactArgs("OrganizationFields", loggerImpl)
       .atLeast(1)
       .resolves({ Name: "org" });
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("SpaceFields")
+      .withExactArgs("SpaceFields", loggerImpl)
       .atLeast(1)
       .resolves({ Name: "space" });
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(deployTask);
+    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     swaMock
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
-      .returns();
+      .returns({});
     await mtarDeployCommand.mtarDeployCommand(undefined, swa);
   });
 
-  it("mtarDeployCommand - Deploy mtar from command with several MTA archives in the project - cancel selection", async () => {
+  it("mtarDeployCommand - deploy mtar from command with several MTA archives in the project - cancel selection", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ data: "multiapps " });
+      .returns({ stdout: "multiapps " });
     workspaceMock
       .expects("findFiles")
       .returns(
@@ -255,40 +242,40 @@ describe("Deploy mtar command unit tests", () => {
       .expects("track")
       .once()
       .withExactArgs(messages.EVENT_TYPE_DEPLOY_MTAR, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE
+        messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ])
-      .returns();
+      .returns({});
     await mtarDeployCommand.mtarDeployCommand(undefined, swa);
   });
 
-  it("mtarDeployCommand - Deploy mtar with no mta-cf-cli plugin installed", async () => {
+  it("mtarDeployCommand - deploy mtar with no mta-cf-cli plugin installed", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ data: "some other plugin" });
+      .returns({ stdout: "some other plugin" });
     tasksMock.expects("executeTask").never();
     swaMock.expects("track").never();
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.INSTALL_MTA_CF_CLI);
-    await mtarDeployCommand.mtarDeployCommand(selected, swa);
+    await mtarDeployCommand.mtarDeployCommand(selected as Uri, swa);
   });
 
-  it("mtarDeployCommand - Deploy mtar when user needs to login via CF login command", async () => {
+  it("mtarDeployCommand - deploy mtar when user needs to login via CF login command", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ data: "multiapps " });
+      .returns({ stdout: "multiapps " });
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields")
+      .withExactArgs("OrganizationFields", loggerImpl)
       .atLeast(1)
       .resolves();
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("SpaceFields")
+      .withExactArgs("SpaceFields", loggerImpl)
       .atLeast(1)
       .resolves();
     commandsMock
@@ -303,54 +290,41 @@ describe("Deploy mtar command unit tests", () => {
       .returns(Promise.resolve());
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields")
+      .withExactArgs("OrganizationFields", loggerImpl)
       .atLeast(1)
       .resolves({ Name: "org" });
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("SpaceFields")
+      .withExactArgs("SpaceFields", loggerImpl)
       .atLeast(1)
       .resolves({ Name: "space" });
-    tasksMock
-      .expects("executeTask")
-      .once()
-      .withExactArgs(deployTask);
-    swaMock
-      .expects("track")
-      .once()
-      .returns();
-    await mtarDeployCommand.mtarDeployCommand(selected, swa);
+    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
+    swaMock.expects("track").once().returns({});
+    await mtarDeployCommand.mtarDeployCommand(selected as Uri, swa);
   });
 
-  it("mtarDeployCommand - Deploy mtar when user needs to login via CF CLI", async () => {
+  it("mtarDeployCommand - deploy mtar when user needs to login via CF CLI", async () => {
     utilsMock
       .expects("execCommand")
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ data: "multiapps " });
+      .returns({ stdout: "multiapps " });
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields")
+      .withExactArgs("OrganizationFields", loggerImpl)
       .atLeast(1)
       .resolves();
     utilsMock
       .expects("getConfigFileField")
-      .withExactArgs("SpaceFields")
+      .withExactArgs("SpaceFields", loggerImpl)
       .atLeast(1)
       .resolves();
-    commandsMock
-      .expects("getCommands")
-      .once()
-      .withExactArgs(true)
-      .returns([]);
+    commandsMock.expects("getCommands").once().withExactArgs(true).returns([]);
     tasksMock.expects("executeTask").never();
-    swaMock
-      .expects("track")
-      .once()
-      .returns();
+    swaMock.expects("track").once().returns({});
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.LOGIN_VIA_CLI);
-    await mtarDeployCommand.mtarDeployCommand(selected, swa);
+    await mtarDeployCommand.mtarDeployCommand(selected as Uri, swa);
   });
 });

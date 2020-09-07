@@ -1,60 +1,62 @@
 import { resolve } from "path";
+import { OutputChannel, Uri } from "vscode";
+import * as Module from "module";
 
-const Module = require("module");
 const originalRequire = Module.prototype.require;
-const oRegisteredCommands: any = {};
+const oRegisteredCommands: Record<string, unknown> = {};
 const outputChannel = { show: () => "", append: () => "" };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const testVscode: any = {
   window: {
-    showWarningMessage: (message: string) => message,
-    showErrorMessage: (message: string) => message,
-    showInformationMessage: (message: string) => message,
-    showQuickPick: () => Promise.resolve(),
-    createOutputChannel: () => outputChannel
+    showWarningMessage: (): undefined => undefined,
+    showErrorMessage: (): undefined => undefined,
+    showInformationMessage: (): undefined => undefined,
+    showQuickPick: (): Promise<void> => Promise.resolve(),
+    createOutputChannel: (): Partial<OutputChannel> => outputChannel,
   },
   workspace: {
-    findFiles: () => {
-      Promise.resolve([]);
+    findFiles: (): Promise<Uri[]> => {
+      return Promise.resolve([]);
     },
-    getConfiguration: () => {
+    getConfiguration: (): unknown => {
       return {
-        get: () => {
-          Promise.resolve();
-        }
+        get: (): Promise<void> => {
+          return Promise.resolve();
+        },
       };
     },
-    onDidChangeConfiguration: () => Promise.resolve()
+    onDidChangeConfiguration: (): Promise<void> => Promise.resolve(),
   },
   commands: {
-    registerCommand: (id: string, cmd: any) => {
+    registerCommand: (id: string, cmd: unknown): void => {
       oRegisteredCommands[id] = cmd;
-      return Promise.resolve(oRegisteredCommands);
     },
-    executeCommand: () => Promise.resolve(),
-    getCommands: () => Promise.resolve()
+    executeCommand: (): Promise<void> => Promise.resolve(),
+    getCommands: (): Promise<void> => Promise.resolve(),
   },
   tasks: {
-    executeTask: () => Promise.resolve()
+    executeTask: (): Promise<void> => Promise.resolve(),
   },
   ShellExecution: class MockShellExecution {},
   Task: class Task {},
-  TaskScope: { Workspace: true }
+  TaskScope: { Workspace: true },
 };
 
-export function mockVscode(testModulePath?: string) {
+export function mockVscode(testModulePath?: string): void {
   clearModuleCache(testModulePath);
 
-  Module.prototype.require = function(request: any) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Module.prototype.require = function (this: any, request: string): any {
     if (request === "vscode") {
       return testVscode;
     }
 
-    return originalRequire.apply(this, arguments);
-  };
+    return originalRequire.apply(this, [request]);
+  } as NodeJS.Require;
 }
 
-export function clearModuleCache(testModulePath?: string) {
+export function clearModuleCache(testModulePath?: string): void {
   if (testModulePath) {
     const key = resolve(testModulePath);
     if (require.cache[key]) {

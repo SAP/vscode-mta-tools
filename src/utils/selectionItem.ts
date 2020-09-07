@@ -1,9 +1,9 @@
 import { map } from "lodash";
-import { QuickPickItem } from "vscode"; // NOSONAR
+import { QuickPickItem, Uri } from "vscode";
 
 export class SelectionItem implements QuickPickItem {
-  public static async getSelectionItems(filesPaths: any): Promise<any> {
-    return map(filesPaths, uri => {
+  public static getSelectionItems(filesPaths: Uri[]): SelectionItem[] {
+    return map(filesPaths, (uri) => {
       return new SelectionItem(uri.path, "", "");
     });
   }
