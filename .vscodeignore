@@ -1,0 +1,20 @@
+# The node modules are bundled
+node_modules
+
+# The VSCode Extension's dev artifacts
+.idea/**
+.vscode/**
+.vscode-test/**
+.nyc_output/**
+.circleci/**
+.github/**
+coverage/**
+tests/**
+
+# Compiled code is in dist
+out/**
+
+# All files in the root folder (except package.json) should not be packaged
+*
+# Keep README.md
+!README.md
