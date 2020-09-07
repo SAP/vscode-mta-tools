@@ -15,7 +15,7 @@ export async function mtaBuildCommand(
   selected: Uri | undefined
 ): Promise<void> {
   const command: MtaBuildCommand = new MtaBuildCommand();
-  return await command.mtaBuildCommand(selected, swa);
+  return command.mtaBuildCommand(selected, swa);
 }
 
 export async function mtarDeployCommand(
@@ -23,7 +23,7 @@ export async function mtarDeployCommand(
   selected: Uri | undefined
 ): Promise<void> {
   const command: MtarDeployCommand = new MtarDeployCommand();
-  return await command.mtarDeployCommand(selected, swa);
+  return command.mtarDeployCommand(selected, swa);
 }
 
 export async function addModuleCommand(
@@ -31,7 +31,7 @@ export async function addModuleCommand(
   selected: Uri | undefined
 ): Promise<void> {
   const command: AddModuleCommand = new AddModuleCommand();
-  return await command.addModuleCommand(selected, swa);
+  return command.addModuleCommand(selected, swa);
 }
 
 export function activate(context: ExtensionContext): void {

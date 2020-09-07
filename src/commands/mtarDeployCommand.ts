@@ -52,7 +52,10 @@ export class MtarDeployCommand {
       swa.track(messages.EVENT_TYPE_DEPLOY_MTAR, [
         messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ]);
-      const mtarFilesPaths = await workspace.findFiles("**/*.mtar", null);
+      const mtarFilesPaths = await workspace.findFiles(
+        "**/*.mtar",
+        "**/node_modules/**"
+      );
       const len = mtarFilesPaths.length;
       if (len === 0) {
         this.logger?.error(messages.NO_MTA_ARCHIVE);
@@ -62,7 +65,7 @@ export class MtarDeployCommand {
         path = mtarFilesPaths[0].path;
       } else {
         const inputRequest = messages.SELECT_MTA_ARCHIVE;
-        const selectionItems: SelectionItem[] = await SelectionItem.getSelectionItems(
+        const selectionItems: SelectionItem[] = SelectionItem.getSelectionItems(
           mtarFilesPaths
         );
         const userSelection = await Utils.displayOptions(

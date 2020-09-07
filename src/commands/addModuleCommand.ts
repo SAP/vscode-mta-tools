@@ -32,7 +32,7 @@ export class AddModuleCommand {
       !(await Utils.isCliToolInstalled(
         CLOUD_MTA_COMMAND,
         messages.INSTALL_MTA,
-        this.logger ?? undefined
+        this.logger
       ))
     ) {
       return;

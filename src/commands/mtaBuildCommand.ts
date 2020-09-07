@@ -61,7 +61,7 @@ export class MtaBuildCommand {
         path = mtaYamlFilesPaths[0].path;
       } else {
         const inputRequest = messages.SELECT_PROJECT_DESCRIPTOR;
-        const selectionItems: SelectionItem[] = await SelectionItem.getSelectionItems(
+        const selectionItems: SelectionItem[] = SelectionItem.getSelectionItems(
           mtaYamlFilesPaths
         );
         const userSelection = await Utils.displayOptions(

@@ -9,9 +9,9 @@ const outputChannel = { show: () => "", append: () => "" };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const testVscode: any = {
   window: {
-    showWarningMessage: (message: string): string => message,
-    showErrorMessage: (message: string): string => message,
-    showInformationMessage: (message: string): string => message,
+    showWarningMessage: (): undefined => undefined,
+    showErrorMessage: (): undefined => undefined,
+    showInformationMessage: (): undefined => undefined,
     showQuickPick: (): Promise<void> => Promise.resolve(),
     createOutputChannel: (): Partial<OutputChannel> => outputChannel,
   },

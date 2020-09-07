@@ -39,7 +39,7 @@ export function listenToLogSettingsChanges(context: ExtensionContext): void {
   context.subscriptions.push(
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration(SOURCE_TRACKING_CONFIG_PROP)) {
-        const newSourceLocationTracking: boolean = getSourceLocationTrackingSetting();
+        const newSourceLocationTracking = getSourceLocationTrackingSetting();
         getLogger()?.changeSourceLocationTracking(newSourceLocationTracking);
       }
     })
