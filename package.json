@@ -26,7 +26,7 @@
   "extensionDependencies": [
     "sapos.yeoman-ui"
   ],
-  "main": "./out/src/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "jsonValidation": [
       {
@@ -123,7 +123,10 @@
     "lint": "tslint '{src,tests}/**/*.ts' -c ./tslint.yml",
     "build": "vsce package",
     "test": "nyc mocha -p tsconfig.json",
-    "coverage:check": "nyc mocha -p tsconfig.json"
+    "coverage:check": "nyc mocha -p tsconfig.json",
+    "vscode:prepublish": "webpack --mode production",
+    "webpack": "webpack --mode development",
+    "webpack:watch": "webpack --mode development --watch"
   },
   "dependencies": {
     "lodash": "4.17.19",
@@ -149,6 +152,7 @@
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-no-unused-expression-chai": "^0.1.4",
+    "ts-loader": "^8.0.3",
     "typescript": "3.9.5",
     "prettier": "^1.19.1",
     "vsce": "^1.76.1",
@@ -161,7 +165,9 @@
     "conventional-changelog-cli": "^2.0.27",
     "cz-conventional-changelog": "^3.0.2",
     "@commitlint/cli": "^8.2.0",
-    "@commitlint/config-conventional": "^8.2.0"
+    "@commitlint/config-conventional": "^8.2.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "prettier": {
     "endOfLine": "lf"
