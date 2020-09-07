@@ -1,3 +1,11 @@
+## [1.3.5](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.4...v1.3.5) (2020-09-07)
+
+### Bug Fixes
+
+- do not exclude node_modules when searching for mtar files in the workspace ([#84](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues/84)) ([926b0df](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/926b0df97cdb58eb54e421ecdb82db8266f948f8))
+- remove mocha.opts, adjust tsconfig.json and fix ts issues ([#81](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues/81)) ([9e2a6d7](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/9e2a6d76f05f6a62bbea2ac2ee7160023de19127))
+- update dependencies and move to eslint ([#82](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues/82)) ([5478412](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/54784127a96714fca6e1aea96f377374e4c8390d))
+
 <a name="1.3.4"></a>
 
 ## [1.3.4](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.3...v1.3.4) (2020-08-25)
