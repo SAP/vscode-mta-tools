@@ -1,5 +1,22 @@
-.vscode
+# The node modules are bundled
 node_modules
-out/
-tsconfig.json
-webpack.config.js
+
+# The VSCode Extension's dev artifacts
+.idea/**
+.pipeline/**
+.vscode/**
+.vscode-test/**
+.nyc_output/**
+.circleci/**
+.github/**
+.reuse/**
+coverage/**
+tests/**
+
+# Compiled code is in dist
+out/**
+
+# All files in the root folder (except package.json) should not be packaged
+*
+# Keep README.md
+!README.md
