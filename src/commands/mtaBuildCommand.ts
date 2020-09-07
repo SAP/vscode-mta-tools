@@ -19,9 +19,7 @@ const homeDir = os.homedir();
 
 export class MtaBuildCommand {
   // Logger
-  private readonly logger: IChildLogger | undefined = getClassLogger(
-    MtaBuildCommand.name
-  );
+  private readonly logger: IChildLogger = getClassLogger(MtaBuildCommand.name);
 
   public async mtaBuildCommand(
     selected: Uri | undefined,
@@ -73,7 +71,7 @@ export class MtaBuildCommand {
           return;
         }
 
-        this.logger?.info(
+        this.logger.info(
           `The user selection file path: ${userSelection.label}`
         );
         path = userSelection.label;
@@ -91,7 +89,7 @@ export class MtaBuildCommand {
         "'; sleep 2;",
       options
     );
-    this.logger?.info(`Build MTA starts`);
+    this.logger.info(`Build MTA starts`);
     Utils.execTask(execution, messages.BUILD_MTA);
   }
 }

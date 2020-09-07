@@ -5,6 +5,7 @@ import { Uri } from "vscode";
 import * as sinon from "sinon";
 import { Utils } from "../../src/utils/utils";
 import { SelectionItem } from "../../src/utils/selectionItem";
+import { IChildLogger } from "@vscode-logging/logger";
 
 describe("Utils unit tests", () => {
   const path1 = "some/path/to/file1";
@@ -12,6 +13,29 @@ describe("Utils unit tests", () => {
   let sandbox: sinon.SinonSandbox;
   let windowMock: sinon.SinonMock;
   let utilsMock: sinon.SinonMock;
+  const loggerImpl: IChildLogger = {
+    fatal: () => {
+      "fatal";
+    },
+    error: () => {
+      "error";
+    },
+    warn: () => {
+      "warn";
+    },
+    info: () => {
+      "info";
+    },
+    debug: () => {
+      "debug";
+    },
+    trace: () => {
+      "trace";
+    },
+    getChildLogger: () => {
+      return loggerImpl;
+    },
+  };
 
   before(() => {
     sandbox = sinon.createSandbox();
@@ -65,7 +89,8 @@ describe("Utils unit tests", () => {
       .expects("getConfigFilePath")
       .once()
       .returns("path/to/non/existing/file");
-    const response = await Utils.getConfigFileField("field1", undefined);
+
+    const response = await Utils.getConfigFileField("field1", loggerImpl);
     expect(response).to.equal(undefined);
   });
 

@@ -21,7 +21,7 @@ const homeDir = os.homedir();
 
 export class MtarDeployCommand {
   // Logger
-  private readonly logger: IChildLogger | undefined = getClassLogger(
+  private readonly logger: IChildLogger = getClassLogger(
     MtarDeployCommand.name
   );
 
@@ -58,7 +58,7 @@ export class MtarDeployCommand {
       );
       const len = mtarFilesPaths.length;
       if (len === 0) {
-        this.logger?.error(messages.NO_MTA_ARCHIVE);
+        this.logger.error(messages.NO_MTA_ARCHIVE);
         void window.showErrorMessage(messages.NO_MTA_ARCHIVE);
         return;
       } else if (len === 1) {
@@ -76,7 +76,7 @@ export class MtarDeployCommand {
           // selection canceled
           return;
         }
-        this.logger?.info(
+        this.logger.info(
           `The user selection file path: ${userSelection.label}`
         );
         path = userSelection.label;
@@ -87,7 +87,7 @@ export class MtarDeployCommand {
     if (await this.isLoggedInToCF()) {
       await this.execDeployCmd(path);
     } else {
-      this.logger?.info(`User is not logged in to Cloud Foundry`);
+      this.logger.info(`User is not logged in to Cloud Foundry`);
       await this.loginToCF();
       if (await this.isLoggedInToCF()) {
         await this.execDeployCmd(path);
@@ -101,7 +101,7 @@ export class MtarDeployCommand {
       CF_COMMAND + " deploy " + path,
       options
     );
-    this.logger?.info(`Deploy MTA Archive starts`);
+    this.logger.info(`Deploy MTA Archive starts`);
     Utils.execTask(execution, messages.DEPLOY_MTAR);
   }
 

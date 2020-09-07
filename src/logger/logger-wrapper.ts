@@ -48,8 +48,8 @@ export function getLogger(): IVSCodeExtLogger {
   return logger!;
 }
 
-export function getClassLogger(className: string): IChildLogger | undefined {
-  return getLogger()?.getChildLogger({ label: className });
+export function getClassLogger(className: string): IChildLogger {
+  return getLogger().getChildLogger({ label: className });
 }
 
 export function createExtensionLoggerAndSubscribeToLogSettingsChanges(

@@ -19,9 +19,7 @@ export class AddModuleCommand {
   private mtaFilesPathsList: string | undefined;
 
   // Logger
-  private readonly logger: IChildLogger | undefined = getClassLogger(
-    AddModuleCommand.name
-  );
+  private readonly logger: IChildLogger = getClassLogger(AddModuleCommand.name);
 
   public async addModuleCommand(
     selected: Uri | undefined,
@@ -47,7 +45,7 @@ export class AddModuleCommand {
       this.mtaFilePath = Utils.isWindows()
         ? trimStart(this.mtaFilePath, "/")
         : this.mtaFilePath;
-      this.logger?.info(`The user selection file path: ${this.mtaFilePath}`);
+      this.logger.info(`The user selection file path: ${this.mtaFilePath}`);
       // add mta.yaml path info to template description
       messagesYeoman.select_generator_description =
         ORIGINAL_DESCRIPTION +
@@ -65,7 +63,7 @@ export class AddModuleCommand {
       const len = mtaYamlFilesPaths.length;
       if (len === 0) {
         this.mtaFilesPathsList = undefined;
-        this.logger?.error(messages.NO_MTA_FILE);
+        this.logger.error(messages.NO_MTA_FILE);
         void window.showErrorMessage(messages.NO_MTA_FILE);
         return;
       } else {
@@ -73,7 +71,7 @@ export class AddModuleCommand {
           mtaYamlFilesPaths
         );
         this.mtaFilesPathsList = mtaYamlFilesPathsNormalized.join(",");
-        this.logger?.info(
+        this.logger.info(
           `The file paths available for selection are: ${this.mtaFilesPathsList}`
         );
       }
@@ -91,7 +89,7 @@ export class AddModuleCommand {
         data: mtaData,
       });
     } catch (err) {
-      this.logger?.error(err.message);
+      this.logger.error(err.message);
       void window.showErrorMessage(err.message);
     }
   }

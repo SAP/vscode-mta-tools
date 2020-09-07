@@ -31,7 +31,7 @@ export class Utils {
 
   public static async getConfigFileField(
     field: string,
-    logger: IChildLogger | undefined
+    logger: IChildLogger
   ): Promise<unknown> {
     const configFilePath = this.getConfigFilePath();
     try {
@@ -40,7 +40,7 @@ export class Utils {
       return configJson[field];
     } catch (error) {
       // empty or non existing file
-      logger?.error(`Could not fetch field from config file`);
+      logger.error(`Could not fetch field from config file`);
       return;
     }
   }
@@ -125,14 +125,14 @@ export class Utils {
   public static async isCliToolInstalled(
     cliName: string,
     errMessage: string,
-    logger: IChildLogger | undefined
+    logger: IChildLogger
   ): Promise<boolean> {
     const homeDir = os.homedir();
     const response = await Utils.execCommand(cliName, ["-v"], {
       cwd: homeDir,
     });
     if (response.exitCode === "ENOENT") {
-      logger?.error(`The ${cliName} Tool is not installed in the environment`);
+      logger.error(`The ${cliName} Tool is not installed in the environment`);
       void window.showErrorMessage(errMessage);
       return false;
     }

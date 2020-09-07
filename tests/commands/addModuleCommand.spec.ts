@@ -212,7 +212,7 @@ describe("Add mta module command unit tests", () => {
   });
 
   it("addModuleCommand - add MTA module with no mta tool installed", async () => {
-    loggerWraperMock.expects("getClassLogger").atLeast(1).returns(undefined);
+    loggerWraperMock.expects("getClassLogger").atLeast(1).returns(loggerImpl);
     utilsMock
       .expects("execCommand")
       .once()
