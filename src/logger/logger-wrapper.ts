@@ -76,6 +76,7 @@ function createExtensionLogger(context: ExtensionContext): void {
   const extensionLoggerOpts: getExtensionLoggerOpts = {
     extName: "vscode-mta-tools", //If the extension name changes, change this too
     level: logLevelSetting,
+    logConsole: true,
     logPath: contextLogPath,
     sourceLocationTracking: sourceLocationTrackingSettings,
     logOutputChannel: window.createOutputChannel(messages.CHANNEL_NAME),
