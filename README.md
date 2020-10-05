@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/SAP/vscode-mta-tools.svg?style=svg)](https://circleci.com/gh/SAP/vscode-mta-tools)
+[![Coverage Status](https://coveralls.io/repos/github/SAP/vscode-mta-tools/badge.svg?branch=master)](https://coveralls.io/github/SAP/vscode-mta-tools?branch=master)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![dependabot](https://api.dependabot.com/badges/status?host=github&repo=SAP/vscode-mta-tools)](https://dependabot.com/)

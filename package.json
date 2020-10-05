@@ -148,6 +148,7 @@
     "@types/vscode": "1.44.0",
     "@typescript-eslint/eslint-plugin": "^3.7.0",
     "@typescript-eslint/parser": "^2.33.0",
+    "coveralls": "3.1.0",
     "chai": "^4.2.0",
     "conventional-changelog-cli": "^2.1.0",
     "conventional-recommended-bump": "^6.0.10",
