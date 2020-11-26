@@ -57,7 +57,7 @@ describe("Deploy mtar command unit tests", () => {
   const homeDir = os.homedir();
 
   const execution = new testVscode.ShellExecution(
-    CF_CMD + " deploy \"" + expectedPath + "\"",
+    CF_CMD + ' deploy "' + expectedPath + '"',
     { cwd: homeDir }
   );
   const deployTask = new testVscode.Task(
