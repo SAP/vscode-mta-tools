@@ -95,7 +95,7 @@ export class MtarDeployCommand {
   private async execDeployCmd(path: string): Promise<void> {
     const options: ShellExecutionOptions = { cwd: homeDir };
     const execution = new ShellExecution(
-      CF_COMMAND + " deploy \"" + path + "\"",
+      CF_COMMAND + ' deploy "' + path + '"',
       options
     );
     this.logger.info(`Deploy MTA Archive starts`);
