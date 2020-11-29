@@ -53,11 +53,11 @@ describe("Deploy mtar command unit tests", () => {
   };
   const CF_CMD = "cf";
   const CF_LOGIN_CMD = "cf.login";
-  const expectedPath = "mta_archives/mtaProject_0.0.1.mtar";
+  const expectedPath = "mta Project/mta_archives/mtaProject_0.0.1.mtar";
   const homeDir = os.homedir();
 
   const execution = new testVscode.ShellExecution(
-    CF_CMD + " deploy " + expectedPath,
+    CF_CMD + ' deploy "' + expectedPath + '"',
     { cwd: homeDir }
   );
   const deployTask = new testVscode.Task(
