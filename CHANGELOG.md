@@ -1,3 +1,9 @@
+## [1.3.7](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.6...v1.3.7) (2020-12-01)
+
+### Bug Fixes
+
+- handle path with space ([f2d3c0d](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/f2d3c0d58583d6dc641002692ac89dc3c91d7b15))
+
 ## [1.3.6](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.5...v1.3.6) (2020-09-22)
 
 ## [1.3.5](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.4...v1.3.5) (2020-09-07)
