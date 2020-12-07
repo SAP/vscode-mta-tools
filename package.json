@@ -139,7 +139,7 @@
     "@commitlint/cli": "^10.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@types/chai": "^4.2.14",
-    "@types/comment-json": "^1.1.1",
+    "@types/comment-json": "^2.4.2",
     "@types/fs-extra": "^9.0.4",
     "@types/lodash": "^4.14.161",
     "@types/mocha": "^8.0.4",
