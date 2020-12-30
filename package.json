@@ -136,7 +136,7 @@
     "@sap/swa-for-sapbas-vsx": "1.1.9"
   },
   "devDependencies": {
-    "@commitlint/cli": "^10.0.0",
+    "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@types/chai": "^4.2.14",
     "@types/comment-json": "^2.4.2",
