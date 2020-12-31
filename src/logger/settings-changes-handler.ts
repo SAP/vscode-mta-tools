@@ -12,8 +12,8 @@ export function logLoggerDetails(
   context: ExtensionContext,
   configLogLevel: string
 ): void {
-  getLogger()?.info(`Start Logging in Log Level: <${configLogLevel}>`);
-  getLogger()?.info(
+  getLogger().info(`Start Logging in Log Level: <${configLogLevel}>`);
+  getLogger().info(
     `Full Logs can be found in the <${context.logPath}> folder.`
   );
 }
@@ -29,7 +29,7 @@ export function listenToLogSettingsChanges(context: ExtensionContext): void {
       if (e.affectsConfiguration(LOGGING_LEVEL_CONFIG_PROP)) {
         const logLevel: LogLevel = getLoggingLevelSetting();
 
-        getLogger()?.changeLevel(logLevel);
+        getLogger().changeLevel(logLevel);
         logLoggerDetails(context, logLevel);
       }
     })
@@ -40,7 +40,7 @@ export function listenToLogSettingsChanges(context: ExtensionContext): void {
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration(SOURCE_TRACKING_CONFIG_PROP)) {
         const newSourceLocationTracking = getSourceLocationTrackingSetting();
-        getLogger()?.changeSourceLocationTracking(newSourceLocationTracking);
+        getLogger().changeSourceLocationTracking(newSourceLocationTracking);
       }
     })
   );

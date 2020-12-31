@@ -15,6 +15,12 @@ import { parse } from "comment-json";
 import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { IChildLogger } from "@vscode-logging/logger";
 
+type ChildProcessResult = {
+  exitCode: number | string;
+  stdout: string;
+  stderr: string;
+};
+
 export class Utils {
   public static async displayOptions(
     inputRequest: string,
@@ -144,9 +150,3 @@ export class Utils {
     return join(cfHome, "config.json");
   }
 }
-
-type ChildProcessResult = {
-  exitCode: number | string;
-  stdout: string;
-  stderr: string;
-};
