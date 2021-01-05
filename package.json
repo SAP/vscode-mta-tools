@@ -133,7 +133,7 @@
     "comment-json": "4.0.2",
     "fs-extra": "9.0.1",
     "@vscode-logging/logger": "1.2.2",
-    "@sap/swa-for-sapbas-vsx": "1.1.9"
+    "@sap/swa-for-sapbas-vsx": "1.1.11"
   },
   "devDependencies": {
     "@commitlint/cli": "11.0.0",
