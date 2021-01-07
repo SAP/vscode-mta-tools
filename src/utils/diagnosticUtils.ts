@@ -14,6 +14,7 @@ export function getDiagnosticsCollection(
   }
   return collection;
 }
+
 // For testing purposes
 export function clearCurrentDiagnosticCollections(): void {
   diagnosticCollections = {};

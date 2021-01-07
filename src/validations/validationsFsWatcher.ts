@@ -11,14 +11,11 @@ import {
   Position,
 } from "vscode";
 import { getDiagnosticsCollection } from "../utils/diagnosticUtils";
-
-// TODO: MOVE TO UTILS
-export const MTA_YAML = "mta.yaml";
-export const DEV_MTA_EXT = "dev.mtaext";
+import { DEV_MTA_EXT, MTA_YAML } from "../utils/utils";
 
 export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
   const fileWatcher = workspace.createFileSystemWatcher(
-    "**/{mta.yaml,dev.mtaext}",
+    `**/{${MTA_YAML},${DEV_MTA_EXT}}`,
     false, // Do not ignore when files have been created
     false, // Do not ignore when files have been changed.
     false // Do not ignore when files have been deleted.
@@ -46,14 +43,14 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
     uri: Uri,
     disposables: Disposable[]
   ): Promise<void> {
-    // TODO: CHANGE TO MODULE PATH
-    //const path = uri.path;
     const modulePath = dirname(uri.fsPath);
+
     // Create the diagnostics collection. The collections are cached so that we can clear them in subsequent runs.
     const moduleDiagnostics = getDiagnosticsCollection(
       `Diagnostics for module: ${modulePath}`,
       disposables
     );
+
     const collectionEntries: [Uri, Diagnostic[] | undefined][] = [];
     try {
       // Clear existing entries in this collection from previous runs
@@ -81,13 +78,12 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
   async function getMtaDiagnostics(
     modulePath: string
   ): Promise<Record<string, Diagnostic[]>> {
+    const diagnosticsByFile: Record<string, Diagnostic[]> = {};
     const devMtaExtPath = resolve(modulePath, DEV_MTA_EXT);
 
     const mta = new Mta(modulePath, false, [devMtaExtPath]); // temp file is not relevant in our scenario
 
     const validationRes: Record<string, mta.Issue[]> = await mta.validate();
-
-    const diagnosticsByFile: Record<string, Diagnostic[]> = {};
 
     for (const filePath of keys(validationRes)) {
       diagnosticsByFile[filePath] = diagnosticsByFile[filePath] ?? [];
