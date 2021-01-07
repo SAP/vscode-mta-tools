@@ -9,6 +9,7 @@ import {
   getLogger,
 } from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { registerValidation } from "./validations/validatoins";
 
 export async function mtaBuildCommand(
   swa: SWATracker,
@@ -70,4 +71,6 @@ export function activate(context: ExtensionContext): void {
       partial(addModuleCommand, swa)
     )
   );
+
+  registerValidation(context.subscriptions);
 }
