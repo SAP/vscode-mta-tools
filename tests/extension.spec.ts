@@ -51,14 +51,14 @@ describe("Extension unit tests", () => {
       );
     });
 
-    it("activate - error initializing logger does not subscribe commands", () => {
+    it("activate - error initializing logger does not subscribe commands", async () => {
       const loggerStub = sandbox
         .stub(
           loggerWrapper,
           "createExtensionLoggerAndSubscribeToLogSettingsChanges"
         )
         .throws(new Error("error"));
-      activate(testContext as ExtensionContext);
+      await activate(testContext as ExtensionContext);
       expect(loggerStub.getCalls().length).to.equal(1);
       expect(testContext.subscriptions).to.have.lengthOf(0);
     });
@@ -93,9 +93,9 @@ describe("Extension unit tests", () => {
       configSettingsMock.verify();
     });
 
-    it("activate - add subscriptions", () => {
+    it("activate - add subscriptions", async () => {
       commandsMock.expects("registerCommand").atLeast(3);
-      activate(testContext as ExtensionContext);
+      await activate(testContext as ExtensionContext);
       expect(testContext.subscriptions).to.have.lengthOf(5);
     });
 
@@ -104,7 +104,7 @@ describe("Extension unit tests", () => {
       windowMock
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MBT);
-      activate(testContext as ExtensionContext);
+      await activate(testContext as ExtensionContext);
       await mtaBuildCommand((undefined as unknown) as SWATracker, undefined);
     });
 
@@ -113,7 +113,7 @@ describe("Extension unit tests", () => {
       windowMock
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MTA_CF_CLI);
-      activate(testContext as ExtensionContext);
+      await activate(testContext as ExtensionContext);
       await mtarDeployCommand((undefined as unknown) as SWATracker, undefined);
     });
 
@@ -122,7 +122,7 @@ describe("Extension unit tests", () => {
       windowMock
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MTA);
-      activate(testContext as ExtensionContext);
+      await activate(testContext as ExtensionContext);
       await addModuleCommand((undefined as unknown) as SWATracker, undefined);
     });
   });

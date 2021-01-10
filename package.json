@@ -26,6 +26,13 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "problemMatchers": [
+      {
+        "name": "MTA",
+        "source": "MTA Validate",
+        "label": "Validate MTA and dev.mtaext"
+      }
+    ],
     "jsonValidation": [
       {
         "fileMatch": [

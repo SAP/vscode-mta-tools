@@ -40,14 +40,33 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
     disposables
   );
 
+  // reopening new WS
   workspace.onDidChangeWorkspaceFolders(
     (e) => addModuleDiagnostics(Uri.file(e.added.toString()), disposables),
     undefined,
     disposables
   );
+
+  // on extension load -> run the logic on the WS
 }
 
-async function addModuleDiagnostics(
+export async function validateWsMtaYamls(
+  disposables: Disposable[]
+): Promise<void> {
+  const mtaYamlUris = await workspace.findFiles(
+    `**/${MTA_YAML}`,
+    "**/node_modules/**"
+  );
+  await Promise.all(
+    map(
+      mtaYamlUris,
+      async (mtaYamlUri: Uri) =>
+        await addModuleDiagnostics(mtaYamlUri, disposables)
+    )
+  );
+}
+
+export async function addModuleDiagnostics(
   uri: Uri,
   disposables: Disposable[]
 ): Promise<void> {
@@ -106,6 +125,7 @@ async function getMtaDiagnostics(
     for (const issue of validationRes[filePath]) {
       const position = new Position(issue.line, issue.column);
       diagnosticsByFile[filePath].push({
+        source: "MTA", // Should be synchronized with package.json
         message: issue.message,
         range: new Range(position, position),
         severity:
@@ -115,5 +135,6 @@ async function getMtaDiagnostics(
       });
     }
   }
+
   return diagnosticsByFile;
 }

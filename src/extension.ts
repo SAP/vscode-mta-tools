@@ -35,7 +35,7 @@ export async function addModuleCommand(
   return command.addModuleCommand(selected, swa);
 }
 
-export function activate(context: ExtensionContext): void {
+export async function activate(context: ExtensionContext): Promise<void> {
   try {
     createExtensionLoggerAndSubscribeToLogSettingsChanges(context);
   } catch (error) {
@@ -72,5 +72,5 @@ export function activate(context: ExtensionContext): void {
     )
   );
 
-  registerValidation(context.subscriptions);
+  await registerValidation(context.subscriptions);
 }

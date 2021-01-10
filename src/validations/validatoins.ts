@@ -1,15 +1,13 @@
 import { Disposable } from "vscode";
-import { watchMtaYamlAndDevExtFiles } from "./validationsFsWatcher";
+import {
+  validateWsMtaYamls,
+  watchMtaYamlAndDevExtFiles,
+} from "./mtaValidations";
 
-export function registerValidation(disposables: Disposable[]): void {
+export async function registerValidation(
+  disposables: Disposable[]
+): Promise<void> {
   watchMtaYamlAndDevExtFiles(disposables);
 
-  //TODO: register to WS load and validate then
-  // TODO: GO over the story and the BLI
-
-  // FROM THE SAMPLE
-  // context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
-  // 	if (editor) {
-  // 		updateDiagnostics(editor.document, collection);
-  // 	}
+  await validateWsMtaYamls(disposables);
 }
