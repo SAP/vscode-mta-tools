@@ -1,5 +1,5 @@
 import { mta, Mta } from "@sap/mta-lib";
-import { lstat, pathExists } from "fs-extra";
+import { pathExists } from "fs-extra";
 import { keys, map } from "lodash";
 import { dirname, resolve } from "path";
 import {
@@ -38,13 +38,14 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
     disposables
   );
 
+  // this event is fired for FOLDERS which contain mta.yaml and dev.mtaext on theia but NOT on vs code
   mtaFileWatcher.onDidDelete(
     (uri) => addModuleDiagnostics(uri, disposables),
     undefined,
     disposables
   );
 
-  // workspace folder is added or removed
+  // WORKSPACE folder is added or removed
   workspace.onDidChangeWorkspaceFolders(
     async (e) => {
       if (e.removed.length > 0) {
@@ -55,44 +56,6 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
     undefined,
     disposables
   );
-
-  // workspace.onWillDeleteFiles(
-  //   (e) => validateFolderRemoval(e.files, disposables),
-  //   undefined,
-  //   disposables
-  // );
-
-  // workaround for "FileSystemWatcher not fired on folder delete"
-  // https://github.com/microsoft/vscode/issues/60813
-  // Handles only FOLDER deletions
-  // const folderFileWatcher = workspace.createFileSystemWatcher(
-  //   `**/*`,
-  //   true, // Ignore when files have been created
-  //   true, // Ignore when files have been changed.
-  //   false // Do not ignore when files have been deleted.
-  // );
-
-  // folderFileWatcher.onDidDelete(
-  //   (uri) => validateFolderRemoval(uri, disposables),
-  //   undefined,
-  //   disposables
-  // );
-}
-
-export async function validateFolderRemoval(
-  uris: ReadonlyArray<Uri>,
-  disposables: Disposable[]
-): Promise<void> {
-  for await (const uri of uris) {
-    const isDir = (await lstat(uri.fsPath)).isDirectory();
-    if (isDir === false) {
-      continue;
-    }
-
-    // TODO: see if the folder contains mta.yaml file
-    clearDiagnosticCollections();
-    await validateWsMtaYamls(disposables);
-  }
 }
 
 export async function validateWsMtaYamls(
@@ -154,10 +117,12 @@ async function getMtaDiagnostics(
   const mtaPath = resolve(modulePath, MTA_YAML);
   const devMtaExtPath = resolve(modulePath, DEV_MTA_EXT);
 
+  // no mta.yaml
   if ((await pathExists(mtaPath)) === false) {
     return diagnosticsByFile;
   }
 
+  // validate with/without dev.mtaext
   const devMtaExts: string[] | undefined =
     (await pathExists(devMtaExtPath)) === true ? [devMtaExtPath] : undefined;
   const mta = new Mta(modulePath, false, devMtaExts); // temp file is not relevant in our scenario
