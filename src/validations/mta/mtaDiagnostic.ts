@@ -1,3 +1,4 @@
+import { keys } from "lodash";
 import { DiagnosticCollection, Disposable, languages } from "vscode";
 
 let diagnosticCollections: Record<string, DiagnosticCollection> = {};
@@ -13,6 +14,13 @@ export function getDiagnosticsCollection(
     diagnosticCollections[name] = collection;
   }
   return collection;
+}
+
+// diagnostics changed event is fired then using clear. Use this function only on uncommon scenarios
+export function clearDiagnosticCollections(): void {
+  for (const diagnosticName of keys(diagnosticCollections)) {
+    diagnosticCollections[diagnosticName].clear();
+  }
 }
 
 // For testing purposes

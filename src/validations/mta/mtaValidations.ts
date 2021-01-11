@@ -1,5 +1,5 @@
 import { mta, Mta } from "@sap/mta-lib";
-import { pathExists } from "fs-extra";
+import { lstat, pathExists } from "fs-extra";
 import { keys, map } from "lodash";
 import { dirname, resolve } from "path";
 import {
@@ -11,43 +11,88 @@ import {
   Range,
   Position,
 } from "vscode";
-import { getDiagnosticsCollection } from "../utils/diagnosticUtils";
-import { DEV_MTA_EXT, MTA_YAML } from "../utils/utils";
+import {
+  clearDiagnosticCollections,
+  getDiagnosticsCollection,
+} from "./mtaDiagnostic";
+import { DEV_MTA_EXT, MTA_YAML } from "../../utils/utils";
 
 export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
-  const fileWatcher = workspace.createFileSystemWatcher(
+  // Handles mta.yaml and dev.mtaext FILES
+  const mtaFileWatcher = workspace.createFileSystemWatcher(
     `**/{${MTA_YAML},${DEV_MTA_EXT}}`,
     false, // Do not ignore when files have been created
     false, // Do not ignore when files have been changed.
     false // Do not ignore when files have been deleted.
   );
 
-  fileWatcher.onDidChange(
+  mtaFileWatcher.onDidChange(
     (uri) => addModuleDiagnostics(uri, disposables),
     undefined,
     disposables
   );
 
-  fileWatcher.onDidCreate(
+  mtaFileWatcher.onDidCreate(
     (uri) => addModuleDiagnostics(uri, disposables),
     undefined,
     disposables
   );
 
-  fileWatcher.onDidDelete(
+  mtaFileWatcher.onDidDelete(
     (uri) => addModuleDiagnostics(uri, disposables),
     undefined,
     disposables
   );
 
-  // reopening new WS
+  // workspace folder is added or removed
   workspace.onDidChangeWorkspaceFolders(
-    (e) => addModuleDiagnostics(Uri.file(e.added.toString()), disposables),
+    async (e) => {
+      if (e.removed.length > 0) {
+        clearDiagnosticCollections();
+      }
+      await validateWsMtaYamls(disposables);
+    },
     undefined,
     disposables
   );
 
-  // on extension load -> run the logic on the WS
+  // workspace.onWillDeleteFiles(
+  //   (e) => validateFolderRemoval(e.files, disposables),
+  //   undefined,
+  //   disposables
+  // );
+
+  // workaround for "FileSystemWatcher not fired on folder delete"
+  // https://github.com/microsoft/vscode/issues/60813
+  // Handles only FOLDER deletions
+  // const folderFileWatcher = workspace.createFileSystemWatcher(
+  //   `**/*`,
+  //   true, // Ignore when files have been created
+  //   true, // Ignore when files have been changed.
+  //   false // Do not ignore when files have been deleted.
+  // );
+
+  // folderFileWatcher.onDidDelete(
+  //   (uri) => validateFolderRemoval(uri, disposables),
+  //   undefined,
+  //   disposables
+  // );
+}
+
+export async function validateFolderRemoval(
+  uris: ReadonlyArray<Uri>,
+  disposables: Disposable[]
+): Promise<void> {
+  for await (const uri of uris) {
+    const isDir = (await lstat(uri.fsPath)).isDirectory();
+    if (isDir === false) {
+      continue;
+    }
+
+    // TODO: see if the folder contains mta.yaml file
+    clearDiagnosticCollections();
+    await validateWsMtaYamls(disposables);
+  }
 }
 
 export async function validateWsMtaYamls(

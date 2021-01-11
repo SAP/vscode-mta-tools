@@ -2,7 +2,7 @@ import { Disposable } from "vscode";
 import {
   validateWsMtaYamls,
   watchMtaYamlAndDevExtFiles,
-} from "./mtaValidations";
+} from "./mta/mtaValidations";
 
 export async function registerValidation(
   disposables: Disposable[]
