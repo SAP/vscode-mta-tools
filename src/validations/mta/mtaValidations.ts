@@ -39,6 +39,7 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
   );
 
   // this event is fired for FOLDERS which contain mta.yaml and dev.mtaext on theia but NOT on vs code
+  // https://github.com/microsoft/vscode/issues/60813
   mtaFileWatcher.onDidDelete(
     (uri) => addModuleDiagnostics(uri, disposables),
     undefined,
@@ -66,10 +67,8 @@ export async function validateWsMtaYamls(
     "**/node_modules/**"
   );
   await Promise.all(
-    map(
-      mtaYamlUris,
-      async (mtaYamlUri: Uri) =>
-        await addModuleDiagnostics(mtaYamlUri, disposables)
+    map(mtaYamlUris, async (mtaYamlUri: Uri) =>
+      addModuleDiagnostics(mtaYamlUri, disposables)
     )
   );
 }
@@ -78,11 +77,11 @@ export async function addModuleDiagnostics(
   uri: Uri,
   disposables: Disposable[]
 ): Promise<void> {
-  const modulePath = dirname(uri.fsPath);
+  const projectPath = dirname(uri.fsPath);
 
   // Create the diagnostics collection. The collections are cached so that we can clear them in subsequent runs.
   const moduleDiagnostics = getDiagnosticsCollection(
-    `Diagnostics for module: ${modulePath}`,
+    `Diagnostics for project: ${projectPath}`,
     disposables
   );
 
@@ -94,7 +93,7 @@ export async function addModuleDiagnostics(
       collectionEntries.push([uri, undefined])
     );
 
-    const diagnosticsByFile = await getMtaDiagnostics(modulePath);
+    const diagnosticsByFile = await getMtaDiagnostics(projectPath);
 
     const newCollectionEntries = map(
       diagnosticsByFile,
@@ -122,7 +121,7 @@ async function getMtaDiagnostics(
     return diagnosticsByFile;
   }
 
-  // validate with/without dev.mtaext
+  // if dev.mtaext exist => validate with dev.mtaext
   const devMtaExts: string[] | undefined =
     (await pathExists(devMtaExtPath)) === true ? [devMtaExtPath] : undefined;
   const mta = new Mta(modulePath, false, devMtaExts); // temp file is not relevant in our scenario
@@ -132,6 +131,7 @@ async function getMtaDiagnostics(
   for (const filePath of keys(validationRes)) {
     diagnosticsByFile[filePath] = diagnosticsByFile[filePath] ?? [];
 
+    // iterate validation issues a single file
     for (const issue of validationRes[filePath]) {
       const position = new Position(issue.line, issue.column);
       diagnosticsByFile[filePath].push({
