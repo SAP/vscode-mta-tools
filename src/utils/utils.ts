@@ -15,9 +15,6 @@ import { parse } from "comment-json";
 import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { IChildLogger } from "@vscode-logging/logger";
 
-export const MTA_YAML = "mta.yaml";
-export const DEV_MTA_EXT = "dev.mtaext";
-
 type ChildProcessResult = {
   exitCode: number | string;
   stdout: string;

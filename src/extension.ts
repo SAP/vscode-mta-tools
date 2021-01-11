@@ -9,7 +9,7 @@ import {
   getLogger,
 } from "./logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
-import { registerValidation } from "./validations/validatoins";
+import { registerValidation } from "./validations/validations";
 
 export async function mtaBuildCommand(
   swa: SWATracker,

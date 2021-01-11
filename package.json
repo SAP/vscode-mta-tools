@@ -30,7 +30,7 @@
       {
         "name": "MTA",
         "source": "MTA Validate",
-        "label": "Validate MTA and dev.mtaext"
+        "label": "Validate MTA development descriptor and extension files"
       }
     ],
     "jsonValidation": [
