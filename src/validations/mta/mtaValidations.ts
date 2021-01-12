@@ -8,12 +8,11 @@ import {
   workspace,
   Diagnostic,
   DiagnosticSeverity,
-  Range,
-  Position,
 } from "vscode";
 import {
   clearDiagnosticCollections,
   getDiagnosticsCollection,
+  mtaIssueToEditorCoordinate,
 } from "./mtaDiagnostic";
 
 export const MTA_YAML = "mta.yaml";
@@ -135,14 +134,10 @@ async function getMtaDiagnostics(
     diagnosticsByFile[filePath] = map<mta.Issue, Diagnostic>(
       validationRes[filePath],
       (issue) => {
-        const position = new Position(
-          convertMtaIssueCoordinateToEditorCoordinate(issue.line),
-          convertMtaIssueCoordinateToEditorCoordinate(issue.column)
-        );
         return {
           source: "MTA", // Should be synchronized with package.json
           message: issue.message,
-          range: new Range(position, position),
+          range: mtaIssueToEditorCoordinate(issue),
           severity: DiagnosticSeverity.Warning,
         };
       }
@@ -150,14 +145,4 @@ async function getMtaDiagnostics(
   }
 
   return diagnosticsByFile;
-}
-
-function convertMtaIssueCoordinateToEditorCoordinate(
-  coordinate: number
-): number {
-  const number = Number(coordinate) - 1;
-  if (number < 0) {
-    return 0;
-  }
-  return number;
 }

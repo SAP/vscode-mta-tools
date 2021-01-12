@@ -7,7 +7,7 @@ mockVscode("src/commands/addModuleCommand");
 import { expect } from "chai";
 import * as sinon from "sinon";
 import { resolve } from "path";
-import { ExtensionContext } from "vscode";
+import { Disposable, ExtensionContext } from "vscode";
 import { Utils } from "../src/utils/utils";
 import { messages } from "../src/i18n/messages";
 import {
@@ -19,6 +19,7 @@ import {
 import * as configSettings from "../src/logger/settings";
 import * as loggerWrapper from "../src/logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import * as validations from "../src/validations/validations";
 
 describe("Extension unit tests", () => {
   const extensionPath: string = resolve(__dirname, "..", "..");
@@ -40,6 +41,7 @@ describe("Extension unit tests", () => {
   });
 
   afterEach(() => {
+    sinon.restore();
     sandbox.restore();
   });
 
@@ -65,11 +67,17 @@ describe("Extension unit tests", () => {
   });
 
   describe("positive tests", () => {
+    let validationsSpy: sinon.SinonStub<
+      [disposables: Disposable[]],
+      Promise<void>
+    >;
+
     beforeEach(() => {
       commandsMock = sandbox.mock(testVscode.commands);
       utilsMock = sandbox.mock(Utils);
       windowMock = sandbox.mock(testVscode.window);
       configSettingsMock = sandbox.mock(configSettings);
+      validationsSpy = sinon.stub(validations, "registerValidation").resolves();
 
       testContext = {
         subscriptions: [],
@@ -97,6 +105,11 @@ describe("Extension unit tests", () => {
       commandsMock.expects("registerCommand").atLeast(3);
       await activate(testContext as ExtensionContext);
       expect(testContext.subscriptions).to.have.lengthOf(5);
+
+      expect(validationsSpy.callCount).to.equal(1);
+      expect(validationsSpy.firstCall.firstArg).to.deep.equal(
+        testContext.subscriptions
+      );
     });
 
     it("mtaBuildCommand", async () => {

@@ -1,10 +1,49 @@
 import { resolve } from "path";
-import { OutputChannel, Uri } from "vscode";
+import {
+  DiagnosticCollection,
+  FileSystemWatcher,
+  OutputChannel,
+  Uri,
+} from "vscode";
 import * as Module from "module";
 
 const originalRequire = Module.prototype.require;
 const oRegisteredCommands: Record<string, unknown> = {};
 const outputChannel = { show: () => "", append: () => "" };
+
+export interface Disposable {
+  dispose(): unknown;
+}
+
+export const mockFileSystemWatcher: FileSystemWatcher = {
+  ignoreChangeEvents: false,
+  ignoreCreateEvents: false,
+  ignoreDeleteEvents: false,
+  onDidChange: (): Disposable => {
+    return {
+      dispose: () => {
+        return;
+      },
+    };
+  },
+  onDidCreate: (): Disposable => {
+    return {
+      dispose: () => {
+        return;
+      },
+    };
+  },
+  onDidDelete: (): Disposable => {
+    return {
+      dispose: () => {
+        return;
+      },
+    };
+  },
+  dispose: () => {
+    return;
+  },
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const testVscode: any = {
@@ -27,6 +66,16 @@ export const testVscode: any = {
       };
     },
     onDidChangeConfiguration: (): Promise<void> => Promise.resolve(),
+    createFileSystemWatcher: (): FileSystemWatcher => {
+      return mockFileSystemWatcher;
+    },
+    onDidChangeWorkspaceFolders: (): Disposable => {
+      return {
+        dispose: () => {
+          return;
+        },
+      };
+    },
   },
   commands: {
     registerCommand: (id: string, cmd: unknown): void => {
@@ -41,6 +90,31 @@ export const testVscode: any = {
   ShellExecution: class MockShellExecution {},
   Task: class Task {},
   TaskScope: { Workspace: true },
+  languages: {
+    createDiagnosticCollection: (): DiagnosticCollection => {
+      return {
+        set: (
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          entries: ReadonlyArray<[Uri, ReadonlyArray<unknown> | undefined]>
+        ) => {
+          return;
+        },
+      } as DiagnosticCollection;
+    },
+  },
+  Position: class Position {},
+  Range: class Range {},
+  DiagnosticSeverity: {
+    Error: 0,
+    Warning: 1,
+    Information: 2,
+    Hint: 3,
+  },
+  Uri: {
+    file: (): void => {
+      return;
+    },
+  },
 };
 
 export function mockVscode(testModulePath?: string): void {
