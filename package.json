@@ -19,15 +19,20 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.mtaBuildCommand",
-    "onCommand:extension.mtarDeployCommand",
-    "onCommand:extension.addModuleCommand"
+    "*"
   ],
   "extensionDependencies": [
     "sapos.yeoman-ui"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "problemMatchers": [
+      {
+        "name": "MTA",
+        "source": "MTA Validate",
+        "label": "Validate MTA development descriptor and extension files"
+      }
+    ],
     "jsonValidation": [
       {
         "fileMatch": [
@@ -133,7 +138,8 @@
     "comment-json": "4.1.0",
     "fs-extra": "9.0.1",
     "@vscode-logging/logger": "1.2.2",
-    "@sap/swa-for-sapbas-vsx": "1.1.11"
+    "@sap/swa-for-sapbas-vsx": "1.1.11",
+    "@sap/mta-lib": "1.6.5"
   },
   "devDependencies": {
     "@commitlint/cli": "11.0.0",
