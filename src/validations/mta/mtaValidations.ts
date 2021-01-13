@@ -19,6 +19,7 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
     `**/{${MTA_YAML},${DEV_MTA_EXT}}`
   );
 
+  /* istanbul ignore next */
   const listener = (uri: Uri): Promise<void> =>
     updateMtaDiagnostics(uri, disposables);
 
@@ -34,6 +35,7 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
   workspace.onDidChangeWorkspaceFolders(
     // At this point, files are already removed from the file system and we can not find the
     // mta.yaml files that where deleted so we delete all and revalidate
+    /* istanbul ignore next */
     async (e) => validateWsMtaYamls(disposables, e.removed.length > 0),
     undefined,
     disposables
