@@ -1,3 +1,9 @@
+## [1.3.9](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.8...v1.3.9) (2021-01-13)
+
+### Features
+
+- mta.yaml and dev.mtaext validations in the problem view ([#165](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues/165)) ([55888e8](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/55888e89a1f3d1a1393948a6402a3959499ca53a))
+
 ## [1.3.8](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.7...v1.3.8) (2020-12-29)
 
 ## [1.3.7](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.6...v1.3.7) (2020-12-01)
