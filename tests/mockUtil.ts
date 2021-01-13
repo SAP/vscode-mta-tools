@@ -27,30 +27,10 @@ export const mockFileSystemWatcher: FileSystemWatcher = {
   ignoreChangeEvents: false,
   ignoreCreateEvents: false,
   ignoreDeleteEvents: false,
-  onDidChange: (): Disposable => {
-    return {
-      dispose: () => {
-        return;
-      },
-    };
-  },
-  onDidCreate: (): Disposable => {
-    return {
-      dispose: () => {
-        return;
-      },
-    };
-  },
-  onDidDelete: (): Disposable => {
-    return {
-      dispose: () => {
-        return;
-      },
-    };
-  },
-  dispose: () => {
-    return;
-  },
+  onDidChange: (): Disposable => ({ dispose: () => undefined }),
+  onDidCreate: (): Disposable => ({ dispose: () => undefined }),
+  onDidDelete: (): Disposable => ({ dispose: () => undefined }),
+  dispose: () => ({ dispose: () => undefined }),
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,9 +43,7 @@ export const testVscode: any = {
     createOutputChannel: (): Partial<OutputChannel> => outputChannel,
   },
   workspace: {
-    findFiles: (): Promise<Uri[]> => {
-      return Promise.resolve([]);
-    },
+    findFiles: (): Promise<Uri[]> => Promise.resolve([]),
     getConfiguration: (): unknown => {
       return {
         get: (): Promise<void> => {
@@ -74,14 +52,10 @@ export const testVscode: any = {
       };
     },
     onDidChangeConfiguration: (): Promise<void> => Promise.resolve(),
-    createFileSystemWatcher: (): FileSystemWatcher => {
-      return mockFileSystemWatcher;
-    },
+    createFileSystemWatcher: (): FileSystemWatcher => mockFileSystemWatcher,
     onDidChangeWorkspaceFolders: (): Disposable => {
       return {
-        dispose: () => {
-          return;
-        },
+        dispose: () => ({ dispose: () => undefined }),
       };
     },
   },
@@ -119,9 +93,7 @@ export const testVscode: any = {
     Hint: 3,
   },
   Uri: {
-    file: (): void => {
-      return;
-    },
+    file: (): void => undefined,
   },
 };
 

@@ -6,7 +6,6 @@ import { mta } from "@sap/mta-lib";
 import {
   clearCurrentDiagnosticCollections,
   clearDiagnosticCollections,
-  convertMtaIssueCoordinateToEditorCoordinate,
   diagnosticCollections,
   getDiagnosticsCollection,
   getSeverity,
@@ -48,7 +47,7 @@ describe("mtaDiagnostic", () => {
         disposables
       );
 
-      // make sure the diagnosticCollection was created and not cached
+      // make sure the diagnosticCollection was created and not retrieved from cache
       expect(createDiagnosticCollectionSpy.callCount).to.equal(1);
       // cache is contain 1 diagnosticCollection
       expect(keys(diagnosticCollections).length).to.equal(1);
@@ -58,15 +57,17 @@ describe("mtaDiagnostic", () => {
         diagnosticsName,
         disposables
       );
+      // make sure the diagnosticCollection was cached (callCount as before)
+      expect(createDiagnosticCollectionSpy.callCount).to.equal(1);
 
       // reference comparison. make sure it is the same object
-      expect(diagnosticCollection === secondCallDc).to.be.true;
-      expect(firstCallDc === secondCallDc).to.be.true;
+      expect(diagnosticCollection).to.equal(secondCallDc);
+      expect(firstCallDc).to.equal(secondCallDc);
       // cache is contain 1 diagnosticCollection
       expect(keys(diagnosticCollections).length).to.equal(1);
     });
 
-    it("clearDiagnosticCollections clears the collection", async () => {
+    it("clearDiagnosticCollections clears the cached collections", async () => {
       let clearTriggered = false;
       const diagnosticCollection = {
         clear: () => {
@@ -92,7 +93,7 @@ describe("mtaDiagnostic", () => {
     });
   });
 
-  describe("getDiagnosticsCollection", async () => {
+  describe("mtaIssueToEditorCoordinate", async () => {
     it("returns the correct range when column and line are zero", async () => {
       const mtaIssue: mta.Issue = {
         severity: "warning",
@@ -101,14 +102,14 @@ describe("mtaDiagnostic", () => {
         column: 0,
       };
 
-      const pos = {
+      const expectedPos = {
         line: 0,
         character: 0,
       };
-      testGetDiagnosticsCollection(pos, mtaIssue);
+      testMtaIssueToEditorCoordinate(expectedPos, mtaIssue);
     });
 
-    it("returns the correct range when column is zero and line is 2", async () => {
+    it("returns the correct range when column is zero and line is non-zero", async () => {
       const mtaIssue: mta.Issue = {
         severity: "warning",
         message: "",
@@ -116,29 +117,44 @@ describe("mtaDiagnostic", () => {
         column: 0,
       };
 
-      const pos = {
+      const expectedPos = {
         line: 1,
         character: 0,
       };
-      testGetDiagnosticsCollection(pos, mtaIssue);
+      testMtaIssueToEditorCoordinate(expectedPos, mtaIssue);
     });
 
-    it("returns the correct range when column and line are 3", async () => {
+    it("returns the correct range when column and line non-zero", async () => {
       const mtaIssue: mta.Issue = {
         severity: "warning",
         message: "",
-        line: 3,
-        column: 3,
+        line: 10,
+        column: 12,
       };
 
-      const pos = {
-        line: 2,
-        character: 2,
+      const expectedPos = {
+        line: 9,
+        character: 11,
       };
-      testGetDiagnosticsCollection(pos, mtaIssue);
+      testMtaIssueToEditorCoordinate(expectedPos, mtaIssue);
     });
 
-    function testGetDiagnosticsCollection(
+    it("returns the correct range when column and line negative", async () => {
+      const mtaIssue: mta.Issue = {
+        severity: "warning",
+        message: "",
+        line: -5,
+        column: -1,
+      };
+
+      const expectedPos = {
+        line: 0,
+        character: 0,
+      };
+      testMtaIssueToEditorCoordinate(expectedPos, mtaIssue);
+    });
+
+    function testMtaIssueToEditorCoordinate(
       pos: { line: number; character: number },
       mtaIssue: mta.Issue
     ) {
@@ -151,23 +167,6 @@ describe("mtaDiagnostic", () => {
 
       expect(resRange).to.deep.equal(expectedRange);
     }
-  });
-
-  describe("convertMtaIssueCoordinateToEditorCoordinate", async () => {
-    it("converts to the correct coordinate when coordinate is zero", async () => {
-      const coordinate = convertMtaIssueCoordinateToEditorCoordinate(0);
-      expect(coordinate).to.equal(0);
-    });
-
-    it("converts to the correct coordinate when coordinate is one", async () => {
-      const coordinate = convertMtaIssueCoordinateToEditorCoordinate(1);
-      expect(coordinate).to.equal(0);
-    });
-
-    it("converts to the correct coordinate when coordinate is two", async () => {
-      const coordinate = convertMtaIssueCoordinateToEditorCoordinate(2);
-      expect(coordinate).to.equal(1);
-    });
   });
 
   describe("getSeverity", async () => {
