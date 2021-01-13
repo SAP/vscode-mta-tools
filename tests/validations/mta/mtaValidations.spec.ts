@@ -132,7 +132,7 @@ describe("mtaValidations", () => {
     }
   });
   describe("validateWsMtaYamls", async () => {
-    it("returns no diagnostics when mta.yaml does not exist in the WS", async () => {
+    it("clears diagnostic collection and returns no diagnostics when mta.yaml does not exist in the WS", async () => {
       sinon
         .stub(testVscode.workspace, "findFiles")
         .returns(Promise.resolve([]));
@@ -140,10 +140,15 @@ describe("mtaValidations", () => {
         testVscode.languages,
         "createDiagnosticCollection"
       );
+      const clearDiagnosticCollectionsSpy = sinon.stub(
+        mtaDiagnostic,
+        "clearDiagnosticCollections"
+      );
 
-      await validateWsMtaYamls(disposables);
+      await validateWsMtaYamls(disposables, true);
 
       expect(createDiagnosticCollectionSpy.callCount).to.equal(0);
+      expect(clearDiagnosticCollectionsSpy.callCount).to.equal(1);
     });
 
     it("returns no diagnostics when mta.yaml and dev.mtaext have no errors in the WS", async () => {
@@ -197,7 +202,7 @@ describe("mtaValidations", () => {
     const validationResult: Record<string, mta.Issue[]> = {
       [mtaPath]: [
         {
-          severity: "warning",
+          severity: "error",
           message: 'mapping key "_schema-version" already defined at line 1',
           line: 2,
           column: 0,
@@ -263,7 +268,7 @@ describe("mtaValidations", () => {
             source: "MTA",
             message: 'mapping key "_schema-version" already defined at line 1',
             range: firstCallRange,
-            severity: 1,
+            severity: 0,
           },
         ],
       ],

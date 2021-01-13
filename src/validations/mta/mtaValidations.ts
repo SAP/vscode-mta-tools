@@ -2,16 +2,11 @@ import { mta, Mta } from "@sap/mta-lib";
 import { pathExists } from "fs-extra";
 import { keys, map } from "lodash";
 import { dirname, resolve } from "path";
-import {
-  Uri,
-  Disposable,
-  workspace,
-  Diagnostic,
-  DiagnosticSeverity,
-} from "vscode";
+import { Uri, Disposable, workspace, Diagnostic } from "vscode";
 import {
   clearDiagnosticCollections,
   getDiagnosticsCollection,
+  getSeverity,
   mtaIssueToEditorCoordinate,
 } from "./mtaDiagnostic";
 
@@ -24,44 +19,34 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
     `**/{${MTA_YAML},${DEV_MTA_EXT}}`
   );
 
-  mtaFileWatcher.onDidChange(
-    (uri) => updateMtaDiagnostics(uri, disposables),
-    undefined,
-    disposables
-  );
+  const listener: (e: Uri) => Promise<void> = (uri: Uri) =>
+    updateMtaDiagnostics(uri, disposables);
+  const diagnosticParams = [undefined, disposables];
 
-  mtaFileWatcher.onDidCreate(
-    (uri) => updateMtaDiagnostics(uri, disposables),
-    undefined,
-    disposables
-  );
+  mtaFileWatcher.onDidChange(listener, ...diagnosticParams);
+
+  mtaFileWatcher.onDidCreate(listener, ...diagnosticParams);
 
   // this event is fired for mta.yaml and dev.mtaext when the folder they are in is deleted in theia but not in vscode
   // https://github.com/microsoft/vscode/issues/60813
-  mtaFileWatcher.onDidDelete(
-    (uri) => updateMtaDiagnostics(uri, disposables),
-    undefined,
-    disposables
-  );
+  mtaFileWatcher.onDidDelete(listener, ...diagnosticParams);
 
   // WORKSPACE folder is added or removed
   workspace.onDidChangeWorkspaceFolders(
-    async (e) => {
-      // At this point, files are already removed from the file system and we can not find the
-      // mta.yaml files that where deleted so we delete all and revalidate
-      if (e.removed.length > 0) {
-        clearDiagnosticCollections();
-      }
-      await validateWsMtaYamls(disposables);
-    },
-    undefined,
-    disposables
+    // At this point, files are already removed from the file system and we can not find the
+    // mta.yaml files that where deleted so we delete all and revalidate
+    async (e) => validateWsMtaYamls(disposables, e.removed.length > 0),
+    ...diagnosticParams
   );
 }
 
 export async function validateWsMtaYamls(
-  disposables: Disposable[]
+  disposables: Disposable[],
+  clearExistingDiagnosticCollections = false
 ): Promise<void> {
+  if (clearExistingDiagnosticCollections) {
+    clearDiagnosticCollections();
+  }
   const mtaYamlUris = await workspace.findFiles(
     `**/${MTA_YAML}`,
     "**/node_modules/**"
@@ -141,7 +126,7 @@ async function getMtaDiagnostics(
           source: "MTA", // Should be synchronized with package.json
           message: issue.message,
           range: mtaIssueToEditorCoordinate(issue),
-          severity: DiagnosticSeverity.Warning,
+          severity: getSeverity(filePath, issue.severity),
         };
       }
     );

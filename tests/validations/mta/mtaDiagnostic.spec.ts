@@ -9,9 +9,16 @@ import {
   convertMtaIssueCoordinateToEditorCoordinate,
   diagnosticCollections,
   getDiagnosticsCollection,
+  getSeverity,
   mtaIssueToEditorCoordinate,
 } from "../../../src/validations/mta/mtaDiagnostic";
 import { keys } from "lodash";
+import { resolve } from "path";
+import {
+  DEV_MTA_EXT,
+  MTA_YAML,
+} from "../../../src/validations/mta/mtaValidations";
+import { DiagnosticSeverity } from "vscode";
 
 describe("mtaDiagnostic", () => {
   const disposables: Disposable[] = [];
@@ -160,6 +167,32 @@ describe("mtaDiagnostic", () => {
     it("converts to the correct coordinate when coordinate is two", async () => {
       const coordinate = convertMtaIssueCoordinateToEditorCoordinate(2);
       expect(coordinate).to.equal(1);
+    });
+  });
+
+  describe("getSeverity", async () => {
+    it("returns warning when dev.mtaext is sent with error", async () => {
+      const filePath = resolve(__dirname, DEV_MTA_EXT);
+      const diagnosticSeverity = getSeverity(filePath, "error");
+      expect(diagnosticSeverity).to.equal(DiagnosticSeverity.Warning);
+    });
+
+    it("returns warning when dev.mtaext is sent with warning", async () => {
+      const filePath = resolve(__dirname, DEV_MTA_EXT);
+      const diagnosticSeverity = getSeverity(filePath, "warning");
+      expect(diagnosticSeverity).to.equal(DiagnosticSeverity.Warning);
+    });
+
+    it("returns error when mta.yaml is sent with error", async () => {
+      const filePath = resolve(__dirname, MTA_YAML);
+      const diagnosticSeverity = getSeverity(filePath, "error");
+      expect(diagnosticSeverity).to.equal(DiagnosticSeverity.Error);
+    });
+
+    it("returns warning when mta.yaml is sent with warning", async () => {
+      const filePath = resolve(__dirname, MTA_YAML);
+      const diagnosticSeverity = getSeverity(filePath, "warning");
+      expect(diagnosticSeverity).to.equal(DiagnosticSeverity.Warning);
     });
   });
 });

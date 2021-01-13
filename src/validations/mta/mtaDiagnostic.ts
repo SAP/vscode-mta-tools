@@ -1,12 +1,15 @@
 import { mta } from "@sap/mta-lib";
 import { forEach } from "lodash";
+import path = require("path");
 import {
   DiagnosticCollection,
+  DiagnosticSeverity,
   Disposable,
   languages,
   Position,
   Range,
 } from "vscode";
+import { DEV_MTA_EXT } from "./mtaValidations";
 
 export let diagnosticCollections: Record<string, DiagnosticCollection> = {};
 
@@ -49,4 +52,20 @@ export function convertMtaIssueCoordinateToEditorCoordinate(
     return 0;
   }
   return number;
+}
+
+export function getSeverity(
+  filePath: string,
+  severity: "warning" | "error"
+): DiagnosticSeverity {
+  const filename = path.parse(filePath).base;
+
+  if (filename === DEV_MTA_EXT) {
+    return DiagnosticSeverity.Warning;
+  }
+
+  //mta.yaml
+  return severity === "warning"
+    ? DiagnosticSeverity.Warning
+    : DiagnosticSeverity.Error;
 }
