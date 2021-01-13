@@ -66,6 +66,9 @@ export async function validateWsMtaYamls(
     `**/${MTA_YAML}`,
     "**/node_modules/**"
   );
+  if (mtaYamlUris.length === 0) {
+    return;
+  }
   await Promise.all(
     map(mtaYamlUris, async (mtaYamlUri: Uri) =>
       updateMtaDiagnostics(mtaYamlUri, disposables)

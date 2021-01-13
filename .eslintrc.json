@@ -25,5 +25,13 @@
       { "allowString": true, "allowNullableString": true }
     ]
   },
-  "ignorePatterns": ["**/*.js"]
+  "ignorePatterns": ["**/*.js"],
+  "overrides": [
+    {
+      "files": ["tests/**"],
+      "rules": {
+        "@typescript-eslint/no-unused-expressions": "off"
+      }
+    }
+  ]
 }

@@ -15,6 +15,14 @@ export interface Disposable {
   dispose(): unknown;
 }
 
+class MockPosition {
+  constructor(public line: number, public character: number) {}
+}
+
+class MockRange {
+  constructor(public start: MockPosition, public end: MockPosition) {}
+}
+
 export const mockFileSystemWatcher: FileSystemWatcher = {
   ignoreChangeEvents: false,
   ignoreCreateEvents: false,
@@ -94,16 +102,16 @@ export const testVscode: any = {
     createDiagnosticCollection: (): DiagnosticCollection => {
       return {
         set: (
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           entries: ReadonlyArray<[Uri, ReadonlyArray<unknown> | undefined]>
         ) => {
+          entries.toString();
           return;
         },
       } as DiagnosticCollection;
     },
   },
-  Position: class Position {},
-  Range: class Range {},
+  Position: MockPosition,
+  Range: MockRange,
   DiagnosticSeverity: {
     Error: 0,
     Warning: 1,

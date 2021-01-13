@@ -8,7 +8,7 @@ import {
   Range,
 } from "vscode";
 
-let diagnosticCollections: Record<string, DiagnosticCollection> = {};
+export let diagnosticCollections: Record<string, DiagnosticCollection> = {};
 
 export function getDiagnosticsCollection(
   name: string,
@@ -41,10 +41,10 @@ export function mtaIssueToEditorCoordinate(mtaIssue: mta.Issue): Range {
   return new Range(position, position);
 }
 
-function convertMtaIssueCoordinateToEditorCoordinate(
+export function convertMtaIssueCoordinateToEditorCoordinate(
   coordinate: number
 ): number {
-  const number = Number(coordinate) - 1;
+  const number = coordinate - 1;
   if (number < 0) {
     return 0;
   }
