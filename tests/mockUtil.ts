@@ -76,9 +76,9 @@ export const testVscode: any = {
     createDiagnosticCollection: (): DiagnosticCollection => {
       return {
         set: (
+          //eslint-disable-next-line @typescript-eslint/no-unused-vars
           entries: ReadonlyArray<[Uri, ReadonlyArray<unknown> | undefined]>
         ) => {
-          entries.toString();
           return;
         },
       } as DiagnosticCollection;

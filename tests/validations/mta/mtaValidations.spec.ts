@@ -19,9 +19,12 @@ import * as mtaDiagnostic from "../../../src/validations/mta/mtaDiagnostic";
 import { resolve } from "path";
 import * as fsExtra from "fs-extra";
 import { mta, Mta } from "@sap/mta-lib";
+import { forEach } from "lodash";
 
 describe("mtaValidations", () => {
   const disposables: Disposable[] = [];
+  const mtaYamlPath = resolve(__dirname, MTA_YAML);
+  const devMtaExtPath = resolve(__dirname, DEV_MTA_EXT);
 
   beforeEach(() => {
     mtaDiagnostic.clearCurrentDiagnosticCollections();
@@ -32,7 +35,7 @@ describe("mtaValidations", () => {
   });
 
   describe("watchMtaYamlAndDevExtFiles", async () => {
-    it("registers to workspace.createFileSystemWatcher and to events with the correct parameters", async () => {
+    it("registers to changes in mta.yaml and dev.mtaext files in the workspace", async () => {
       const createFileSystemWatcherSpy = sinon
         .stub(testVscode.workspace, "createFileSystemWatcher")
         .returns(mockFileSystemWatcher);
@@ -44,9 +47,9 @@ describe("mtaValidations", () => {
 
       // createFileSystemWatcher
       expect(createFileSystemWatcherSpy.callCount).to.equal(1);
-      expect(
-        createFileSystemWatcherSpy.withArgs(`**/{mta.yaml,dev.mtaext}`).called
-      ).to.be.true;
+      expect(createFileSystemWatcherSpy.firstCall.args).to.deep.equal([
+        `**/{mta.yaml,dev.mtaext}`,
+      ]);
 
       // onDidChange
       expect(onDidChangeSpy.callCount).to.equal(1);
@@ -67,7 +70,7 @@ describe("mtaValidations", () => {
       ).to.be.true;
     });
 
-    it("registers to workspace.onDidChangeWorkspaceFolders with the correct parameters", async () => {
+    it("registers to workspace folder changes", async () => {
       const onDidChangeWorkspaceFoldersSpy = sinon.stub(
         testVscode.workspace,
         "onDidChangeWorkspaceFolders"
@@ -99,28 +102,25 @@ describe("mtaValidations", () => {
     });
 
     it("returns diagnostics when mta.yaml and dev.mtaext have errors", async () => {
-      const expectedEntries: [
-        Uri,
-        Diagnostic[] | undefined
-      ][] = prepDiagnostics();
+      const expectedEntries = prepDiagnostics();
       await testUpdateMtaDiagnostics(expectedEntries);
     });
 
     async function testUpdateMtaDiagnostics(
       expectedCollectionEntries: [Uri, Diagnostic[] | undefined][]
     ) {
-      const fileName = "mtaValidations.spec.js";
-      const uriPath = resolve(__dirname, fileName);
       const uri = {
-        fsPath: uriPath,
+        fsPath: mtaYamlPath,
       } as Uri;
 
       let collectionEntries:
         | [Uri, Diagnostic[] | undefined][]
         | undefined = undefined;
       sinon.stub(testVscode.languages, "createDiagnosticCollection").returns({
-        forEach: () => {
-          return;
+        forEach: (
+          func: (uri: Uri, diagnostics: Diagnostic[] | undefined) => unknown
+        ) => {
+          forEach(collectionEntries, (entry) => func(entry[0], entry[1]));
         },
         set: (newCollectionEntries: [Uri, Diagnostic[] | undefined][]) => {
           collectionEntries = newCollectionEntries;
@@ -159,20 +159,15 @@ describe("mtaValidations", () => {
     });
 
     it("returns diagnostics when mta.yaml and dev.mtaext have errors in the WS", async () => {
-      const expectedEntries: [
-        Uri,
-        Diagnostic[] | undefined
-      ][] = prepDiagnostics();
+      const expectedEntries = prepDiagnostics();
       await testValidateWsMtaYamls(expectedEntries);
     });
 
     async function testValidateWsMtaYamls(
       expectedCollectionEntries: [Uri, Diagnostic[] | undefined][]
     ) {
-      const fileName = "mtaValidations.spec.js";
-      const uriPath = resolve(__dirname, fileName);
       const uri = {
-        fsPath: uriPath,
+        fsPath: mtaYamlPath,
       } as Uri;
       sinon
         .stub(testVscode.workspace, "findFiles")
@@ -195,12 +190,9 @@ describe("mtaValidations", () => {
     }
   });
 
-  function prepDiagnostics() {
-    const mtaPath = resolve(__dirname, MTA_YAML);
-    const devMtaExtPath = resolve(__dirname, DEV_MTA_EXT);
-
+  function prepDiagnostics(): [Uri, Diagnostic[] | undefined][] {
     const validationResult: Record<string, mta.Issue[]> = {
-      [mtaPath]: [
+      [mtaYamlPath]: [
         {
           severity: "error",
           message: 'mapping key "_schema-version" already defined at line 1',
@@ -239,7 +231,7 @@ describe("mtaValidations", () => {
       },
     } as Range;
     const firstCallUri = {
-      fsPath: mtaPath,
+      fsPath: mtaYamlPath,
     } as Uri;
     const secondCallUri = {
       fsPath: devMtaExtPath,
@@ -247,12 +239,6 @@ describe("mtaValidations", () => {
 
     sinon.stub(fsExtra, "pathExists").resolves(true);
     sinon.stub(Mta.prototype, "validate").resolves(validationResult);
-    sinon
-      .stub(mtaDiagnostic, "mtaIssueToEditorCoordinate")
-      .onFirstCall()
-      .returns(firstCallRange)
-      .onSecondCall()
-      .returns(secondCallRange);
     sinon
       .stub(testVscode.Uri, "file")
       .onFirstCall()

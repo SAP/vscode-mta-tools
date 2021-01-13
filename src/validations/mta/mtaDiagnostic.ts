@@ -1,6 +1,6 @@
 import { mta } from "@sap/mta-lib";
 import { forEach } from "lodash";
-import path = require("path");
+import { basename } from "path";
 import {
   DiagnosticCollection,
   DiagnosticSeverity,
@@ -47,6 +47,8 @@ export function mtaIssueToEditorCoordinate(mtaIssue: mta.Issue): Range {
 export function convertMtaIssueCoordinateToEditorCoordinate(
   coordinate: number
 ): number {
+  // this conversion is necessary because mta issues have 1-based lines and columns
+  // (unless no line/column number is available and then it's 0), and vscode has 0-based lines and columns
   const number = coordinate - 1;
   if (number < 0) {
     return 0;
@@ -58,7 +60,7 @@ export function getSeverity(
   filePath: string,
   severity: "warning" | "error"
 ): DiagnosticSeverity {
-  const filename = path.parse(filePath).base;
+  const filename = basename(filePath);
 
   if (filename === DEV_MTA_EXT) {
     return DiagnosticSeverity.Warning;

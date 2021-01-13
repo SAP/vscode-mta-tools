@@ -33,10 +33,9 @@ describe("mtaDiagnostic", () => {
 
     it("getDiagnosticsCollection returns cached DiagnosticCollection", async () => {
       const diagnosticsName = "diagnosticsName";
-      const diagnosticCollection = {};
       const createDiagnosticCollectionSpy = sinon
         .stub(testVscode.languages, "createDiagnosticCollection")
-        .returns(diagnosticCollection);
+        .callsFake(() => ({}));
 
       // cache is empty
       expect(keys(diagnosticCollections).length).to.equal(0);
@@ -61,7 +60,6 @@ describe("mtaDiagnostic", () => {
       expect(createDiagnosticCollectionSpy.callCount).to.equal(1);
 
       // reference comparison. make sure it is the same object
-      expect(diagnosticCollection).to.equal(secondCallDc);
       expect(firstCallDc).to.equal(secondCallDc);
       // cache is contain 1 diagnosticCollection
       expect(keys(diagnosticCollections).length).to.equal(1);

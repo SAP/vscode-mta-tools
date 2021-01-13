@@ -19,24 +19,24 @@ export function watchMtaYamlAndDevExtFiles(disposables: Disposable[]): void {
     `**/{${MTA_YAML},${DEV_MTA_EXT}}`
   );
 
-  const listener: (e: Uri) => Promise<void> = (uri: Uri) =>
+  const listener = (uri: Uri): Promise<void> =>
     updateMtaDiagnostics(uri, disposables);
-  const diagnosticParams = [undefined, disposables];
 
-  mtaFileWatcher.onDidChange(listener, ...diagnosticParams);
+  mtaFileWatcher.onDidChange(listener, undefined, disposables);
 
-  mtaFileWatcher.onDidCreate(listener, ...diagnosticParams);
+  mtaFileWatcher.onDidCreate(listener, undefined, disposables);
 
   // this event is fired for mta.yaml and dev.mtaext when the folder they are in is deleted in theia but not in vscode
   // https://github.com/microsoft/vscode/issues/60813
-  mtaFileWatcher.onDidDelete(listener, ...diagnosticParams);
+  mtaFileWatcher.onDidDelete(listener, undefined, disposables);
 
   // WORKSPACE folder is added or removed
   workspace.onDidChangeWorkspaceFolders(
     // At this point, files are already removed from the file system and we can not find the
     // mta.yaml files that where deleted so we delete all and revalidate
     async (e) => validateWsMtaYamls(disposables, e.removed.length > 0),
-    ...diagnosticParams
+    undefined,
+    disposables
   );
 }
 
