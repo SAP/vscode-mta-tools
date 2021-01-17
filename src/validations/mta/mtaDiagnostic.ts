@@ -1,4 +1,4 @@
-import { mta } from "@sap/mta-lib";
+import Mta, { mta } from "@sap/mta-lib";
 import { forEach } from "lodash";
 import { basename } from "path";
 import {
@@ -70,4 +70,12 @@ export function getSeverity(
   return severity === "warning"
     ? DiagnosticSeverity.Warning
     : DiagnosticSeverity.Error;
+}
+
+export async function getValidation(
+  modulePath: string,
+  devMtaExts: string[] | undefined
+): Promise<Record<string, mta.Issue[]>> {
+  const mta = new Mta(modulePath, false, devMtaExts); // temp file is not relevant in our scenario
+  return mta.validate();
 }

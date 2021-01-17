@@ -1,4 +1,4 @@
-import { mta, Mta } from "@sap/mta-lib";
+import { mta } from "@sap/mta-lib";
 import { pathExists } from "fs-extra";
 import { keys, map } from "lodash";
 import { dirname, resolve } from "path";
@@ -7,6 +7,7 @@ import {
   clearDiagnosticCollections,
   getDiagnosticsCollection,
   getSeverity,
+  getValidation,
   mtaIssueToEditorCoordinate,
 } from "./mtaDiagnostic";
 
@@ -115,9 +116,10 @@ async function getMtaDiagnostics(
   const devMtaExts: string[] | undefined = (await pathExists(devMtaExtPath))
     ? [devMtaExtPath]
     : undefined;
-  const mta = new Mta(modulePath, false, devMtaExts); // temp file is not relevant in our scenario
-
-  const validationRes: Record<string, mta.Issue[]> = await mta.validate();
+  const validationRes: Record<string, mta.Issue[]> = await getValidation(
+    modulePath,
+    devMtaExts
+  );
 
   for (const filePath of keys(validationRes)) {
     // iterate validation issues a single file
