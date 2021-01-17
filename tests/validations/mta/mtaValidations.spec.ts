@@ -28,9 +28,9 @@ interface stubPathExistsInfo {
 
 describe("mtaValidations", () => {
   const disposables: Disposable[] = [];
-  const modulePath = __dirname;
-  const mtaYamlPath = resolve(modulePath, MTA_YAML);
-  const devMtaExtPath = resolve(modulePath, DEV_MTA_EXT);
+  const projectPath = __dirname;
+  const mtaYamlPath = resolve(projectPath, MTA_YAML);
+  const devMtaExtPath = resolve(projectPath, DEV_MTA_EXT);
   const mtaYamlUri = {
     fsPath: mtaYamlPath,
   } as Uri;
@@ -99,70 +99,6 @@ describe("mtaValidations", () => {
   });
 
   describe("updateMtaDiagnostics", async () => {
-    it("returns no diagnostics when mta.yaml does not exist", async () => {
-      await testUpdateMtaDiagnostics([]);
-    });
-
-    it("returns no diagnostics when mta.yaml does not exist and clear the current diagnostics", async () => {
-      const expectedDiagnostics: [Uri, Diagnostic[] | undefined][] = [
-        [
-          // when clearing the diagnostic, the diagnostic remains in the cache with "undefined"
-          mtaYamlUri,
-          undefined,
-        ],
-      ];
-      const currentCollectionEntries: [Uri, Diagnostic[] | undefined][] = [
-        [
-          mtaYamlUri,
-          [
-            {
-              source: "MTA",
-              message: "diagnostic message",
-              range: new Range(0, 0, 0, 0),
-              severity: 0,
-            },
-          ],
-        ],
-      ];
-      await testUpdateMtaDiagnostics(
-        expectedDiagnostics,
-        currentCollectionEntries
-      );
-    });
-
-    it("returns no diagnostics when mta.yaml and dev.mtaext have no errors", async () => {
-      stubPathExists(
-        { path: mtaYamlPath, resolvesTo: true },
-        { path: devMtaExtPath, resolvesTo: true }
-      );
-      sinon.stub(Mta.prototype, "validate").resolves({});
-
-      await testUpdateMtaDiagnostics([]);
-    });
-
-    it("returns diagnostics when mta.yaml and dev.mtaext have errors", async () => {
-      const [
-        expectedEntries,
-        getValidationSpy,
-      ] = prepValidationAndDiagnostics();
-      await testUpdateMtaDiagnostics(expectedEntries);
-
-      expect(getValidationSpy.callCount).to.equal(1);
-      expect(getValidationSpy.withArgs(modulePath, [devMtaExtPath]).called).to
-        .be.true;
-    });
-
-    it("returns diagnostics when mta.yaml have errors and dev.mtaext does not exist", async () => {
-      const [expectedEntries, getValidationSpy] = prepValidationAndDiagnostics(
-        false
-      );
-      await testUpdateMtaDiagnostics(expectedEntries);
-
-      expect(getValidationSpy.callCount).to.equal(1);
-      expect(getValidationSpy.withArgs(modulePath, undefined).called).to.be
-        .true;
-    });
-
     async function testUpdateMtaDiagnostics(
       expectedCollectionEntries: [Uri, Diagnostic[] | undefined][],
       collectionEntries:
@@ -183,6 +119,98 @@ describe("mtaValidations", () => {
       await updateMtaDiagnostics(mtaYamlUri, disposables);
       expect(collectionEntries).to.deep.equal(expectedCollectionEntries);
     }
+
+    it("returns no diagnostics when mta.yaml does not exist", async () => {
+      await testUpdateMtaDiagnostics([]);
+    });
+
+    it("returns no diagnostics when mta.yaml and dev.mtaext have no errors", async () => {
+      stubPathExists(
+        { path: mtaYamlPath, resolvesTo: true },
+        { path: devMtaExtPath, resolvesTo: true }
+      );
+      sinon.stub(Mta.prototype, "validate").resolves({});
+
+      await testUpdateMtaDiagnostics([]);
+    });
+
+    it("returns diagnostics when mta.yaml and dev.mtaext have errors", async () => {
+      const {
+        expectedEntries,
+        getValidationSpy,
+      } = prepValidationAndDiagnostics();
+      await testUpdateMtaDiagnostics(expectedEntries);
+
+      expect(getValidationSpy.callCount).to.equal(1);
+      expect(getValidationSpy.firstCall.args).to.deep.equal([
+        projectPath,
+        [devMtaExtPath],
+      ]);
+    });
+
+    it("returns diagnostics when mta.yaml have errors and dev.mtaext does not exist", async () => {
+      const {
+        expectedEntries,
+        getValidationSpy,
+      } = prepValidationAndDiagnostics(false);
+      await testUpdateMtaDiagnostics(expectedEntries);
+
+      expect(getValidationSpy.callCount).to.equal(1);
+      expect(getValidationSpy.firstCall.args).to.deep.equal([
+        projectPath,
+        undefined,
+      ]);
+    });
+
+    describe("clears current diagnostics", async () => {
+      const expectedDiagnostics: [Uri, Diagnostic[] | undefined][] = [
+        [
+          // when clearing the diagnostic, we add an entry with "undefined" to the collection
+          mtaYamlUri,
+          undefined,
+        ],
+      ];
+
+      const currentCollectionEntries: [Uri, Diagnostic[] | undefined][] = [
+        [
+          mtaYamlUri,
+          [
+            {
+              source: "MTA",
+              message: "diagnostic message",
+              range: new Range(0, 0, 0, 0),
+              severity: 0,
+            },
+          ],
+        ],
+      ];
+
+      it("returns no diagnostics when mta.yaml does not exist", async () => {
+        await testUpdateMtaDiagnostics(
+          expectedDiagnostics,
+          currentCollectionEntries
+        );
+      });
+
+      it("returns diagnostics when mta.yaml exist", async () => {
+        const {
+          expectedEntries,
+          getValidationSpy,
+        } = prepValidationAndDiagnostics(false);
+        // add the diagnostics that where cleared to the expected entries
+        const newExpectedEntries = expectedDiagnostics.concat(expectedEntries);
+        await testUpdateMtaDiagnostics(
+          newExpectedEntries,
+          currentCollectionEntries
+        );
+
+        expect(getValidationSpy.callCount).to.equal(1);
+        expect(getValidationSpy.firstCall.args).to.deep.equal([
+          projectPath,
+          undefined,
+        ]);
+      });
+    });
   });
   describe("validateWsMtaYamls", async () => {
     it("clears diagnostic collection and returns no diagnostics when mta.yaml does not exist in the WS", async () => {
@@ -215,15 +243,17 @@ describe("mtaValidations", () => {
     });
 
     it("returns diagnostics when mta.yaml and dev.mtaext have errors in the WS", async () => {
-      const [
+      const {
         expectedEntries,
         getValidationSpy,
-      ] = prepValidationAndDiagnostics();
+      } = prepValidationAndDiagnostics();
       await testValidateWsMtaYamls(expectedEntries);
 
       expect(getValidationSpy.callCount).to.equal(1);
-      expect(getValidationSpy.withArgs(modulePath, [devMtaExtPath]).called).to
-        .be.true;
+      expect(getValidationSpy.firstCall.args).to.deep.equal([
+        projectPath,
+        [devMtaExtPath],
+      ]);
     });
 
     async function testValidateWsMtaYamls(
@@ -255,7 +285,10 @@ describe("mtaValidations", () => {
 
   function prepValidationAndDiagnostics(
     prepWithDevMtaExt = true
-  ): [[Uri, Diagnostic[] | undefined][], sinon.SinonStub] {
+  ): {
+    expectedEntries: [Uri, Diagnostic[] | undefined][];
+    getValidationSpy: sinon.SinonStub;
+  } {
     // mta.yaml
     const validationResult: Record<string, mta.Issue[]> = {
       [mtaYamlPath]: [
@@ -313,8 +346,6 @@ describe("mtaValidations", () => {
       { path: devMtaExtPath, resolvesTo: prepWithDevMtaExt }
     );
 
-    //sinon.stub(Mta.prototype, "validate").resolves(validationResult);
-
     sinon
       .stub(testVscode.Uri, "file")
       .withArgs(mtaYamlPath)
@@ -352,7 +383,7 @@ describe("mtaValidations", () => {
       ]);
     }
 
-    return [expectedEntries, getValidationSpy];
+    return { expectedEntries, getValidationSpy };
   }
 
   function stubPathExists(
