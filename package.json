@@ -136,8 +136,8 @@
     "format:validate": "prettier --check --ignore-path .gitignore \"**/*.@(ts|js|json|md|yml)\"",
     "lint": "eslint . --ext .ts --fix --max-warnings=0",
     "build": "vsce package",
-    "test": "nyc mocha -p tsconfig.json",
-    "coverage:check": "nyc mocha -p tsconfig.json",
+    "test": "nyc mocha",
+    "coverage:check": "nyc mocha",
     "vscode:prepublish": "webpack --mode production",
     "webpack": "webpack --mode development",
     "webpack:watch": "webpack --mode development --watch"

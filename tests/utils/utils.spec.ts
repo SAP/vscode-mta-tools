@@ -6,6 +6,7 @@ import * as sinon from "sinon";
 import { Utils } from "../../src/utils/utils";
 import { SelectionItem } from "../../src/utils/selectionItem";
 import { IChildLogger } from "@vscode-logging/logger";
+import * as fsExtra from "fs-extra";
 
 describe("Utils unit tests", () => {
   const path1 = "some/path/to/file1";
@@ -92,6 +93,23 @@ describe("Utils unit tests", () => {
 
     const response = await Utils.getConfigFileField("field1", loggerImpl);
     expect(response).to.equal(undefined);
+  });
+
+  it("getConfigFileField - fetch field from existing config file", async () => {
+    utilsMock
+      .expects("getConfigFilePath")
+      .once()
+      .returns("path/to/existing/file");
+    // Converting SinonStub because it takes the wrong overload
+    ((sinon.stub(fsExtra, "readFile") as unknown) as sinon.SinonStub<
+      [string, string],
+      Promise<string>
+    >)
+      .withArgs("path/to/existing/file", "utf8")
+      .resolves(`{"field1":"field1_value"}`);
+
+    const response = await Utils.getConfigFileField("field1", loggerImpl);
+    expect(response).to.equal("field1_value");
   });
 
   it("getFilePaths - get paths of a non windows platform", () => {
