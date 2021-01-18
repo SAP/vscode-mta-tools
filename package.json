@@ -22,7 +22,8 @@
     "*"
   ],
   "extensionDependencies": [
-    "sapos.yeoman-ui"
+    "sapos.yeoman-ui",
+    "vscode.yaml"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -31,6 +32,14 @@
         "name": "MTA",
         "source": "MTA Validate",
         "label": "Validate MTA development descriptor and extension files"
+      }
+    ],
+    "languages": [
+      {
+        "id": "yaml",
+        "extensions": [
+          ".mtaext"
+        ]
       }
     ],
     "jsonValidation": [
@@ -139,7 +148,7 @@
     "fs-extra": "9.0.1",
     "@vscode-logging/logger": "1.2.2",
     "@sap/swa-for-sapbas-vsx": "1.1.11",
-    "@sap/mta-lib": "1.6.5"
+    "@sap/mta-lib": "1.6.6"
   },
   "devDependencies": {
     "@commitlint/cli": "11.0.0",
@@ -158,6 +167,7 @@
     "chai": "4.2.0",
     "conventional-changelog-cli": "2.1.1",
     "conventional-recommended-bump": "6.1.0",
+    "copy-webpack-plugin": "7.0.0",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "7.17.0",
     "eslint-config-prettier": "7.1.0",

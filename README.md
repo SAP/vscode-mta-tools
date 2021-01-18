@@ -22,8 +22,8 @@ Make sure the following tools are installed in your environment:
 - [Cloud MTA Build Tool](https://github.com/SAP/cloud-mta-build-tool) to build MTA project.
 - [Cloud Foundry CLI](https://github.com/cloudfoundry/cli) to work with Cloud Foundry.
 - [MultiApps CF CLI Plugin](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) to deploy MTA archive to Cloud Fountry.
-- [MTA tool](https://github.com/SAP/cloud-mta) for exploring and validating the multitarget application descriptor.
-- [Yeoman-ui extension](https://github.com/SAP/yeoman-ui) to work with wizard.
+- [MTA tool](https://github.com/SAP/cloud-mta) to add MTA modules.
+- [Yeoman-ui extension](https://github.com/SAP/yeoman-ui) to add MTA modules.
 
 ### Download and Installation
 
