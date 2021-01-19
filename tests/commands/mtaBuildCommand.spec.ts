@@ -217,10 +217,4 @@ describe("MTA build command unit tests", () => {
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MBT);
     await mtaBuildCommand.mtaBuildCommand(selected as Uri, swa);
   });
-
-  it("mtaBuildCommand - tracking throws error", async () => {
-    sandbox.stub(SWATracker.prototype, "track").throws(new Error("error"));
-    tasksMock.expects("executeTask").never();
-    await mtaBuildCommand.mtaBuildCommand(selected as Uri, swa);
-  });
 });

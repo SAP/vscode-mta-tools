@@ -1,6 +1,8 @@
 "use strict";
 
 const path = require("path");
+const fs = require("fs");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const distPath = path.resolve(__dirname, "dist");
 
 /**@type {import('webpack').Configuration}*/
@@ -36,5 +38,25 @@ const config = {
       },
     ],
   },
+  // Enable cloud-mta usage via auto-download, see https://github.com/SAP/cloud-mta#packaging-with-webpack
+  node: {
+    __dirname: false,
+  },
+  plugins: [
+    // Enable cloud-mta usage via auto-download, see https://github.com/SAP/cloud-mta#packaging-with-webpack
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(require.resolve("mta-local"), "..", "bin"),
+          to: path.resolve(distPath, "bin"),
+        },
+      ],
+    }),
+    function (compiler) {
+      compiler.hooks.done.tap("ExecuteChmodOnBinMta", () => {
+        fs.chmodSync(path.resolve(distPath, "bin", "mta"), "755");
+      });
+    },
+  ],
 };
 module.exports = config;

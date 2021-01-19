@@ -81,4 +81,4 @@ dist
 out
 *.vsix
 
-
+unpacked_bin
