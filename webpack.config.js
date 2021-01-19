@@ -38,10 +38,12 @@ const config = {
       },
     ],
   },
+  // Enable cloud-mta usage via auto-download, see https://github.com/SAP/cloud-mta#packaging-with-webpack
   node: {
     __dirname: false,
   },
   plugins: [
+    // Enable cloud-mta usage via auto-download, see https://github.com/SAP/cloud-mta#packaging-with-webpack
     new CopyWebpackPlugin({
       patterns: [
         {
