@@ -1,3 +1,9 @@
+## [1.3.10](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.9...v1.3.10) (2021-01-25)
+
+### Bug Fixes
+
+- improve validations ([#173](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues/173)) ([64e2b7a](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/64e2b7af3f82b19d363c5878979eddd72b6b4698))
+
 ## [1.3.9](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.8...v1.3.9) (2021-01-13)
 
 ### Features
