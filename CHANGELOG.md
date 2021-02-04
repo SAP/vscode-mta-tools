@@ -1,3 +1,9 @@
+## [1.3.11](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.10...v1.3.11) (2021-02-04)
+
+### Bug Fixes
+
+- remove vscode.yaml dependency ([#188](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/issues/188)) ([f3ced4f](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/commit/f3ced4fbca05d392bf57753e0eaed06d1505aa5b))
+
 ## [1.3.10](https://github.wdf.sap.corp/devx-wing/vscode-mta-tools/compare/v1.3.9...v1.3.10) (2021-01-25)
 
 ### Bug Fixes
