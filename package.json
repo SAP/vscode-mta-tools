@@ -22,8 +22,7 @@
     "*"
   ],
   "extensionDependencies": [
-    "sapos.yeoman-ui",
-    "vscode.yaml"
+    "sapos.yeoman-ui"
   ],
   "main": "./dist/extension.js",
   "contributes": {
