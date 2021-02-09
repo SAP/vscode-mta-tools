@@ -66,7 +66,7 @@
     "commands": [
       {
         "command": "extension.mtaBuildCommand",
-        "title": "Build MTA"
+        "title": "Build MTA Project"
       },
       {
         "command": "extension.mtarDeployCommand",
