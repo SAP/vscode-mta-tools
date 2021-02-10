@@ -6,7 +6,7 @@ const selectMtaProjectQuestionHint =
 export const messages = {
   ERROR_ACTIVATION_FAILED:
     "Extension activation failed due to Logger configuration failure:",
-  BUILD_MTA: "Build MTA",
+  BUILD_MTA: "Build MTA Project",
   DEPLOY_MTAR: "Deploy MTA Archive",
   CHANNEL_NAME: "MTA",
   SELECT_PROJECT_DESCRIPTOR:
