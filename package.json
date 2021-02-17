@@ -6,7 +6,8 @@
   "publisher": "SAPSE",
   "license": "Apache-2.0",
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "git@github.com/SAP/vscode-mta-tools.git"
   },
   "publishConfig": {
     "access": "public"
