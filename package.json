@@ -2,12 +2,12 @@
   "name": "vscode-mta-tools",
   "displayName": "vscode-mta-tools",
   "description": "VS Code Multi-Target Application tools",
-  "version": "1.3.11",
+  "version": "1.3.12",
   "publisher": "SAPSE",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.wdf.sap.corp/devx-wing/vscode-mta-tools.git"
+    "url": "git@github.com/SAP/vscode-mta-tools.git"
   },
   "publishConfig": {
     "access": "public"
