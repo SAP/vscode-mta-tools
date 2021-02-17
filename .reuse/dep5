@@ -4,5 +4,5 @@ Upstream-Contact: Raya Koren <raya.koren@sap.com>
 Source: https://github.com/SAP/vscode-mta-tools
 
 Files: *
-Copyright: 2019-2020 SAP SE or an SAP affiliate company and vscode-mta-tools contributors
+Copyright: 2019-2021 SAP SE or an SAP affiliate company and vscode-mta-tools contributors
 License: Apache-2.0
