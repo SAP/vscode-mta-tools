@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-multiapps_icon__48px">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="multiapps_icon__48px" data-name="multiapps_icon _48px" clip-path="url(#clip-multiapps_icon__48px)">
+    <g id="Group_3746" data-name="Group 3746" transform="translate(0.009 9.001)">
+      <g id="Group_3762" data-name="Group 3762" transform="translate(7.846 10.742)">
+        <path id="Path_1829" data-name="Path 1829" d="M-101.823,95.44l.249,10.272,8-5.973-.243-10.231Z" transform="translate(101.823 -89.328)" fill="#b6a3e2"/>
+        <path id="Path_1830" data-name="Path 1830" d="M-96.563,95.4l.262,10.271,8.067-5.983L-88.5,89.448Z" transform="translate(112.343 -89.448)" fill="#b6a3e2"/>
+        <path id="Path_1831" data-name="Path 1831" d="M-90.929,95.181v9.253l7.391-5.337.147-9.358Z" transform="translate(123.613 -88.867)" fill="#b6a3e2"/>
+      </g>
+      <path id="Path_1832" data-name="Path 1832" d="M-72.447,85.944l-8.165,5.836-7.87-5.912-15.956,11.344,7.87,5.781,8.013-5.868,7.823,5.552,7.966-5.573,8.86,6.179,7.641-5.74Z" transform="translate(104.438 -85.868)" fill="#7e57c2"/>
+    </g>
+  </g>
+</svg>

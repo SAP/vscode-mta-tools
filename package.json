@@ -24,8 +24,99 @@
   "extensionDependencies": [
     "sapos.yeoman-ui"
   ],
+  "BASContributes": {
+    "tasksExplorer": [
+      {
+        "type": "deploy-mta",
+        "intent": "Deploy"
+      },
+      {
+        "type": "build-mta",
+        "intent": "Build"
+      }
+    ]
+  },
   "main": "./dist/extension.js",
   "contributes": {
+    "taskDefinitions": [
+      {
+        "type": "deploy-mta",
+        "required": [
+          "label",
+          "taskType",
+          "mtarPath"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Task Name"
+          },
+          "taskType": {
+            "type": "string",
+            "description": "Task Type"
+          },
+          "mtarPath": {
+            "type": "string",
+            "description": "Path to the MTAR File"
+          },
+          "extPath": {
+            "type": "string",
+            "description": "Path to the Extension File"
+          }
+        }
+      },
+      {
+        "type": "build-mta",
+        "required": [
+          "label",
+          "taskType",
+          "mtaFilePath",
+          "buildType"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Task Name"
+          },
+          "taskType": {
+            "type": "string",
+            "description": "Task Type"
+          },
+          "buildType": {
+            "type": "string",
+            "description": "Build Type"
+          },
+          "mtaFilePath": {
+            "type": "string",
+            "description": "Path to the Project's 'mta.yaml' File"
+          },
+          "mtarTargetPath": {
+            "type": "string",
+            "description": "Path to the MTAR Target Folder"
+          },
+          "mtarName": {
+            "type": "string",
+            "description": "MTAR File Name"
+          },
+          "extPath": {
+            "type": "string",
+            "description": "Path to the Extension File"
+          },
+          "modules": {
+            "type": "array",
+            "description": "Modules"
+          },
+          "dependencies": {
+            "type": "array",
+            "description": "Dependencies"
+          },
+          "targetFolderPath": {
+            "type": "string",
+            "description": "Path to the Target Folder"
+          }
+        }
+      }
+    ],
     "problemMatchers": [
       {
         "name": "MTA",
@@ -147,7 +238,8 @@
     "fs-extra": "9.1.0",
     "@vscode-logging/logger": "1.2.2",
     "@sap/swa-for-sapbas-vsx": "1.1.11",
-    "@sap/mta-lib": "1.6.6"
+    "@sap/mta-lib": "1.6.6",
+    "datauri": "2.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "11.0.0",
@@ -160,6 +252,8 @@
     "@types/mocha": "8.2.0",
     "@types/sinon": "9.0.10",
     "@types/vscode": "1.53.0",
+    "@types/rimraf": "^3.0.0",
+    "@types/tmp": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "4.14.2",
     "@typescript-eslint/parser": "4.15.0",
     "coveralls": "3.1.0",
@@ -185,7 +279,9 @@
     "vsce": "1.85.0",
     "vscode-test": "1.5.0",
     "webpack": "5.21.2",
-    "webpack-cli": "4.3.1"
+    "webpack-cli": "4.3.1",
+    "tmp": "^0.2.1",
+    "rimraf": "3.0.2"
   },
   "prettier": {
     "endOfLine": "lf"

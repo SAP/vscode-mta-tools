@@ -20,7 +20,7 @@ import * as configSettings from "../src/logger/settings";
 import * as loggerWrapper from "../src/logger/logger-wrapper";
 import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 
-describe("Extension unit tests", () => {
+describe.only("Extension unit tests", () => {
   const extensionPath: string = resolve(__dirname, "..", "..");
   const currentLogFilePath = "/tmp";
   let sandbox: sinon.SinonSandbox;
