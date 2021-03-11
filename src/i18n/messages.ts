@@ -82,7 +82,7 @@ export const taskProvidersMessages = {
     `The "modules" property of the "${taskName}" task is missing or empty.`,
   MODULE_TARGET_FOLDER_PATH_HINT:
     "The folder where the module build results will be saved. If this parameter is not provided, the module build results are saved in the <path to the folder where mta.yaml is located> folder according to the default configuration of the 'mta module-build' command of the Cloud MTA Build Tool.",
-}
+};
 
 export const messagesYeoman = {
   yeoman_ui_title: "New MTA Module From Template",

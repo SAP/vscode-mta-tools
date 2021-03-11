@@ -1,7 +1,10 @@
 import { expect } from "chai";
 import { resolve } from "path";
 import { DeployTaskContributionAPI } from "../../../src/task-providers/task-deploy/taskExplorerContributer";
-import { DEPLOY_MTA, DeployTaskDefinitionType } from "../../../src/task-providers/definitions";
+import {
+  DEPLOY_MTA,
+  DeployTaskDefinitionType,
+} from "../../../src/task-providers/definitions";
 import { ISWATracker, getSWA, initSWA } from "../../../src/utils/swa";
 import { taskProvidersMessages } from "../../../src/i18n/messages";
 
@@ -123,7 +126,9 @@ describe("taskExplorerContributer class", () => {
       const testBuildAPI = new DeployTaskContributionAPI("somePath");
       testBuildAPI.onSave(testTask);
       expect(swaEventType).to.equal(taskProvidersMessages.SWA_MTA_DEPLOY_EVENT);
-      expect(swaCustomEvents).to.deep.equal([taskProvidersMessages.SWA_MTA_WITH_EXT_PARAM]);
+      expect(swaCustomEvents).to.deep.equal([
+        taskProvidersMessages.SWA_MTA_WITH_EXT_PARAM,
+      ]);
     });
 
     afterEach(() => {

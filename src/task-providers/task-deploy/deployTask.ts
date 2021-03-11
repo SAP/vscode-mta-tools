@@ -11,10 +11,7 @@ import {
 } from "vscode";
 import { taskProvidersMessages } from "../../i18n/messages";
 import { getLogger } from "../../logger/logger-wrapper";
-import {
-  isCFPluginInstalled,
-  loginToCF,
-} from "../utils/cfutil";
+import { isCFPluginInstalled, loginToCF } from "../utils/cfutil";
 import {
   createTask,
   getWorkspaceFolders,
@@ -47,7 +44,9 @@ export class DeployMtaTaskProvider implements TaskProvider {
     }
 
     if (!_task.definition.mtarPath) {
-      getLogger().error(taskProvidersMessages.MTAR_PROPERTY_MISSING_LOG(_task.name));
+      getLogger().error(
+        taskProvidersMessages.MTAR_PROPERTY_MISSING_LOG(_task.name)
+      );
       return undefined;
     }
 
@@ -146,7 +145,10 @@ async function getDeployTasks(): Promise<Task[]> {
       result.push(task);
     }
   } catch (err) {
-    getLogger().error(taskProvidersMessages.AUTO_DETECT_MTA_DEPLOY_FAILURE, err);
+    getLogger().error(
+      taskProvidersMessages.AUTO_DETECT_MTA_DEPLOY_FAILURE,
+      err
+    );
   }
 
   return result;

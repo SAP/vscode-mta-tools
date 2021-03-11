@@ -1,4 +1,4 @@
-import { mockVscode, testVscode } from "./mockUtil";
+import { mockVscode, resetTestVSCode, testVscode } from "./mockUtil";
 mockVscode("src/extension");
 mockVscode("src/utils/utils");
 mockVscode("src/commands/mtaBuildCommand");
@@ -18,9 +18,9 @@ import {
 } from "../src/extension";
 import * as configSettings from "../src/logger/settings";
 import * as loggerWrapper from "../src/logger/logger-wrapper";
-import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { DEPLOY_MTA, BUILD_MTA } from "../src/task-providers/definitions";
 
-describe.only("Extension unit tests", () => {
+describe("Extension unit tests", () => {
   const extensionPath: string = resolve(__dirname, "..", "..");
   const currentLogFilePath = "/tmp";
   let sandbox: sinon.SinonSandbox;
@@ -29,54 +29,73 @@ describe.only("Extension unit tests", () => {
   let windowMock: sinon.SinonMock;
   let configSettingsMock: sinon.SinonMock;
   let testContext: Partial<ExtensionContext>;
+  let tasksMock: sinon.SinonMock;
+  let loggerWrapperMock: sinon.SinonMock;
 
   before(() => {
     sandbox = sinon.createSandbox();
+    resetTestVSCode();
+  });
+
+  beforeEach(() => {
     testContext = {
       subscriptions: [],
       extensionPath,
       logPath: currentLogFilePath,
     };
+    loggerWrapperMock = sandbox.mock(loggerWrapper);
   });
 
   afterEach(() => {
     sinon.restore();
     sandbox.restore();
+    loggerWrapperMock.verify();
+    resetTestVSCode();
   });
 
-  describe("negative tests", () => {
-    it("calling getLogger before logger initialized throws exception", () => {
-      expect(() => loggerWrapper.getLogger()).to.throw(
-        Error,
-        loggerWrapper.ERROR_LOGGER_NOT_INITIALIZED
-      );
+  describe("logger", () => {
+    beforeEach(() => {
+      tasksMock = sandbox.mock(testVscode.tasks);
+      commandsMock = sandbox.mock(testVscode.commands);
     });
 
-    it("activate - error initializing logger does not subscribe commands", async () => {
-      const loggerStub = sandbox
-        .stub(
-          loggerWrapper,
-          "createExtensionLoggerAndSubscribeToLogSettingsChanges"
-        )
-        .throws(new Error("error"));
+    afterEach(() => {
+      tasksMock.verify();
+      commandsMock.verify();
+    });
+
+    it("logger initialization failed, provider and commands registered successfully", async () => {
+      tasksMock = sandbox.mock(testVscode.tasks);
+      loggerWrapperMock
+        .expects("createExtensionLoggerAndSubscribeToLogSettingsChanges")
+        .throws(new Error("exception"));
+      tasksMock.expects("registerTaskProvider").atLeast(2);
+      commandsMock.expects("registerCommand").atLeast(3);
       await activate(testContext as ExtensionContext);
-      expect(loggerStub.getCalls().length).to.equal(1);
-      expect(testContext.subscriptions).to.have.lengthOf(0);
+      expect(testContext.subscriptions).to.have.lengthOf(5);
+      tasksMock.verify();
+    });
+
+    it("logger initialization succeded, provider and commands registered successfully", async () => {
+      tasksMock = sandbox.mock(testVscode.tasks);
+      loggerWrapperMock.expects(
+        "createExtensionLoggerAndSubscribeToLogSettingsChanges"
+      );
+      tasksMock.expects("registerTaskProvider").atLeast(2);
+      commandsMock.expects("registerCommand").atLeast(3);
+      await activate(testContext as ExtensionContext);
+      expect(testContext.subscriptions).to.have.lengthOf(5);
+      tasksMock.verify();
     });
   });
 
-  describe("positive tests", () => {
+  describe("commands", () => {
     beforeEach(() => {
       commandsMock = sandbox.mock(testVscode.commands);
       utilsMock = sandbox.mock(Utils);
       windowMock = sandbox.mock(testVscode.window);
       configSettingsMock = sandbox.mock(configSettings);
 
-      testContext = {
-        subscriptions: [],
-        extensionPath,
-        logPath: currentLogFilePath,
-      };
       configSettingsMock
         .expects("getLoggingLevelSetting")
         .atLeast(1)
@@ -94,19 +113,13 @@ describe.only("Extension unit tests", () => {
       configSettingsMock.verify();
     });
 
-    it("activate - add subscriptions", async () => {
-      commandsMock.expects("registerCommand").atLeast(3);
-      await activate(testContext as ExtensionContext);
-      expect(testContext.subscriptions).to.have.lengthOf(5);
-    });
-
     it("mtaBuildCommand", async () => {
       utilsMock.expects("execCommand").once().returns({ exitCode: "ENOENT" });
       windowMock
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MBT);
       await activate(testContext as ExtensionContext);
-      await mtaBuildCommand((undefined as unknown) as SWATracker, undefined);
+      await mtaBuildCommand(undefined);
     });
 
     it("mtarDeployCommand", async () => {
@@ -115,7 +128,7 @@ describe.only("Extension unit tests", () => {
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MTA_CF_CLI);
       await activate(testContext as ExtensionContext);
-      await mtarDeployCommand((undefined as unknown) as SWATracker, undefined);
+      await mtarDeployCommand(undefined);
     });
 
     it("addModuleCommand", async () => {
@@ -124,7 +137,42 @@ describe.only("Extension unit tests", () => {
         .expects("showErrorMessage")
         .withExactArgs(messages.INSTALL_MTA);
       await activate(testContext as ExtensionContext);
-      await addModuleCommand((undefined as unknown) as SWATracker, undefined);
+      await addModuleCommand(undefined);
+    });
+  });
+
+  describe("task provider", () => {
+    beforeEach(() => {
+      tasksMock = sandbox.mock(testVscode.tasks);
+      configSettingsMock
+        .expects("getLoggingLevelSetting")
+        .atLeast(1)
+        .returns("off");
+      configSettingsMock
+        .expects("getSourceLocationTrackingSetting")
+        .atLeast(1)
+        .returns(false);
+    });
+
+    afterEach(() => {
+      tasksMock.verify();
+    });
+
+    it("check getTaskEditorContributors returns map with deploy-mta entry", async () => {
+      loggerWrapperMock.expects(
+        "createExtensionLoggerAndSubscribeToLogSettingsChanges"
+      );
+      tasksMock.expects("registerTaskProvider").atLeast(2);
+      const apiRes = await activate(testContext as ExtensionContext);
+      const contributersMap = apiRes.getTaskEditorContributors();
+      expect(contributersMap.has(DEPLOY_MTA)).to.be.true;
+      const deployContributer = contributersMap.get(DEPLOY_MTA);
+      expect(deployContributer).to.exist;
+      expect(contributersMap.has(BUILD_MTA)).to.be.true;
+      const buildContributer = contributersMap.get(BUILD_MTA);
+      expect(buildContributer).to.exist;
+      loggerWrapperMock.verify();
+      tasksMock.verify();
     });
   });
 });

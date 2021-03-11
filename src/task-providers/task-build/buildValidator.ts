@@ -3,7 +3,10 @@ import { isEmpty } from "lodash";
 import { taskProvidersMessages } from "../../i18n/messages";
 
 export async function validateExtPath(extPath: string): Promise<string> {
-  return validatePath(extPath, taskProvidersMessages.MTAEXT_PATH_VALIDATION_ERR);
+  return validatePath(
+    extPath,
+    taskProvidersMessages.MTAEXT_PATH_VALIDATION_ERR
+  );
 }
 
 export async function validateModules(modules: string[]): Promise<string> {

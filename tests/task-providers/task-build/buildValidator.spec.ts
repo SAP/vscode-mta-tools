@@ -22,7 +22,9 @@ describe("MTA Build Validators", () => {
 
     it("returns error message when file doesnt exist at path specified", async () => {
       const result = await validateTargetFolder("wrongFolder");
-      expect(result).to.eq(taskProvidersMessages.TARGET_FOLDER_PATH_VALIDATION_ERR);
+      expect(result).to.eq(
+        taskProvidersMessages.TARGET_FOLDER_PATH_VALIDATION_ERR
+      );
     });
 
     it("returns true when file exists at path specified ", async () => {

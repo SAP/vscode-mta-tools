@@ -1,5 +1,5 @@
 import { spawn, SpawnOptionsWithoutStdio } from "child_process";
-import { homedir, platform } from "os";
+import { platform } from "os";
 import { map, trimStart } from "lodash";
 import {
   ShellExecution,

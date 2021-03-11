@@ -16,7 +16,7 @@ import { BuildTaskContributionAPI } from "../../../src/task-providers/task-build
 import { getSWA, initSWA, ISWATracker } from "../../../src/utils/swa";
 import { taskProvidersMessages } from "../../../src/i18n/messages";
 
-describe.only("taskExplorerContributer class", () => {
+describe("taskExplorerContributer class", () => {
   describe("convertTaskToFormInfo method", () => {
     it("returns valid array when build type is `archive` and the task has all properties and", () => {
       const testBuildAPI = new BuildTaskContributionAPI("somePath");

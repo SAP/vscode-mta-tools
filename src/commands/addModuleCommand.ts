@@ -4,7 +4,7 @@ import { messages, messagesYeoman } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
 import { Utils } from "../utils/utils";
-import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { getSWA } from "../utils/swa";
 
 interface IMtaData {
   mtaFilePath: string | undefined;
@@ -21,10 +21,7 @@ export class AddModuleCommand {
   // Logger
   private readonly logger: IChildLogger = getClassLogger(AddModuleCommand.name);
 
-  public async addModuleCommand(
-    selected: Uri | undefined,
-    swa: SWATracker
-  ): Promise<void> {
+  public async addModuleCommand(selected: Uri | undefined): Promise<void> {
     // check that cloud-mta is installed in the environment
     if (
       !(await Utils.isCliToolInstalled(
@@ -38,7 +35,7 @@ export class AddModuleCommand {
 
     if (selected) {
       // Command called from context menu, add usage analytics
-      swa.track(messages.EVENT_TYPE_ADD_MODULE, [
+      getSWA().track(messages.EVENT_TYPE_ADD_MODULE, [
         messages.CUSTOM_EVENT_CONTEXT_MENU,
       ]);
       this.mtaFilePath = selected.path;
@@ -52,7 +49,7 @@ export class AddModuleCommand {
         `\n\n${messagesYeoman.select_mtaFile_hint} ${this.mtaFilePath}`;
     } else {
       // Command is called from command pallet, add usage analytics
-      swa.track(messages.EVENT_TYPE_ADD_MODULE, [
+      getSWA().track(messages.EVENT_TYPE_ADD_MODULE, [
         messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ]);
       messagesYeoman.select_generator_description = ORIGINAL_DESCRIPTION;

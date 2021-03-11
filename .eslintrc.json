@@ -22,8 +22,11 @@
     ],
     "@typescript-eslint/strict-boolean-expressions": [
       "error",
-      { "allowString": true, "allowNullableString": true }
-    ]
+      { "allowString": true, "allowNullableString": true, "allowAny": true }
+    ],
+    "no-unused-expressions": "off",
+    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/explicit-module-boundary-types": ["off"]
   },
   "ignorePatterns": ["**/*.js"],
   "overrides": [

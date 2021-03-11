@@ -15,7 +15,7 @@ import {
   createTask,
   getWorkspaceFolders,
   getWSFolderPath,
-  getFilesInWorkspace
+  getFilesInWorkspace,
 } from "../utils/common";
 import { BUILD_MTA, BuildTaskDefinitionType } from "../definitions";
 import { Utils } from "../../utils/utils";
@@ -51,7 +51,9 @@ export class BuildMtaTaskProvider implements TaskProvider {
     }
 
     if (!_task.definition.buildType) {
-      getLogger().error(taskProvidersMessages.BUILD_TYPE_PROPERTY_MISSING(_task.name));
+      getLogger().error(
+        taskProvidersMessages.BUILD_TYPE_PROPERTY_MISSING(_task.name)
+      );
       return undefined;
     }
 
@@ -59,7 +61,9 @@ export class BuildMtaTaskProvider implements TaskProvider {
       _task.definition.buildType === BUILD_MTA_MODULE &&
       _task.definition.modules === undefined
     ) {
-      getLogger().error(taskProvidersMessages.MODULES_PROPERTY_MISSING(_task.name));
+      getLogger().error(
+        taskProvidersMessages.MODULES_PROPERTY_MISSING(_task.name)
+      );
       return undefined;
     }
 
@@ -90,7 +94,13 @@ export class BuildMtaTaskProvider implements TaskProvider {
       return true;
     }
     // check if mbt cli is installed
-    if (!(await Utils.isCliToolInstalled(MBT_COMMAND, messages.INSTALL_MTA, getLogger()))) {
+    if (
+      !(await Utils.isCliToolInstalled(
+        MBT_COMMAND,
+        messages.INSTALL_MTA,
+        getLogger()
+      ))
+    ) {
       await window.showErrorMessage(taskProvidersMessages.INSTALL_MBT());
     } else {
       this.mbtInstalled = true;
