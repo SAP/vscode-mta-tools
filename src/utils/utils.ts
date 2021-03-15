@@ -1,5 +1,5 @@
 import * as os from "os";
-import { get, isEmpty, map, trimStart } from "lodash";
+import { get, map, trimStart } from "lodash";
 import {
   QuickPickItem,
   Uri,
@@ -14,7 +14,6 @@ import { readFile } from "fs-extra";
 import { parse } from "comment-json";
 import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { IChildLogger } from "@vscode-logging/logger";
-import { getLogger } from "../logger/logger-wrapper";
 
 type ChildProcessResult = {
   exitCode: number | string;
@@ -149,15 +148,5 @@ export class Utils {
   private static getConfigFilePath(): string {
     const cfHome = get(process, "env.CF_HOME", join(os.homedir(), ".cf"));
     return join(cfHome, "config.json");
-  }
-
-  public static async isLoggedInToCF(): Promise<boolean> {
-    const results = await Promise.all([
-      Utils.getConfigFileField("OrganizationFields", getLogger()),
-      Utils.getConfigFileField("SpaceFields", getLogger()),
-    ]);
-    const orgField = get(results, "[0].Name");
-    const spaceField = get(results, "[1].Name");
-    return !(isEmpty(orgField) && isEmpty(spaceField));
   }
 }

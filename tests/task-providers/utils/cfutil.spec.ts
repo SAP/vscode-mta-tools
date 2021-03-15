@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { restore, stub } from "sinon";
 import * as common from "../../../src/task-providers/utils/common";
+import * as fsextra from "fs-extra";
 import {
   mockVscode,
   MockVSCodeInfo,
@@ -10,6 +11,7 @@ import {
 mockVscode("src/utils/cfutil");
 import {
   isCFPluginInstalled,
+  isLoggedInToCF,
   loginToCF,
 } from "../../../src/task-providers/utils/cfutil";
 
@@ -47,5 +49,33 @@ describe("test cfutil ", () => {
     await loginToCF();
     expect(MockVSCodeInfo.executeCalled).to.be.false;
     resetTestVSCode();
+  });
+
+  it("isLoggedInToCF - cfconfig file includes required fields - should return true", async () => {
+    const testFile = {
+      OrganizationFields: { Name: "testorg" },
+      SpaceFields: { Name: "testspace" },
+    };
+    const buf = (JSON.stringify(testFile) as unknown) as Buffer;
+    stub(fsextra, "readFile").returns(Promise.resolve(buf));
+    const result = await isLoggedInToCF();
+    expect(result).to.be.true;
+  });
+
+  it("isLoggedInToCF - cfconfig file doesnt include required fields - should return false", async () => {
+    const testFile = {
+      OrganizationFields: [{ Name: "" }],
+      SpaceFields: [{ Name: "" }],
+    };
+    const buf = (JSON.stringify(testFile) as unknown) as Buffer;
+    stub(fsextra, "readFile").returns(Promise.resolve(buf));
+    const result = await isLoggedInToCF();
+    expect(result).to.be.false;
+  });
+
+  it("isLoggedInToCF - cfconfig file doesnt exist - should return false", async () => {
+    stub(fsextra, "readFile").returns(Promise.reject("aaa"));
+    const result = await isLoggedInToCF();
+    expect(result).to.be.false;
   });
 });

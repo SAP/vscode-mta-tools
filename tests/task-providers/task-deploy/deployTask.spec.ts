@@ -7,7 +7,6 @@ import {
   testVscode,
 } from "../../mockUtil";
 import * as cfutil from "../../../src/task-providers/utils/cfutil";
-import { Utils } from "../../../src/utils/utils";
 
 mockVscode("src/task/deployTask");
 import { DeployMtaTaskProvider } from "../../../src/task-providers/task-deploy/deployTask";
@@ -91,7 +90,7 @@ describe("deployTask ", () => {
       const myTask = new testVscode.Task(taskDefinition);
 
       stub(cfutil, "isCFPluginInstalled").returns(Promise.resolve(false));
-      stub(Utils, "isLoggedInToCF").returns(Promise.resolve(true));
+      stub(cfutil, "isLoggedInToCF").returns(Promise.resolve(true));
 
       const result = await deployMtaTaskProvider.resolveTask(myTask);
       expect(result).is.undefined;
@@ -109,7 +108,7 @@ describe("deployTask ", () => {
       const myTask = new testVscode.Task(taskDefinition);
 
       stub(cfutil, "isCFPluginInstalled").returns(Promise.resolve(true));
-      stub(Utils, "isLoggedInToCF").returns(Promise.resolve(false));
+      stub(cfutil, "isLoggedInToCF").returns(Promise.resolve(false));
       stub(cfutil, "loginToCF").returns(Promise.resolve());
 
       const resultTask = await deployMtaTaskProvider.resolveTask(myTask);
@@ -153,7 +152,7 @@ describe("deployTask ", () => {
     context("cf installed and user is cf logged in", () => {
       beforeEach(() => {
         stub(cfutil, "isCFPluginInstalled").returns(Promise.resolve(true));
-        stub(Utils, "isLoggedInToCF").returns(Promise.resolve(true));
+        stub(cfutil, "isLoggedInToCF").returns(Promise.resolve(true));
 
         testVscode.ShellExecution = class SomeShellExecution {
           constructor(script: any) {

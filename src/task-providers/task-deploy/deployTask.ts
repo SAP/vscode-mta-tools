@@ -11,7 +11,11 @@ import {
 } from "vscode";
 import { taskProvidersMessages } from "../../i18n/messages";
 import { getLogger } from "../../logger/logger-wrapper";
-import { isCFPluginInstalled, loginToCF } from "../utils/cfutil";
+import {
+  isCFPluginInstalled,
+  loginToCF,
+  isLoggedInToCF,
+} from "../utils/cfutil";
 import {
   createTask,
   getWorkspaceFolders,
@@ -19,7 +23,6 @@ import {
   getFilesInWorkspace,
 } from "../utils/common";
 import { DEPLOY_MTA, DeployTaskDefinitionType } from "../definitions";
-import { Utils } from "../../utils/utils";
 
 const CF_COMMAND = "cf";
 const homeDir = homedir();
@@ -57,10 +60,10 @@ export class DeployMtaTaskProvider implements TaskProvider {
     }
 
     // check cf login
-    if (!(await Utils.isLoggedInToCF())) {
+    if (!(await isLoggedInToCF())) {
       await loginToCF();
     }
-    if (!(await Utils.isLoggedInToCF())) {
+    if (!(await isLoggedInToCF())) {
       getLogger().debug(taskProvidersMessages.CF_LOGIN_FAIL);
     }
 
