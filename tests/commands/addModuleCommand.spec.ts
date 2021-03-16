@@ -9,7 +9,8 @@ import { Utils } from "../../src/utils/utils";
 import { messages, messagesYeoman } from "../../src/i18n/messages";
 import * as loggerWraper from "../../src/logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
-import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { ISWATracker, getSWA, initSWA } from "../../src/utils/swa";
+import { expect } from "chai";
 
 describe("Add mta module command unit tests", () => {
   let sandbox: sinon.SinonSandbox;
@@ -19,8 +20,15 @@ describe("Add mta module command unit tests", () => {
   let workspaceMock: sinon.SinonMock;
   let commandsMock: sinon.SinonMock;
   let loggerWraperMock: sinon.SinonMock;
-  let swa: SWATracker;
-  let swaMock: sinon.SinonMock;
+  let orgSWATracker: ISWATracker;
+  let swaEventType = "";
+  let swaCustomEvents: string[] = [];
+  const testSWATracker: ISWATracker = {
+    track(eventType: string, customEvents: string[]) {
+      swaEventType = eventType;
+      swaCustomEvents = customEvents;
+    },
+  };
   const loggerImpl: IChildLogger = {
     fatal: () => {
       "fatal";
@@ -75,8 +83,8 @@ describe("Add mta module command unit tests", () => {
     windowMock = sandbox.mock(testVscode.window);
     workspaceMock = sandbox.mock(testVscode.workspace);
     commandsMock = sandbox.mock(testVscode.commands);
-    swa = new SWATracker("", "");
-    swaMock = sandbox.mock(swa);
+    orgSWATracker = getSWA();
+    initSWA(testSWATracker);
   });
 
   afterEach(() => {
@@ -85,7 +93,9 @@ describe("Add mta module command unit tests", () => {
     workspaceMock.verify();
     commandsMock.verify();
     testData.data = {};
-    swaMock.verify();
+    initSWA(orgSWATracker);
+    swaEventType = "";
+    swaCustomEvents = [];
   });
 
   it("addModuleCommand - add MTA module from context menu", async () => {
@@ -103,14 +113,9 @@ describe("Add mta module command unit tests", () => {
       .once()
       .withExactArgs("loadYeomanUI", testData)
       .returns(Promise.resolve());
-    swaMock
-      .expects("track")
-      .once()
-      .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU,
-      ])
-      .returns({});
-    await addModuleCommand.addModuleCommand(selected as Uri, swa);
+    await addModuleCommand.addModuleCommand(selected as Uri);
+    expect(swaEventType).to.equal(messages.EVENT_TYPE_ADD_MODULE);
+    expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);
   });
 
   it("addModuleCommand - add MTA module from context menu in Windows", async () => {
@@ -129,14 +134,9 @@ describe("Add mta module command unit tests", () => {
       .once()
       .withExactArgs("loadYeomanUI", testData)
       .returns(Promise.resolve());
-    swaMock
-      .expects("track")
-      .once()
-      .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU,
-      ])
-      .returns({});
-    await addModuleCommand.addModuleCommand(selected as Uri, swa);
+    await addModuleCommand.addModuleCommand(selected as Uri);
+    expect(swaEventType).to.equal(messages.EVENT_TYPE_ADD_MODULE);
+    expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);
   });
 
   it("addModuleCommand - add MTA module from context menu not in Windows", async () => {
@@ -155,14 +155,9 @@ describe("Add mta module command unit tests", () => {
       .once()
       .withExactArgs("loadYeomanUI", testData)
       .returns(Promise.resolve());
-    swaMock
-      .expects("track")
-      .once()
-      .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_CONTEXT_MENU,
-      ])
-      .returns({});
-    await addModuleCommand.addModuleCommand(selected as Uri, swa);
+    await addModuleCommand.addModuleCommand(selected as Uri);
+    expect(swaEventType).to.equal(messages.EVENT_TYPE_ADD_MODULE);
+    expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);
   });
 
   it("addModuleCommand - add MTA module from command when no mta.yaml file in the project", async () => {
@@ -172,15 +167,12 @@ describe("Add mta module command unit tests", () => {
       .once()
       .withExactArgs(MTA_CMD, ["-v"], { cwd: homeDir })
       .returns("v1.2.3");
-    swaMock
-      .expects("track")
-      .once()
-      .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE,
-      ])
-      .returns({});
     windowMock.expects("showErrorMessage").withExactArgs(messages.NO_MTA_FILE);
-    await addModuleCommand.addModuleCommand(undefined, swa);
+    await addModuleCommand.addModuleCommand(undefined);
+    expect(swaEventType).to.equal(messages.EVENT_TYPE_ADD_MODULE);
+    expect(swaCustomEvents).to.deep.equal([
+      messages.CUSTOM_EVENT_COMMAND_PALETTE,
+    ]);
   });
 
   it("addModuleCommand - add MTA module command with several mta.yaml files in the project", async () => {
@@ -201,14 +193,11 @@ describe("Add mta module command unit tests", () => {
       .once()
       .withExactArgs("loadYeomanUI", testData)
       .returns(Promise.resolve());
-    swaMock
-      .expects("track")
-      .once()
-      .withExactArgs(messages.EVENT_TYPE_ADD_MODULE, [
-        messages.CUSTOM_EVENT_COMMAND_PALETTE,
-      ])
-      .returns({});
-    await addModuleCommand.addModuleCommand(undefined, swa);
+    await addModuleCommand.addModuleCommand(undefined);
+    expect(swaEventType).to.equal(messages.EVENT_TYPE_ADD_MODULE);
+    expect(swaCustomEvents).to.deep.equal([
+      messages.CUSTOM_EVENT_COMMAND_PALETTE,
+    ]);
   });
 
   it("addModuleCommand - add MTA module with no mta tool installed", async () => {
@@ -219,9 +208,10 @@ describe("Add mta module command unit tests", () => {
       .withExactArgs(MTA_CMD, ["-v"], { cwd: homeDir })
       .returns({ exitCode: "ENOENT" });
     commandsMock.expects("executeCommand").never();
-    swaMock.expects("track").never();
     windowMock.expects("showErrorMessage").withExactArgs(messages.INSTALL_MTA);
-    await addModuleCommand.addModuleCommand(selected as Uri, swa);
+    await addModuleCommand.addModuleCommand(selected as Uri);
+    expect(swaEventType).to.be.empty;
+    expect(swaCustomEvents).be.empty;
   });
 
   it("addModuleCommand - add MTA module with no loadYeomanUi command", async () => {
@@ -242,8 +232,11 @@ describe("Add mta module command unit tests", () => {
       .once()
       .withExactArgs("loadYeomanUI", testData)
       .returns(Promise.reject("error"));
-    swaMock.expects("track").once().returns({});
     windowMock.expects("showErrorMessage").once();
-    await addModuleCommand.addModuleCommand(undefined, swa);
+    await addModuleCommand.addModuleCommand(undefined);
+    expect(swaEventType).to.equal(messages.EVENT_TYPE_ADD_MODULE);
+    expect(swaCustomEvents).to.deep.equal([
+      messages.CUSTOM_EVENT_COMMAND_PALETTE,
+    ]);
   });
 });

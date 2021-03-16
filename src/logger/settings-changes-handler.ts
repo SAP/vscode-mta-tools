@@ -1,12 +1,12 @@
 import { ExtensionContext, workspace } from "vscode";
+import { LogLevel } from "@vscode-logging/logger";
 import { getLogger } from "./logger-wrapper";
 import {
-  LOGGING_LEVEL_CONFIG_PROP,
-  SOURCE_TRACKING_CONFIG_PROP,
   getLoggingLevelSetting,
   getSourceLocationTrackingSetting,
+  LOGGING_LEVEL_CONFIG_PROP,
+  SOURCE_TRACKING_CONFIG_PROP,
 } from "./settings";
-import { LogLevel } from "@vscode-logging/logger";
 
 export function logLoggerDetails(
   context: ExtensionContext,
@@ -19,7 +19,7 @@ export function logLoggerDetails(
 }
 
 /**
- * @param {ExtensionContext} context
+ * @param {vscode.ExtensionContext} context
  */
 export function listenToLogSettingsChanges(context: ExtensionContext): void {
   // To enable dynamic logging level we must listen to VSCode configuration changes
@@ -28,7 +28,6 @@ export function listenToLogSettingsChanges(context: ExtensionContext): void {
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration(LOGGING_LEVEL_CONFIG_PROP)) {
         const logLevel: LogLevel = getLoggingLevelSetting();
-
         getLogger().changeLevel(logLevel);
         logLoggerDetails(context, logLevel);
       }
@@ -39,7 +38,7 @@ export function listenToLogSettingsChanges(context: ExtensionContext): void {
   context.subscriptions.push(
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration(SOURCE_TRACKING_CONFIG_PROP)) {
-        const newSourceLocationTracking = getSourceLocationTrackingSetting();
+        const newSourceLocationTracking: boolean = getSourceLocationTrackingSetting();
         getLogger().changeSourceLocationTracking(newSourceLocationTracking);
       }
     })

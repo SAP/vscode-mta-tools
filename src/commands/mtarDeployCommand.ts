@@ -13,7 +13,7 @@ import { SelectionItem } from "../utils/selectionItem";
 import { messages } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
-import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { getSWA } from "../utils/swa";
 
 const CF_COMMAND = "cf";
 const CF_LOGIN_COMMAND = "cf.login";
@@ -25,10 +25,7 @@ export class MtarDeployCommand {
     MtarDeployCommand.name
   );
 
-  public async mtarDeployCommand(
-    selected: Uri | undefined,
-    swa: SWATracker
-  ): Promise<void> {
+  public async mtarDeployCommand(selected: Uri | undefined): Promise<void> {
     const response = await Utils.execCommand(
       CF_COMMAND,
       ["plugins", "--checksum"],
@@ -43,13 +40,13 @@ export class MtarDeployCommand {
 
     if (selected) {
       // Command called from context menu, add usage analytics
-      swa.track(messages.EVENT_TYPE_DEPLOY_MTAR, [
+      getSWA().track(messages.EVENT_TYPE_DEPLOY_MTAR, [
         messages.CUSTOM_EVENT_CONTEXT_MENU,
       ]);
       path = selected.path;
     } else {
       // Command is called from command pallet, add usage analytics
-      swa.track(messages.EVENT_TYPE_DEPLOY_MTAR, [
+      getSWA().track(messages.EVENT_TYPE_DEPLOY_MTAR, [
         messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ]);
       const mtarFilesPaths = await workspace.findFiles("**/*.mtar", null);

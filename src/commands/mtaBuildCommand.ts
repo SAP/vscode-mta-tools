@@ -12,7 +12,7 @@ import { SelectionItem } from "../utils/selectionItem";
 import { messages } from "../i18n/messages";
 import { getClassLogger } from "../logger/logger-wrapper";
 import { IChildLogger } from "@vscode-logging/logger";
-import { SWATracker } from "@sap/swa-for-sapbas-vsx";
+import { getSWA } from "../utils/swa";
 
 const MBT_COMMAND = "mbt";
 const homeDir = os.homedir();
@@ -21,10 +21,7 @@ export class MtaBuildCommand {
   // Logger
   private readonly logger: IChildLogger = getClassLogger(MtaBuildCommand.name);
 
-  public async mtaBuildCommand(
-    selected: Uri | undefined,
-    swa: SWATracker
-  ): Promise<void> {
+  public async mtaBuildCommand(selected: Uri | undefined): Promise<void> {
     // check that mbt is installed in the environment
     if (
       !(await Utils.isCliToolInstalled(
@@ -38,13 +35,13 @@ export class MtaBuildCommand {
     let path;
     if (selected) {
       // Command called from context menu, add usage analytics
-      swa.track(messages.EVENT_TYPE_BUILD_MTA, [
+      getSWA().track(messages.EVENT_TYPE_BUILD_MTA, [
         messages.CUSTOM_EVENT_CONTEXT_MENU,
       ]);
       path = selected.path;
     } else {
       // Command is called from command pallet, add usage analytics
-      swa.track(messages.EVENT_TYPE_BUILD_MTA, [
+      getSWA().track(messages.EVENT_TYPE_BUILD_MTA, [
         messages.CUSTOM_EVENT_COMMAND_PALETTE,
       ]);
       const mtaYamlFilesPaths = await workspace.findFiles(

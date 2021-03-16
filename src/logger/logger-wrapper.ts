@@ -15,23 +15,21 @@ import {
   getSourceLocationTrackingSetting,
 } from "./settings";
 import { messages } from "../i18n/messages";
+import { EMPTY_LOGGER } from "./empty-logger";
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
 /**
  * A Simple Wrapper to hold the state of our "singleton" (per extension) IVSCodeExtLogger
  * implementation.
  */
 
-export const ERROR_LOGGER_NOT_INITIALIZED =
-  "Logger has not yet been initialized!";
+const PACKAGE_JSON = "package.json";
 
 /**
  * @type {IVSCodeExtLogger}
  */
-let logger: IVSCodeExtLogger | undefined;
-
-function isInitialized(): boolean {
-  return logger !== undefined ? true : false;
-}
+let logger: IVSCodeExtLogger = EMPTY_LOGGER;
 
 /**
  * Note the use of a getter function so the value would be lazy resolved on each use.
@@ -40,12 +38,7 @@ function isInitialized(): boolean {
  * @returns { IVSCodeExtLogger }
  */
 export function getLogger(): IVSCodeExtLogger {
-  if (isInitialized() === false) {
-    throw Error(ERROR_LOGGER_NOT_INITIALIZED);
-  }
-  // logger can't be undefined because isInitialized() already checks it
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return logger!;
+  return logger;
 }
 
 export function getClassLogger(className: string): IChildLogger {
@@ -73,13 +66,17 @@ function createExtensionLogger(context: ExtensionContext): void {
   const logLevelSetting: LogLevel = getLoggingLevelSetting();
   const sourceLocationTrackingSettings: boolean = getSourceLocationTrackingSetting();
 
+  const meta = JSON.parse(
+    readFileSync(resolve(context.extensionPath, PACKAGE_JSON), "utf8")
+  );
+
   const extensionLoggerOpts: getExtensionLoggerOpts = {
-    extName: "vscode-mta-tools", //If the extension name changes, change this too
+    extName: meta.name,
     level: logLevelSetting,
     logConsole: true,
     logPath: contextLogPath,
-    sourceLocationTracking: sourceLocationTrackingSettings,
     logOutputChannel: window.createOutputChannel(messages.CHANNEL_NAME),
+    sourceLocationTracking: sourceLocationTrackingSettings,
   };
 
   // The Logger must first be initialized before any logging commands may be invoked.
