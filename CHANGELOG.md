@@ -1,3 +1,9 @@
+# [1.4.0](https://github.com/SAP/vscode-mta-tools/compare/v1.3.11...v1.4.0) (2021-03-16)
+
+### Features
+
+- add MTA build & deploy task providers ([#226](https://github.com/SAP/vscode-mta-tools/issues/226)) ([102bcc1](https://github.com/SAP/vscode-mta-tools/commit/102bcc18c57c54684cb63507bbecbab263c2f43d))
+
 ## [1.3.11](https://github.com/SAP/vscode-mta-tools/compare/v1.3.10...v1.3.11) (2021-02-04)
 
 ### Bug Fixes
