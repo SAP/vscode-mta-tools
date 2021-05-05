@@ -17,7 +17,7 @@ import {
   ConfiguredTask,
   TaskEditorContributionAPI,
   TaskEditorContributorExtensionAPI,
-} from "./task-providers/types";
+} from "@sap_oss/task_contrib_types";
 import { BuildTaskContributionAPI } from "./task-providers/task-build/taskExplorerContributer";
 import { DeployTaskContributionAPI } from "./task-providers/task-deploy/taskExplorerContributer";
 

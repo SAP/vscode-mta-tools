@@ -1,4 +1,4 @@
-import { ConfiguredTask } from "./types";
+import { ConfiguredTask } from "@sap_oss/task_contrib_types";
 
 export const DEPLOY_MTA = "deploy-mta";
 export const BUILD_MTA = "build-mta";
