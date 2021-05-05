@@ -237,6 +237,7 @@
     "comment-json": "4.1.0",
     "fs-extra": "9.1.0",
     "@vscode-logging/logger": "1.2.2",
+    "@sap_oss/task_contrib_types": "3.0.6",
     "@sap/swa-for-sapbas-vsx": "1.2.14",
     "@sap/mta-lib": "1.7.0",
     "datauri": "2.0.0"
