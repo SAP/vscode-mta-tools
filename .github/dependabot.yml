@@ -1,0 +1,56 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "10:00"
+      timezone: Etc/UCT
+    ignore:
+      - dependency-name: husky
+        versions:
+          - ">= 5.a, < 6"
+      - dependency-name: eslint-config-prettier
+        versions:
+          - 8.1.0
+          - 8.2.0
+      - dependency-name: copy-webpack-plugin
+        versions:
+          - 8.0.0
+          - 8.1.0
+      - dependency-name: "@types/vscode"
+        versions:
+          - 1.54.0
+      - dependency-name: chai
+        versions:
+          - 4.3.3
+      - dependency-name: vsce
+        versions:
+          - 1.84.0
+          - 1.86.0
+      - dependency-name: "@typescript-eslint/eslint-plugin"
+        versions:
+          - 4.14.1
+          - 4.15.1
+          - 4.15.2
+          - 4.16.1
+      - dependency-name: "@sap/swa-for-sapbas-vsx"
+        versions:
+          - 1.1.13
+      - dependency-name: "@types/node"
+        versions:
+          - 14.14.25
+          - 14.14.27
+      - dependency-name: ts-loader
+        versions:
+          - 8.0.15
+      - dependency-name: "@typescript-eslint/parser"
+        versions:
+          - 4.14.2
+      - dependency-name: webpack
+        versions:
+          - 5.18.0
+          - 5.19.0
+          - 5.20.0
+          - 5.20.1
+          - 5.21.1
