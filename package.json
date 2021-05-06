@@ -239,7 +239,7 @@
     "@vscode-logging/logger": "1.2.2",
     "@sap/swa-for-sapbas-vsx": "1.2.14",
     "@sap/mta-lib": "1.7.0",
-    "datauri": "2.0.0"
+    "datauri": "3.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "12.1.1",
