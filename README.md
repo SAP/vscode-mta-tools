@@ -38,3 +38,7 @@ See [CONTRIBUTING.md](https://github.com/SAP/vscode-mta-tools/blob/master/.githu
 ### Support
 
 Please report [here](https://github.com/SAP/vscode-mta-tools/issues) on any issue.
+
+## Licensing
+
+Please see our [LICENSE](https://github.com/SAP/vscode-mta-tools/LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available via the [REUSE tool](https://api.reuse.software/info/github.com/SAP/vscode-mta-tools).
