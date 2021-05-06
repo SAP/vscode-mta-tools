@@ -5,7 +5,7 @@ import {
   FormProperty,
   TaskEditorContributionAPI,
   TaskUserInput,
-} from "../types";
+} from "@sap_oss/task_contrib_types";
 import { getImage } from "../utils/common";
 import { taskProvidersMessages } from "../../i18n/messages";
 import {
