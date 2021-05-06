@@ -242,6 +242,7 @@
     "datauri": "2.0.0"
   },
   "devDependencies": {
+    "@sap_oss/task_contrib_types": "3.0.6",
     "@commitlint/cli": "12.1.1",
     "@commitlint/config-conventional": "11.0.0",
     "@types/chai": "4.2.14",
