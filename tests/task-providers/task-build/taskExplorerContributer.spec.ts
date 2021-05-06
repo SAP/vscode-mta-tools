@@ -5,7 +5,7 @@ import Mta from "@sap/mta-lib";
 import {
   CheckboxFormProperty,
   ComboboxFormProperty,
-} from "../../../src/task-providers/types";
+} from "@sap_oss/task_contrib_types";
 import {
   BuildTaskDefinitionType,
   BUILD_MTA,
