@@ -260,7 +260,7 @@
     "chai": "4.3.4",
     "conventional-changelog-cli": "2.1.1",
     "conventional-recommended-bump": "6.1.0",
-    "copy-webpack-plugin": "7.0.0",
+    "copy-webpack-plugin": "8.1.1",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "7.18.0",
     "eslint-config-prettier": "7.2.0",
