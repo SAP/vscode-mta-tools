@@ -14,6 +14,7 @@ import { readFile } from "fs-extra";
 import { parse } from "comment-json";
 import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { IChildLogger } from "@vscode-logging/logger";
+import { cfGetTarget, ITarget } from "@sap/cf-tools";
 
 type ChildProcessResult = {
   exitCode: number | string;
@@ -143,6 +144,16 @@ export class Utils {
       return false;
     }
     return true;
+  }
+
+  public static async getCFTarget(): Promise<ITarget | undefined> {
+    let target;
+    try {
+      target = await cfGetTarget();
+    } catch (error) {
+      return target;
+    }
+    return target;
   }
 
   private static getConfigFilePath(): string {

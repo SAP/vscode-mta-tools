@@ -118,15 +118,9 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
     utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields", loggerImpl)
-      .atLeast(1)
-      .resolves({ Name: "org" });
-    utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("SpaceFields", loggerImpl)
-      .atLeast(1)
-      .resolves({ Name: "space" });
+      .expects("getCFTarget")
+      .once()
+      .returns({ org: "org", space: "space" });
     tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
@@ -159,15 +153,9 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
     utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields", loggerImpl)
-      .atLeast(1)
-      .resolves({ Name: "org" });
-    utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("SpaceFields", loggerImpl)
-      .atLeast(1)
-      .resolves({ Name: "space" });
+      .expects("getCFTarget")
+      .once()
+      .returns({ org: "org", space: "space" });
     tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(undefined);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
@@ -182,6 +170,10 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
+    utilsMock
+      .expects("getCFTarget")
+      .once()
+      .returns({ org: "org", space: "space" });
     workspaceMock
       .expects("findFiles")
       .returns(
@@ -195,16 +187,6 @@ describe("Deploy mtar command unit tests", () => {
       .expects("displayOptions")
       .once()
       .returns(Promise.resolve({ label: expectedPath }));
-    utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields", loggerImpl)
-      .atLeast(1)
-      .resolves({ Name: "org" });
-    utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("SpaceFields", loggerImpl)
-      .atLeast(1)
-      .resolves({ Name: "space" });
     tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(undefined);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
@@ -232,7 +214,6 @@ describe("Deploy mtar command unit tests", () => {
       .expects("displayOptions")
       .once()
       .returns(Promise.resolve(undefined));
-    utilsMock.expects("getConfigFileField").never();
     tasksMock.expects("executeTask").never();
     await mtarDeployCommand.mtarDeployCommand(undefined);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
@@ -262,16 +243,7 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
-    utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields", loggerImpl)
-      .atLeast(1)
-      .resolves();
-    utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("SpaceFields", loggerImpl)
-      .atLeast(1)
-      .resolves();
+    utilsMock.expects("getCFTarget").once().returns(undefined);
     commandsMock
       .expects("getCommands")
       .once()
@@ -283,15 +255,9 @@ describe("Deploy mtar command unit tests", () => {
       .withExactArgs(CF_LOGIN_CMD)
       .returns(Promise.resolve());
     utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields", loggerImpl)
-      .atLeast(1)
-      .resolves({ Name: "org" });
-    utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("SpaceFields", loggerImpl)
-      .atLeast(1)
-      .resolves({ Name: "space" });
+      .expects("getCFTarget")
+      .once()
+      .returns({ org: "org", space: "space" });
     tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
@@ -304,21 +270,35 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
+    utilsMock.expects("getCFTarget").once().returns(undefined);
     utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("OrganizationFields", loggerImpl)
-      .atLeast(1)
-      .resolves();
-    utilsMock
-      .expects("getConfigFileField")
-      .withExactArgs("SpaceFields", loggerImpl)
-      .atLeast(1)
-      .resolves();
+      .expects("getCFTarget")
+      .once()
+      .returns({ org: "org", space: "space" });
     commandsMock.expects("getCommands").once().withExactArgs(true).returns([]);
-    tasksMock.expects("executeTask").never();
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.LOGIN_VIA_CLI);
+    await mtarDeployCommand.mtarDeployCommand(selected as Uri);
+    expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
+    expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);
+  });
+
+  it("mtarDeployCommand - deploy mtar when user needs to set org or space via CF CLI", async () => {
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
+      .returns({ stdout: "multiapps " });
+    utilsMock.expects("getCFTarget").once().returns({ org: "org" });
+    utilsMock
+      .expects("getCFTarget")
+      .once()
+      .returns({ org: "org", space: "space" });
+    commandsMock.expects("getCommands").once().withExactArgs(true).returns([]);
+    windowMock
+      .expects("showErrorMessage")
+      .withExactArgs(messages.SET_ORG_SPACE_VIA_CLI);
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
     expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);

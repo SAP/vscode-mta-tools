@@ -1,5 +1,5 @@
 import * as os from "os";
-import { includes, trimStart, get, isEmpty } from "lodash";
+import { includes, trimStart } from "lodash";
 import {
   Uri,
   window,
@@ -8,6 +8,7 @@ import {
   ShellExecution,
   ShellExecutionOptions,
 } from "vscode";
+import { ITarget } from "@sap/cf-tools";
 import { Utils } from "../utils/utils";
 import { SelectionItem } from "../utils/selectionItem";
 import { messages } from "../i18n/messages";
@@ -17,6 +18,7 @@ import { getSWA } from "../utils/swa";
 
 const CF_COMMAND = "cf";
 const CF_LOGIN_COMMAND = "cf.login";
+const CF_SET_TARGET = "cf.set.orgspace";
 const homeDir = os.homedir();
 
 export class MtarDeployCommand {
@@ -78,15 +80,13 @@ export class MtarDeployCommand {
     }
     path = Utils.isWindows() ? trimStart(path, "/") : path;
 
-    if (await this.isLoggedInToCF()) {
-      await this.execDeployCmd(path);
-    } else {
+    let target = await Utils.getCFTarget();
+    while (!target || !target?.org || !target?.space) {
       this.logger.info(`User is not logged in to Cloud Foundry`);
-      await this.loginToCF();
-      if (await this.isLoggedInToCF()) {
-        await this.execDeployCmd(path);
-      }
+      await this.loginToCF(target);
+      target = await Utils.getCFTarget();
     }
+    await this.execDeployCmd(path);
   }
 
   private async execDeployCmd(path: string): Promise<void> {
@@ -99,22 +99,29 @@ export class MtarDeployCommand {
     Utils.execTask(execution, messages.DEPLOY_MTAR);
   }
 
-  private async isLoggedInToCF(): Promise<boolean> {
-    const results = await Promise.all([
-      Utils.getConfigFileField("OrganizationFields", this.logger),
-      Utils.getConfigFileField("SpaceFields", this.logger),
-    ]);
-    const orgField = get(results, "[0].Name");
-    const spaceField = get(results, "[1].Name");
-    return !(isEmpty(orgField) && isEmpty(spaceField));
+  private async loginToCF(target?: ITarget): Promise<void> {
+    if (!target) {
+      void this.execCommandOrShowError(
+        CF_LOGIN_COMMAND,
+        messages.LOGIN_VIA_CLI
+      );
+    } else if (!target?.org || !target?.space) {
+      void this.execCommandOrShowError(
+        CF_SET_TARGET,
+        messages.SET_ORG_SPACE_VIA_CLI
+      );
+    }
   }
 
-  private async loginToCF(): Promise<void> {
+  private async execCommandOrShowError(
+    command: string,
+    msg: string
+  ): Promise<void> {
     const allCommands = await commands.getCommands(true);
-    if (includes(allCommands, CF_LOGIN_COMMAND)) {
-      await commands.executeCommand(CF_LOGIN_COMMAND);
+    if (includes(allCommands, command)) {
+      await commands.executeCommand(command);
     } else {
-      void window.showErrorMessage(messages.LOGIN_VIA_CLI);
+      void window.showErrorMessage(msg);
     }
   }
 }
