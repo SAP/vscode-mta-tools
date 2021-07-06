@@ -117,10 +117,7 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
-    utilsMock
-      .expects("getCFTarget")
-      .once()
-      .returns({ org: "org", space: "space" });
+    utilsMock.expects("isLoggedInToCfWithProgress").once().returns(true);
     tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
@@ -152,10 +149,7 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
-    utilsMock
-      .expects("getCFTarget")
-      .once()
-      .returns({ org: "org", space: "space" });
+    utilsMock.expects("isLoggedInToCfWithProgress").once().returns(true);
     tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(undefined);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
@@ -170,10 +164,7 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
-    utilsMock
-      .expects("getCFTarget")
-      .once()
-      .returns({ org: "org", space: "space" });
+    utilsMock.expects("isLoggedInToCfWithProgress").once().returns(true);
     workspaceMock
       .expects("findFiles")
       .returns(
@@ -243,7 +234,7 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
-    utilsMock.expects("getCFTarget").once().returns(undefined);
+    utilsMock.expects("isLoggedInToCfWithProgress").once().returns(false);
     commandsMock
       .expects("getCommands")
       .once()
@@ -252,13 +243,8 @@ describe("Deploy mtar command unit tests", () => {
     commandsMock
       .expects("executeCommand")
       .once()
-      .withExactArgs(CF_LOGIN_CMD)
+      .withExactArgs(CF_LOGIN_CMD, true)
       .returns(Promise.resolve());
-    utilsMock
-      .expects("getCFTarget")
-      .once()
-      .returns({ org: "org", space: "space" });
-    tasksMock.expects("executeTask").once().withExactArgs(deployTask);
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
     expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);
@@ -270,35 +256,11 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
-    utilsMock.expects("getCFTarget").once().returns(undefined);
-    utilsMock
-      .expects("getCFTarget")
-      .once()
-      .returns({ org: "org", space: "space" });
+    utilsMock.expects("isLoggedInToCfWithProgress").once().returns(false);
     commandsMock.expects("getCommands").once().withExactArgs(true).returns([]);
     windowMock
       .expects("showErrorMessage")
       .withExactArgs(messages.LOGIN_VIA_CLI);
-    await mtarDeployCommand.mtarDeployCommand(selected as Uri);
-    expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
-    expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);
-  });
-
-  it("mtarDeployCommand - deploy mtar when user needs to set org or space via CF CLI", async () => {
-    utilsMock
-      .expects("execCommand")
-      .once()
-      .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
-      .returns({ stdout: "multiapps " });
-    utilsMock.expects("getCFTarget").once().returns({ org: "org" });
-    utilsMock
-      .expects("getCFTarget")
-      .once()
-      .returns({ org: "org", space: "space" });
-    commandsMock.expects("getCommands").once().withExactArgs(true).returns([]);
-    windowMock
-      .expects("showErrorMessage")
-      .withExactArgs(messages.SET_ORG_SPACE_VIA_CLI);
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
     expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
     expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);
