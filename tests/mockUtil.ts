@@ -68,6 +68,7 @@ export const testVscode: any = {
     showInformationMessage: (): undefined => undefined,
     showQuickPick: (): Promise<void> => Promise.resolve(),
     createOutputChannel: (): Partial<OutputChannel> => outputChannel,
+    withProgress: (): Promise<void> => Promise.resolve(),
   },
   workspace: {
     workspaceFolders: undefined,
@@ -133,6 +134,9 @@ export const testVscode: any = {
   },
   Position: MockPosition,
   Range: MockRange,
+  ProgressLocation: {
+    Notification: 0,
+  },
   DiagnosticSeverity: {
     Error: 0,
     Warning: 1,

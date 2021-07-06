@@ -118,4 +118,9 @@ describe("Utils unit tests", () => {
     const paths = Utils.getFilePaths(filePaths);
     expect(paths).to.deep.equal([path1, path2]);
   });
+
+  it("isLoggedInToCfWithProgress - user is logged in", async () => {
+    windowMock.expects("withProgress").once();
+    await Utils.isLoggedInToCfWithProgress();
+  });
 });
