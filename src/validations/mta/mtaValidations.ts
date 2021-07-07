@@ -58,7 +58,6 @@ export async function validateWsMtaYamls(
     return;
   }
   for (const mtaYamlUri of mtaYamlUris) {
-    await updateMtaDiagnostics(mtaYamlUri, disposables);
     setTimeout(async function () {
       await updateMtaDiagnostics(mtaYamlUri, disposables);
     }, 100);
