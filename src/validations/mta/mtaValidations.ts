@@ -57,11 +57,12 @@ export async function validateWsMtaYamls(
   if (mtaYamlUris.length === 0) {
     return;
   }
-  await Promise.all(
-    map(mtaYamlUris, async (mtaYamlUri: Uri) =>
-      updateMtaDiagnostics(mtaYamlUri, disposables)
-    )
-  );
+  for (const mtaYamlUri of mtaYamlUris) {
+    await updateMtaDiagnostics(mtaYamlUri, disposables);
+    setTimeout(async function () {
+      await updateMtaDiagnostics(mtaYamlUri, disposables);
+    }, 100);
+  }
 }
 
 export async function updateMtaDiagnostics(
