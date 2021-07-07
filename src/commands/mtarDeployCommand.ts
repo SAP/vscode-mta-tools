@@ -16,7 +16,7 @@ import { IChildLogger } from "@vscode-logging/logger";
 import { getSWA } from "../utils/swa";
 
 const CF_COMMAND = "cf";
-const CF_LOGIN_COMMAND = "cf.login";
+const CF_LOGIN_COMMAND = "cf.login.weak";
 const homeDir = os.homedir();
 
 export class MtarDeployCommand {
@@ -92,13 +92,9 @@ export class MtarDeployCommand {
     }
 
     // connect the user to CF
-    const weakLogin = true; //if partially logged (example: only org but not space) ask the user only for the missing "questions"
     const allCommands = await commands.getCommands(true);
     if (includes(allCommands, CF_LOGIN_COMMAND)) {
-      const result = await commands.executeCommand<string>(
-        CF_LOGIN_COMMAND,
-        weakLogin
-      );
+      const result = await commands.executeCommand<string>(CF_LOGIN_COMMAND);
       // "OK" is returned by "cf.login" command if the login was successful.
       // undefined is returned when the user cancels (user pressed Esc for example)
       // empty string is returned when login fails. The notification error is displayed by the cf tools extension

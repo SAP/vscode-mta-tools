@@ -96,12 +96,12 @@ export const testVscode: any = {
       oRegisteredCommands[id] = cmd;
     },
     executeCommand: (command: string): any => {
-      if (command === "cf.login") {
+      if (command === "cf.login.weak") {
         MockVSCodeInfo.executeCalled = true;
       }
     },
     getCommands: () => {
-      return ["cf.login"];
+      return ["cf.login.weak"];
     },
   },
   tasks: {

@@ -7,7 +7,7 @@ import { getLogger } from "../../logger/logger-wrapper";
 import { Utils } from "../../utils/utils";
 
 const CF_COMMAND = "cf";
-const CF_LOGIN_COMMAND = "cf.login";
+const CF_LOGIN_COMMAND = "cf.login.weak";
 const homeDir = homedir();
 
 export async function isCFPluginInstalled(): Promise<boolean> {

@@ -158,8 +158,7 @@ export class Utils {
       if (
         !isEmpty(target.user) &&
         !isEmpty(target.org) &&
-        !isEmpty(target.space) &&
-        !isEmpty(target["api endpoint"])
+        !isEmpty(target.space)
       ) {
         return true;
       }

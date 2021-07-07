@@ -60,7 +60,7 @@ describe("Deploy mtar command unit tests", () => {
     path: "mta_archives/mtaProject_0.0.1.mtar",
   };
   const CF_CMD = "cf";
-  const CF_LOGIN_CMD = "cf.login";
+  const CF_LOGIN_CMD = "cf.login.weak";
   const expectedPath = "mta Project/mta_archives/mtaProject_0.0.1.mtar";
   const homeDir = os.homedir();
 
@@ -105,6 +105,21 @@ describe("Deploy mtar command unit tests", () => {
       .once()
       .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
       .returns({ stdout: "multiapps " });
+    utilsMock.expects("isWindows").returns(false);
+    utilsMock.expects("isLoggedInToCfWithProgress").once().returns(true);
+    utilsMock.expects("execTask").once();
+    await mtarDeployCommand.mtarDeployCommand(selected as Uri);
+    expect(swaEventType).to.equal(messages.EVENT_TYPE_DEPLOY_MTAR);
+    expect(swaCustomEvents).to.deep.equal([messages.CUSTOM_EVENT_CONTEXT_MENU]);
+  });
+
+  it("mtarDeployCommand - deploy mtar from context menu on Windows", async () => {
+    utilsMock
+      .expects("execCommand")
+      .once()
+      .withExactArgs(CF_CMD, ["plugins", "--checksum"], { cwd: homeDir })
+      .returns({ stdout: "multiapps " });
+    utilsMock.expects("isWindows").returns(true);
     utilsMock.expects("isLoggedInToCfWithProgress").once().returns(true);
     utilsMock.expects("execTask").once();
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
@@ -233,7 +248,7 @@ describe("Deploy mtar command unit tests", () => {
     commandsMock
       .expects("executeCommand")
       .once()
-      .withExactArgs(CF_LOGIN_CMD, true)
+      .withExactArgs(CF_LOGIN_CMD)
       .returns(undefined);
     tasksMock.expects("executeTask").never();
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
@@ -256,7 +271,7 @@ describe("Deploy mtar command unit tests", () => {
     commandsMock
       .expects("executeCommand")
       .once()
-      .withExactArgs(CF_LOGIN_CMD, true)
+      .withExactArgs(CF_LOGIN_CMD)
       .returns(true);
     tasksMock.expects("executeTask").once();
     await mtarDeployCommand.mtarDeployCommand(selected as Uri);
