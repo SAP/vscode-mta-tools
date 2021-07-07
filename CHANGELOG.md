@@ -1,3 +1,9 @@
+## [1.4.3](https://github.com/SAP/vscode-mta-tools/compare/v1.4.2...v1.4.3) (2021-07-07)
+
+### Bug Fixes
+
+- login to CF before deploying mtar ([#272](https://github.com/SAP/vscode-mta-tools/issues/272)) ([8be5aff](https://github.com/SAP/vscode-mta-tools/commit/8be5aff2c9918e5debb98424b62e4a5ce928d93a))
+
 ## [1.4.2](https://github.com/SAP/vscode-mta-tools/compare/v1.4.1...v1.4.2) (2021-05-10)
 
 ## [1.4.1](https://github.com/SAP/vscode-mta-tools/compare/v1.4.0...v1.4.1) (2021-05-06)
