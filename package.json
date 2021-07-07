@@ -238,7 +238,8 @@
     "fs-extra": "9.1.0",
     "@vscode-logging/logger": "1.2.3",
     "@sap/swa-for-sapbas-vsx": "1.2.15",
-    "@sap/mta-lib": "1.7.0",
+    "@sap/mta-lib": "1.7.3",
+    "@sap/cf-tools": "2.0.1",
     "datauri": "2.0.0"
   },
   "devDependencies": {

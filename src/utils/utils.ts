@@ -1,5 +1,5 @@
 import * as os from "os";
-import { get, map, trimStart } from "lodash";
+import { get, isEmpty, map, trimStart } from "lodash";
 import {
   QuickPickItem,
   Uri,
@@ -8,12 +8,14 @@ import {
   Task,
   TaskScope,
   tasks,
+  ProgressLocation,
 } from "vscode";
 import { join } from "path";
 import { readFile } from "fs-extra";
 import { parse } from "comment-json";
 import { spawn, SpawnOptionsWithoutStdio } from "child_process";
 import { IChildLogger } from "@vscode-logging/logger";
+import { cfGetTarget, ITarget } from "@sap/cf-tools";
 
 type ChildProcessResult = {
   exitCode: number | string;
@@ -143,6 +145,38 @@ export class Utils {
       return false;
     }
     return true;
+  }
+
+  public static async getTarget(): Promise<ITarget> {
+    return await cfGetTarget();
+  }
+
+  public static async isLoggedInToCf(): Promise<boolean> {
+    try {
+      const target: ITarget = await this.getTarget();
+      // user is connected to CF
+      if (
+        !isEmpty(target.user) &&
+        !isEmpty(target.org) &&
+        !isEmpty(target.space)
+      ) {
+        return true;
+      }
+    } catch (e) {
+      // User is not logged in to Cloud Foundry
+    }
+    return false;
+  }
+
+  public static async isLoggedInToCfWithProgress(): Promise<boolean> {
+    return window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: "Checking your connection to Cloud Foundry...",
+        cancellable: false,
+      },
+      this.isLoggedInToCf
+    );
   }
 
   private static getConfigFilePath(): string {

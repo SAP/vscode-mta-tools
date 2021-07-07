@@ -68,6 +68,7 @@ export const testVscode: any = {
     showInformationMessage: (): undefined => undefined,
     showQuickPick: (): Promise<void> => Promise.resolve(),
     createOutputChannel: (): Partial<OutputChannel> => outputChannel,
+    withProgress: (): Promise<void> => Promise.resolve(),
   },
   workspace: {
     workspaceFolders: undefined,
@@ -95,12 +96,12 @@ export const testVscode: any = {
       oRegisteredCommands[id] = cmd;
     },
     executeCommand: (command: string): any => {
-      if (command === "cf.login") {
+      if (command === "cf.login.weak") {
         MockVSCodeInfo.executeCalled = true;
       }
     },
     getCommands: () => {
-      return ["cf.login"];
+      return ["cf.login.weak"];
     },
   },
   tasks: {
@@ -133,6 +134,9 @@ export const testVscode: any = {
   },
   Position: MockPosition,
   Range: MockRange,
+  ProgressLocation: {
+    Notification: 0,
+  },
   DiagnosticSeverity: {
     Error: 0,
     Warning: 1,

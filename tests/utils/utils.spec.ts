@@ -6,6 +6,7 @@ import * as sinon from "sinon";
 import { Utils } from "../../src/utils/utils";
 import { SelectionItem } from "../../src/utils/selectionItem";
 import { IChildLogger } from "@vscode-logging/logger";
+import * as cfTools from "@sap/cf-tools";
 import * as fsExtra from "fs-extra";
 
 describe("Utils unit tests", () => {
@@ -38,12 +39,16 @@ describe("Utils unit tests", () => {
     },
   };
 
+  const apiEndpoint: cfTools.ITarget = {
+    user: "a",
+    org: "b",
+    space: "c",
+    "api endpoint": "https://",
+    "api version": "1.0",
+  };
+
   before(() => {
     sandbox = sinon.createSandbox();
-  });
-
-  after(() => {
-    sinon.restore();
   });
 
   beforeEach(() => {
@@ -54,6 +59,7 @@ describe("Utils unit tests", () => {
   afterEach(() => {
     windowMock.verify();
     utilsMock.verify();
+    sinon.restore();
   });
 
   it("displayOptions - display options in QuickPick list", async () => {
@@ -117,5 +123,29 @@ describe("Utils unit tests", () => {
     sandbox.stub(Utils, "isWindows").returns(false);
     const paths = Utils.getFilePaths(filePaths);
     expect(paths).to.deep.equal([path1, path2]);
+  });
+
+  it("isLoggedInToCf - user is logged in", async () => {
+    const cfGetTargetMock = sinon
+      .stub(Utils, "getTarget")
+      .resolves(apiEndpoint);
+    const isLoggedIn = await Utils.isLoggedInToCf();
+    expect(cfGetTargetMock.callCount).to.equal(1);
+    expect(isLoggedIn).to.be.true;
+  });
+
+  it("isLoggedInToCf - user is not logged in", async () => {
+    apiEndpoint.org = undefined;
+    const cfGetTargetMock = sinon
+      .stub(Utils, "getTarget")
+      .resolves(apiEndpoint);
+    const isLoggedIn = await Utils.isLoggedInToCf();
+    expect(cfGetTargetMock.callCount).to.equal(1);
+    expect(isLoggedIn).to.be.false;
+  });
+
+  it("isLoggedInToCfWithProgress - called", async () => {
+    windowMock.expects("withProgress").once();
+    await Utils.isLoggedInToCfWithProgress();
   });
 });

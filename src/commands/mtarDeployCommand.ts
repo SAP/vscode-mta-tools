@@ -1,5 +1,5 @@
 import * as os from "os";
-import { includes, trimStart, get, isEmpty } from "lodash";
+import { includes, trimStart } from "lodash";
 import {
   Uri,
   window,
@@ -16,7 +16,7 @@ import { IChildLogger } from "@vscode-logging/logger";
 import { getSWA } from "../utils/swa";
 
 const CF_COMMAND = "cf";
-const CF_LOGIN_COMMAND = "cf.login";
+const CF_LOGIN_COMMAND = "cf.login.weak";
 const homeDir = os.homedir();
 
 export class MtarDeployCommand {
@@ -78,15 +78,31 @@ export class MtarDeployCommand {
     }
     path = Utils.isWindows() ? trimStart(path, "/") : path;
 
-    if (await this.isLoggedInToCF()) {
+    if (await this.ensureLoggedInToCF()) {
       await this.execDeployCmd(path);
-    } else {
-      this.logger.info(`User is not logged in to Cloud Foundry`);
-      await this.loginToCF();
-      if (await this.isLoggedInToCF()) {
-        await this.execDeployCmd(path);
-      }
     }
+  }
+
+  // returns true if the user is logged in
+  private async ensureLoggedInToCF(): Promise<boolean> {
+    // check if the user is logged in to CF
+    const isLoggedIin = await Utils.isLoggedInToCfWithProgress();
+    if (isLoggedIin) {
+      return true;
+    }
+
+    // connect the user to CF
+    const allCommands = await commands.getCommands(true);
+    if (includes(allCommands, CF_LOGIN_COMMAND)) {
+      const result = await commands.executeCommand<string>(CF_LOGIN_COMMAND);
+      // "OK" is returned by "cf.login" command if the login was successful.
+      // undefined is returned when the user cancels (user pressed Esc for example)
+      // empty string is returned when login fails. The notification error is displayed by the cf tools extension
+      return result ? true : false;
+    } else {
+      void window.showErrorMessage(messages.LOGIN_VIA_CLI);
+    }
+    return false;
   }
 
   private async execDeployCmd(path: string): Promise<void> {
@@ -97,24 +113,5 @@ export class MtarDeployCommand {
     );
     this.logger.info(`Deploy MTA Archive starts`);
     Utils.execTask(execution, messages.DEPLOY_MTAR);
-  }
-
-  private async isLoggedInToCF(): Promise<boolean> {
-    const results = await Promise.all([
-      Utils.getConfigFileField("OrganizationFields", this.logger),
-      Utils.getConfigFileField("SpaceFields", this.logger),
-    ]);
-    const orgField = get(results, "[0].Name");
-    const spaceField = get(results, "[1].Name");
-    return !(isEmpty(orgField) && isEmpty(spaceField));
-  }
-
-  private async loginToCF(): Promise<void> {
-    const allCommands = await commands.getCommands(true);
-    if (includes(allCommands, CF_LOGIN_COMMAND)) {
-      await commands.executeCommand(CF_LOGIN_COMMAND);
-    } else {
-      void window.showErrorMessage(messages.LOGIN_VIA_CLI);
-    }
   }
 }
