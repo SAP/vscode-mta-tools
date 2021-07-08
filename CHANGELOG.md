@@ -1,7 +1,3 @@
-## [1.4.5](https://github.com/SAP/vscode-mta-tools/compare/v1.4.4...v1.4.5) (2021-07-08)
-
-
-
 ## [1.4.4](https://github.com/SAP/vscode-mta-tools/compare/v1.4.3...v1.4.4) (2021-07-08)
 
 ## [1.4.3](https://github.com/SAP/vscode-mta-tools/compare/v1.4.2...v1.4.3) (2021-07-07)
