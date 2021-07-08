@@ -54,14 +54,10 @@ export async function validateWsMtaYamls(
     `**/${MTA_YAML}`,
     "**/node_modules/**"
   );
-  if (mtaYamlUris.length === 0) {
-    return;
-  }
   for (const mtaYamlUri of mtaYamlUris) {
-    setTimeout(async function () {
-      await updateMtaDiagnostics(mtaYamlUri, disposables);
-    }, 200);
+    await updateMtaDiagnostics(mtaYamlUri, disposables);
   }
+  return;
 }
 
 export async function updateMtaDiagnostics(
