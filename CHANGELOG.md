@@ -1,3 +1,9 @@
+## [1.4.5](https://github.com/SAP/vscode-mta-tools/compare/v1.4.3...v1.4.5) (2021-07-08)
+
+### Bug Fixes
+
+- validation bug ([#280](https://github.com/SAP/vscode-mta-tools/issues/280)) ([0302554](https://github.com/SAP/vscode-mta-tools/commit/03025549aa2208d810d546d54dc707a7c83f42ea))
+
 ## [1.4.4](https://github.com/SAP/vscode-mta-tools/compare/v1.4.9...v1.4.4) (2021-07-08)
 
 ### Bug Fixes
