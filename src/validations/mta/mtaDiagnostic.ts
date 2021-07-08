@@ -77,5 +77,5 @@ export async function getValidation(
   devMtaExts: string[] | undefined
 ): Promise<Record<string, mta.Issue[]>> {
   const mta = new Mta(modulePath, false, devMtaExts); // temp file is not relevant in our scenario
-  return mta.validate();
+  return await mta.validate();
 }
