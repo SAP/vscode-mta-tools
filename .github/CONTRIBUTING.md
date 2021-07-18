@@ -3,6 +3,14 @@
 All work on VS Code MTA tools happens directly on GitHub.
 Both core team members and external contributors send pull requests which go through the same review process.
 
+## Legal
+
+All contributors must sign the DCO
+
+- https://cla-assistant.io/SAP/vscode-mta-tools
+
+This is managed automatically via https://cla-assistant.io/ pull request voter.
+
 ## Branch Organization
 
 We will do our best to keep the master branch in a good shape, with tests passing at all times.
