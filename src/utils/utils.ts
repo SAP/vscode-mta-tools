@@ -138,8 +138,9 @@ export class Utils {
     const homeDir = os.homedir();
     const response = await Utils.execCommand(cliName, ["-v"], {
       cwd: homeDir,
+      shell: true,
     });
-    if (response.exitCode === "ENOENT") {
+    if (response.exitCode != 0) {
       logger.error(`The ${cliName} Tool is not installed in the environment`);
       void window.showErrorMessage(errMessage);
       return false;
