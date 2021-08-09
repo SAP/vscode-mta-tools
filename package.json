@@ -240,7 +240,7 @@
     "@sap/swa-for-sapbas-vsx": "1.2.15",
     "@sap/mta-lib": "1.7.3",
     "@sap/cf-tools": "2.0.1",
-    "datauri": "2.0.0"
+    "datauri": "4.0.1"
   },
   "devDependencies": {
     "@sap_oss/task_contrib_types": "3.1.0",
