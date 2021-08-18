@@ -6,7 +6,7 @@ import * as sinon from "sinon";
 import { Utils } from "../../src/utils/utils";
 import { SelectionItem } from "../../src/utils/selectionItem";
 import { IChildLogger } from "@vscode-logging/logger";
-import * as cfTools from "@sap/cf-tools";
+import { ITarget } from "@sap/cf-tools";
 import * as fsExtra from "fs-extra";
 
 describe("Utils unit tests", () => {
@@ -39,7 +39,7 @@ describe("Utils unit tests", () => {
     },
   };
 
-  const apiEndpoint: cfTools.ITarget = {
+  const apiEndpoint: ITarget = {
     user: "a",
     org: "b",
     space: "c",
