@@ -86,8 +86,7 @@ export class MtarDeployCommand {
   // returns true if the user is logged in
   private async ensureLoggedInToCF(): Promise<boolean> {
     // check if the user is logged in to CF
-    const isLoggedIin = await Utils.isLoggedInToCfWithProgress();
-    if (isLoggedIin) {
+    if (await Utils.isLoggedInToCfWithProgress()) {
       return true;
     }
 

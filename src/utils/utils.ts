@@ -147,13 +147,13 @@ export class Utils {
     return true;
   }
 
-  public static async getTarget(): Promise<ITarget> {
-    return await cfGetTarget();
+  public static getTarget(weak?: boolean): Promise<ITarget> {
+    return cfGetTarget(weak);
   }
 
   public static async isLoggedInToCf(): Promise<boolean> {
     try {
-      const target: ITarget = await this.getTarget();
+      const target: ITarget = await Utils.getTarget();
       // user is connected to CF
       if (
         !isEmpty(target.user) &&
