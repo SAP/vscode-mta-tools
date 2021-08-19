@@ -1,3 +1,10 @@
+## [1.4.6](https://github.com/SAP/vscode-mta-tools/compare/v1.4.5...v1.4.6) (2021-08-19)
+
+### Bug Fixes
+
+- fix cf login pop up when user is logged in to cf ([#303](https://github.com/SAP/vscode-mta-tools/issues/303)) ([f029739](https://github.com/SAP/vscode-mta-tools/commit/f029739c7d4b3953072ef98cffae5c30c8fa3acb))
+- validation bug ([#280](https://github.com/SAP/vscode-mta-tools/issues/280)) ([0302554](https://github.com/SAP/vscode-mta-tools/commit/03025549aa2208d810d546d54dc707a7c83f42ea))
+
 ## [1.4.3](https://github.com/SAP/vscode-mta-tools/compare/v1.4.2...v1.4.3) (2021-07-07)
 
 ### Bug Fixes
