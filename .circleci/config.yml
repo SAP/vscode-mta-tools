@@ -1,8 +1,8 @@
 version: 2
 jobs:
-  build-node13:
+  build-node14:
     docker:
-      - image: circleci/node:13
+      - image: cimg/node:14.19
     working_directory: ~/repo
     steps:
       - checkout
@@ -16,7 +16,7 @@ jobs:
 
   build-node12:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:12.13
     working_directory: ~/repo
     steps:
       - checkout
@@ -25,7 +25,7 @@ jobs:
 
   build-node10:
     docker:
-      - image: circleci/node:10
+      - image: cimg/node:10.24
     working_directory: ~/repo
     steps:
       - checkout
@@ -39,7 +39,7 @@ jobs:
 
   compliance:
     docker:
-      - image: circleci/python:3.6.4
+      - image: cimg/python:3.6
     working_directory: ~/workdir
     steps:
       - checkout
@@ -51,7 +51,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/golang:1.13
+      - image: cimg/go:1.13
     steps:
       - attach_workspace:
           at: ./dist
@@ -66,7 +66,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - build-node13
+      - build-node14
       - build-node12
       - compliance
       - build-node10:
