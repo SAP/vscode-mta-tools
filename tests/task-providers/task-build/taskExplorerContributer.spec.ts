@@ -147,9 +147,9 @@ describe("taskExplorerContributer class", () => {
   describe("onSave method", () => {
     let orgSWATracker: ISWATracker;
     let swaEventType = "";
-    let swaCustomEvents: string[] = [];
+    let swaCustomEvents: string[] | undefined = [];
     const testSWATracker: ISWATracker = {
-      track(eventType: string, customEvents: string[]) {
+      track(eventType: string, customEvents?: string[]) {
         swaEventType = eventType;
         swaCustomEvents = customEvents;
       },
