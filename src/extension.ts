@@ -1,15 +1,10 @@
 import { Uri, ExtensionContext, commands, tasks } from "vscode";
-import { SWATracker } from "@sap/swa-for-sapbas-vsx";
 import { MtaBuildCommand } from "./commands/mtaBuildCommand";
 import { MtarDeployCommand } from "./commands/mtarDeployCommand";
 import { AddModuleCommand } from "./commands/addModuleCommand";
 import { messages } from "./i18n/messages";
-import {
-  createExtensionLoggerAndSubscribeToLogSettingsChanges,
-  getLogger,
-} from "./logger/logger-wrapper";
+import { createExtensionLoggerAndSubscribeToLogSettingsChanges } from "./logger/logger-wrapper";
 import { registerValidation } from "./validations/validations";
-import { initSWA } from "./utils/swa";
 import { DEPLOY_MTA, BUILD_MTA } from "./task-providers/definitions";
 import { BuildMtaTaskProvider } from "./task-providers/task-build/buildTask";
 import { DeployMtaTaskProvider } from "./task-providers/task-deploy/deployTask";
@@ -25,19 +20,8 @@ export async function activate(
   context: ExtensionContext
 ): Promise<TaskEditorContributorExtensionAPI<ConfiguredTask>> {
   initializeLogger(context);
-  const logger = getLogger();
-  const swa = new SWATracker(
-    "SAPSE",
-    "vscode-mta-tools",
-    (err: string | number) => {
-      /* istanbul ignore next - we ignore error code `204` because it appears in every user interaction */
-      if (err !== 204) {
-        logger.error(err.toString());
-      }
-    }
-  );
 
-  initSWA(swa);
+  // initSWA(swa);
 
   context.subscriptions.push(
     commands.registerCommand("extension.mtaBuildCommand", mtaBuildCommand)

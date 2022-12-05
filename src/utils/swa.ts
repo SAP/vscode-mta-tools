@@ -1,8 +1,12 @@
 /* eslint  @typescript-eslint/no-empty-function: 0 */
 
-import { SWATracker } from "@sap/swa-for-sapbas-vsx";
-
-export type ISWATracker = Pick<SWATracker, "track">;
+export type ISWATracker = {
+  track: (
+    eventType: string,
+    customEvents?: string[],
+    numericEvents?: number[]
+  ) => void;
+};
 
 const SWA_NOOP: ISWATracker = {
   track(): void {},
