@@ -18,8 +18,6 @@ import {
   TaskEditorContributionAPI,
   TaskEditorContributorExtensionAPI,
 } from "@sap_oss/task_contrib_types";
-import { BuildTaskContributionAPI } from "./task-providers/task-build/taskExplorerContributer";
-import { DeployTaskContributionAPI } from "./task-providers/task-deploy/taskExplorerContributer";
 
 export async function activate(
   context: ExtensionContext
@@ -49,8 +47,6 @@ export async function activate(
     commands.registerCommand("extension.addModuleCommand", addModuleCommand)
   );
 
-  const extensionPath = context.extensionPath;
-
   const deployTaskProvider = new DeployMtaTaskProvider(context);
   context.subscriptions.push(
     tasks.registerTaskProvider(DEPLOY_MTA, deployTaskProvider)
@@ -69,12 +65,6 @@ export async function activate(
         string,
         TaskEditorContributionAPI<ConfiguredTask>
       >();
-      const deployContributor = new DeployTaskContributionAPI(extensionPath);
-      const buildContributor = new BuildTaskContributionAPI(extensionPath);
-
-      contributors.set(DEPLOY_MTA, deployContributor);
-      contributors.set(BUILD_MTA, buildContributor);
-
       return contributors;
     },
   };
