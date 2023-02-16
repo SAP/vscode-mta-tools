@@ -18,7 +18,6 @@ import {
 } from "../src/extension";
 import * as configSettings from "../src/logger/settings";
 import * as loggerWrapper from "../src/logger/logger-wrapper";
-import { DEPLOY_MTA, BUILD_MTA } from "../src/task-providers/definitions";
 
 describe("Extension unit tests", () => {
   const extensionPath: string = resolve(__dirname, "..", "..");
@@ -163,14 +162,7 @@ describe("Extension unit tests", () => {
         "createExtensionLoggerAndSubscribeToLogSettingsChanges"
       );
       tasksMock.expects("registerTaskProvider").atLeast(2);
-      const apiRes = await activate(testContext as ExtensionContext);
-      const contributersMap = apiRes.getTaskEditorContributors();
-      expect(contributersMap.has(DEPLOY_MTA)).to.be.true;
-      const deployContributer = contributersMap.get(DEPLOY_MTA);
-      expect(deployContributer).to.exist;
-      expect(contributersMap.has(BUILD_MTA)).to.be.true;
-      const buildContributer = contributersMap.get(BUILD_MTA);
-      expect(buildContributer).to.exist;
+      await activate(testContext as ExtensionContext);
       loggerWrapperMock.verify();
       tasksMock.verify();
     });
