@@ -204,7 +204,7 @@
     }
   },
   "files": [
-    "vscode-mta-tools-1.4.24.vsix"
+    "vscode-mta-tools-1.4.8.vsix"
   ],
   "scripts": {
     "version:suggest": "conventional-recommended-bump -preset=\"angular\"",
