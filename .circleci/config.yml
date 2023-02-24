@@ -150,17 +150,10 @@ workflows:
               ignore: /.*/
       - release-to-github:
           requires:
+            - build-node14
             - build-node16
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
-      # - publish-to-npm:
-      #     requires:
-      #       - release-to-github
-      #     filters:
-      #       tags:
-      #         only: /^v[0-9]+(\.[0-9]+)*/
-      #       branches:
-      #         ignore: /.*/
