@@ -1,0 +1,21 @@
+{
+  "name": "@sap/vscode-mta-tools",
+  "displayName": "vscode-mta-tools",
+  "description": "VS Code Multi-Target Application tools",
+  "version": "1.4.8",
+  "publisher": "SAPSE",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/SAP/vscode-mta-tools.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "categories": [
+    "Other"
+  ],
+  "files": [
+    "*.vsix"
+  ]
+}

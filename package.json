@@ -203,9 +203,6 @@
       }
     }
   },
-  "files": [
-    "vscode-mta-tools-1.4.8.vsix"
-  ],
   "scripts": {
     "version:suggest": "conventional-recommended-bump -preset=\"angular\"",
     "version": "npm run version:changelog -s && git add CHANGELOG.md",

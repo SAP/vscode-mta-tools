@@ -1,5 +1,17 @@
 version: 2
 jobs:
+  compliance:
+    docker:
+      - image: cimg/python:3.10.0
+    working_directory: ~/workdir
+    steps:
+      - checkout
+      - run:
+          name: compliance check
+          command: |
+            pip3 install --user reuse
+            ~/.local/bin/reuse lint
+
   build-node10:
     docker:
       - image: cimg/node:10.24
@@ -26,6 +38,11 @@ jobs:
       - checkout
       - run: npm i
       - run: npm run ci
+      - run:
+          command: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+          environment:
+            COVERALLS_SERVICE_NAME: circle-ci
+            COVERALLS_GIT_BRANCH: ${CIRCLE_BRANCH}
   
   build-node16:
     docker:
@@ -33,39 +50,23 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - run: npm i
-      - run: npm run ci
       - run:
-          command: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
-          environment:
-            COVERALLS_SERVICE_NAME: circle-ci
-            COVERALLS_GIT_BRANCH: ${CIRCLE_BRANCH}
+          name: "Build VScode Extension"
+          command: |
+            npm i
+            npm run ci
+      - run:
+          name: "Build Npmjs Package"
+          command: |
+            cp vscode-mta-tools-*.vsix ./README.md ./LICENSE ./github-rel-env
+            cd ./github-rel-env
+            npm pack
       - persist_to_workspace:
-          root: "."
+          root: "./github-rel-env"
           paths:
             # https://golang.org/pkg/path/filepath/#Match
-            - vscode-mta-tools-*
-
-  build-node18:
-    docker:
-      - image: cimg/node:18.12
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - run: npm i
-      - run: npm run ci
-  
-  compliance:
-    docker:
-      - image: cimg/python:3.10.0
-    working_directory: ~/workdir
-    steps:
-      - checkout
-      - run:
-          name: compliance check
-          command: |
-            pip3 install --user reuse
-            ~/.local/bin/reuse lint
+            - vscode-mta-tools-*.vsix
+            - sap-vscode-mta-tools-*.tgz
 
   release-to-github:
     docker:
@@ -147,14 +148,6 @@ workflows:
               only: /^v[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
-      # - build-node18:
-      #     requires:
-      #       - compliance
-      #     filters:
-      #       tags:
-      #         only: /^v[0-9]+(\.[0-9]+)*/
-      #       branches:
-      #         ignore: /.*/
       - release-to-github:
           requires:
             - build-node16
@@ -163,11 +156,11 @@ workflows:
               only: /^v[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
-      - publish-to-npm:
-          requires:
-            - release-to-github
-          filters:
-            tags:
-              only: /^v[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
+      # - publish-to-npm:
+      #     requires:
+      #       - release-to-github
+      #     filters:
+      #       tags:
+      #         only: /^v[0-9]+(\.[0-9]+)*/
+      #       branches:
+      #         ignore: /.*/
