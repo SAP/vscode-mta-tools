@@ -10,6 +10,7 @@ node_modules
 .github/**
 coverage/**
 tests/**
+github-rel-env/**
 
 # Compiled code is in dist
 out/**

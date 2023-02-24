@@ -1,42 +1,5 @@
 version: 2
 jobs:
-  build-node14:
-    docker:
-      - image: cimg/node:14.19
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - run: npm i
-      - run: npm run ci
-      - run:
-          command: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
-          environment:
-            COVERALLS_SERVICE_NAME: circle-ci
-            COVERALLS_GIT_BRANCH: ${CIRCLE_BRANCH}
-
-  build-node12:
-    docker:
-      - image: cimg/node:12.13
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - run: npm i
-      - run: npm run ci
-
-  build-node10:
-    docker:
-      - image: cimg/node:10.24
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - run: npm i
-      - run: npm run ci
-      - persist_to_workspace:
-          root: "."
-          paths:
-            # https://golang.org/pkg/path/filepath/#Match
-            - vscode-mta-tools-*
-
   compliance:
     docker:
       - image: cimg/python:3.10.0
@@ -49,7 +12,63 @@ jobs:
             pip3 install --user reuse
             ~/.local/bin/reuse lint
 
-  deploy:
+  build-node10:
+    docker:
+      - image: cimg/node:10.24
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run ci
+    
+  build-node12:
+    docker:
+      - image: cimg/node:12.13
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run ci
+
+  build-node14:
+    docker:
+      - image: cimg/node:14.21
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run ci
+      - run:
+          command: cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+          environment:
+            COVERALLS_SERVICE_NAME: circle-ci
+            COVERALLS_GIT_BRANCH: ${CIRCLE_BRANCH}
+  
+  build-node16:
+    docker:
+      - image: cimg/node:16.18
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: "Build VScode Extension"
+          command: |
+            npm i
+            npm run ci
+      - run:
+          name: "Build Npmjs Package"
+          command: |
+            cp vscode-mta-tools-*.vsix ./README.md ./LICENSE ./github-rel-env
+            cd ./github-rel-env
+            npm pack
+      - persist_to_workspace:
+          root: "./github-rel-env"
+          paths:
+            # https://golang.org/pkg/path/filepath/#Match
+            - vscode-mta-tools-*.vsix
+            - sap-vscode-mta-tools-*.tgz
+
+  release-to-github:
     docker:
       - image: cimg/go:1.19
     steps:
@@ -62,20 +81,77 @@ jobs:
             VERSION=${CIRCLE_TAG}
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
 
+  publish-to-npm:
+    docker:
+      - image: cimg/node:16.18
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          #Make sure HEAD points to master
+          # TODO: this is horrible as it makes the build non-reproducible
+          #       but the `release` job performs a bump commit as part of the release flow
+          #       so the fetch/rebase is actually needed (unless release process refactored...)
+          name: rebase to master
+          command: |
+            git checkout master
+            git fetch
+            git rebase
+      - run:
+          # mbt is an unscoped package, do not need to add "--access public" option in npm publish cmd 
+          name: publish to npm
+          command: |
+            echo "//registry.npmjs.org/:_authToken=$CLOUD_MTA_BOT_NPM_TOKEN" > .npmrc
+            npm install
+            npm run ci
+            npm publish
+
 workflows:
   version: 2
-  build:
+  on_tag_build_release_publish:
     jobs:
-      - build-node14
-      - build-node12
-      - compliance
-      - build-node10:
+      - compliance:
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*/
-      - deploy:
+            branches:
+              ignore: /.*/
+      - build-node10:
           requires:
-            - build-node10
+            - compliance
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+      - build-node12:
+          requires:
+            - compliance
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+      - build-node14:
+          requires:
+            - compliance
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+      - build-node16:
+          requires:
+            - compliance
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+      - release-to-github:
+          requires:
+            - build-node14
+            - build-node16
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*/
