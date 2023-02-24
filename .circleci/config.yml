@@ -20,7 +20,7 @@ jobs:
       - checkout
       - run: npm i
       - run: npm run ci
-    
+
   build-node12:
     docker:
       - image: cimg/node:12.13
@@ -43,7 +43,7 @@ jobs:
           environment:
             COVERALLS_SERVICE_NAME: circle-ci
             COVERALLS_GIT_BRANCH: ${CIRCLE_BRANCH}
-  
+
   build-node16:
     docker:
       - image: cimg/node:16.18
@@ -98,7 +98,6 @@ jobs:
             git fetch
             git rebase
       - run:
-          # mbt is an unscoped package, do not need to add "--access public" option in npm publish cmd 
           name: publish to npm
           command: |
             echo "//registry.npmjs.org/:_authToken=$CLOUD_MTA_BOT_NPM_TOKEN" > .npmrc
