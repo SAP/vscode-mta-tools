@@ -1,5 +1,5 @@
 {
-  "name": "@sap/vscode-mta-tools",
+  "name": "@sap_oss/vscode-mta-tools",
   "displayName": "vscode-mta-tools",
   "description": "VS Code Multi-Target Application tools",
   "version": "1.4.9",
