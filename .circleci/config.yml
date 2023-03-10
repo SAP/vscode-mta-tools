@@ -55,18 +55,10 @@ jobs:
           command: |
             npm i
             npm run ci
-      - run:
-          name: "Build Npmjs Package"
-          command: |
-            cp vscode-mta-tools-*.vsix ./README.md ./LICENSE ./github-rel-env
-            cd ./github-rel-env
-            npm pack
       - persist_to_workspace:
-          root: "./github-rel-env"
+          root: "."
           paths:
-            # https://golang.org/pkg/path/filepath/#Match
             - vscode-mta-tools-*.vsix
-            - sap-vscode-mta-tools-*.tgz
 
   release-to-github:
     docker:
@@ -87,22 +79,14 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - run:
-          #Make sure HEAD points to master
-          # TODO: this is horrible as it makes the build non-reproducible
-          #       but the `release` job performs a bump commit as part of the release flow
-          #       so the fetch/rebase is actually needed (unless release process refactored...)
-          name: rebase to master
-          command: |
-            git checkout master
-            git fetch
-            git rebase
+      - attach_workspace:
+          at: ./npmjs-pub-env
       - run:
           name: publish to npm
           command: |
+            cp ./README.md ./LICENSE ./npmjs-pub-env
+            cd ./npmjs-pub-env
             echo "//registry.npmjs.org/:_authToken=$CLOUD_MTA_BOT_NPM_TOKEN" > .npmrc
-            npm install
-            npm run ci
             npm publish
 
 workflows:
@@ -149,6 +133,19 @@ workflows:
               ignore: /.*/
       - release-to-github:
           requires:
+            - build-node10
+            - build-node12
+            - build-node14
+            - build-node16
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+      - publish-to-npm:
+          requires:
+            - build-node10
+            - build-node12
             - build-node14
             - build-node16
           filters:
