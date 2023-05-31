@@ -2,7 +2,7 @@
   "name": "@sap_oss/vscode-mta-tools",
   "displayName": "vscode-mta-tools",
   "description": "VS Code Multi-Target Application tools",
-  "version": "1.4.9",
+  "version": "1.4.10",
   "publisher": "SAPSE",
   "license": "Apache-2.0",
   "repository": {
