@@ -27,8 +27,10 @@ Make sure the following tools are installed in your environment:
 
 ### Download and Installation
 
-Import the extension into your Visual Studio Code.
-Run `npm install` to install all the needed dependencies.
+To import the extension into Visual Studio Code follow these steps:
+
+- Download the vsix file of the [latest release](https://github.com/SAP/vscode-mta-tools/releases)
+- Run `code --install-extension <filename>`
 
 ### Contributing
 
