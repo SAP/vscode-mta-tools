@@ -8,7 +8,7 @@
 
 ## Description
 
-The **VS Code Multi-Target Application (MTA) tools** extension is a VS Code extension for development of multi-target applications.
+The **VS Code Multi-Target Application (MTA) tools** extension is a VS Code extension for the development of multi-target applications.
 It can be used to build multitarget applications using the [Cloud MTA Build Tool](https://github.com/SAP/cloud-mta-build-tool), to deploy the build result to Cloud Foundry and to create MTA module from template.
 The extension is being developed and currently contains limited features.
 
